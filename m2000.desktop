@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=m2000
+GenericName=m2000
+Comment=Mujeres 2000 - Gestión de Microcréditos
+Exec=/home/fran/projects/m2000/main.py
+Terminal=false
+Categories=Utility;
+Icon=/home/fran/projects/m2000/m2000/media/32x32icon.png

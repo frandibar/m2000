@@ -1,0 +1,6 @@
+"id","grupo"
+1,"Indicadores"
+3,"Saldo"
+5,"Recaudación"
+6,"Datos para Renovación"
+7,"Cartera"

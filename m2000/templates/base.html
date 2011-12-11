@@ -1,0 +1,29 @@
+<html>
+<head>
+  <title>{% block page_head_title %}{% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+body, html {
+        font-family: Verdana, Arial, sans-serif;
+}
+{% block styles %}{% endblock %}
+  </style>
+</head>
+<body>
+
+<table id="page_header" width="100%">
+  <tr>
+    <td><h1>{% block page_header %}{% endblock %}</h1></td>
+    <td align="right">{% block page_header_right %}{% endblock %}</td>
+  </tr>
+
+</table>
+<hr>
+<h2 id="page_title"><center>{% block page_title %}{% endblock %}</center></h2>
+<hr>
+{% block page_content %}{% endblock %}
+<hr>
+<div id="page_footer">{% block page_footer %}{% endblock %}</div>
+
+</body>
+</html>

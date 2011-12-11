@@ -1,0 +1,23 @@
+MYSQL
+mysql -uroot -proot
+create database m2000
+
+Para que los acentos se importen correctamente, asegurarse que los archivos .sql tengan encoding latin1
+En emacs:
+M-x set-buffer-file-coding-system latin-1
+
+SQLITE
+para poder importar "correctamente" a sqlite, convertir los archivos a utf-8
+iconv -f iso-8859-1 -t utf-8 in.txt > out.txt
+
+desde sqlite
+.separator ;
+.import file tabla
+
+las fechas estan en formato dd-mm-aaaa cuando deberian estar en formato aaaa-mm-dd
+regex para cambiarlas:
+:%s/\([0-9]\+\)\/([0-9]\+\)\([0-9]\+\)/\3-\2\-\1/g
+
+quitar ceros de la hora
+quitar $ en montos
+cambiar , por . en montos

@@ -1,0 +1,11 @@
+TRUNCATE TABLE cartera;
+INSERT INTO cartera VALUES (1, "M2000");
+INSERT INTO cartera VALUES (2, "HSBC");
+INSERT INTO cartera VALUES (3, "HSBC 2");
+INSERT INTO cartera VALUES (4, "Naviera");
+INSERT INTO cartera VALUES (5, "Frances");
+INSERT INTO cartera VALUES (6, "HSBC 1");
+INSERT INTO cartera VALUES (7, "Pablo Ferrari");
+INSERT INTO cartera VALUES (8, "Sidero, Daniel");
+INSERT INTO cartera VALUES (9, "BAPRO");
+INSERT INTO cartera VALUES (10, "CONAMI");

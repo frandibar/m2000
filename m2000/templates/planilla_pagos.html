@@ -1,0 +1,98 @@
+<html>
+<!-- <link rel="stylesheet" type="text/css" href="styles.css"/> -->
+<head>
+<style type="text/css">
+td, th { border-bottom: thin short }
+table { border: none }
+
+<!-- .tabla_cuotas { -->
+<!--     border-color: #000000; -->
+<!--     valign: middle; -->
+<!--     cellpadding: 2; -->
+<!--     border: 2px single black; -->
+<!-- } -->
+
+<!-- .td_cuotas { -->
+<!--     border: thin solid black; -->
+}
+
+</style>
+</head>
+<body align="justify">
+  <h3 align="center">Ayuda Económica para Microemprendimiento Productivo</h3>
+  <h3 align="center">PLAN DE AMORTIZACI&Oacute;N {{ anio }}</h3>
+  <br>
+  <table border="0" cellpadding="2">
+    <tr>
+      <td><b>C.D.I.:</b></td><td><b>{{ comentarios }}</b></td>
+      <td><b>Beneficiaria</b></td>
+    </tr>
+    <tr>
+      <td>&Uacute;ltima Deuda:</td><td>{{ saldo_anterior }}</td>
+      <td>Nombre:</td><td>{{ beneficiaria }}</td>
+    </tr>
+    <tr>
+      <td>Monto Cheque:</td><td>{{ monto_cheque }}</td>
+      <td>D.N.I.:</td><td>{{ dni }}</td>
+    </tr>
+    <tr>
+      <td>Fecha otorga cheque:</td><td>{{ fecha_entrega }}</td>
+      <td>Tel&eacute;fono:</td><td>{{ telefono }}</td>
+    </tr>
+    <tr>
+      <td>Total deuda inicial</td><td>{{ deuda_inicial }}</td>
+      <td>Domicilio:</td><td>{{ domicilio }}</td>
+    </tr>
+    <tr>
+      <td>Total deuda final</td><td>{{ deuda_final }}</td>
+      <td>Grupo Nro.:</td><td>{{ grupo }}</td>
+    </tr>
+    <tr>
+      <td>Nro. de pr&eacute;stamo:</td><td>{{ nro_credito }}</td>
+      <td>Coordinadores:</td>
+    </tr>
+    <tr>
+      <td>Cantidad de cuotas:</td><td>{{ cuotas }}</td>
+    </tr>
+    <tr>
+      <td>Cuota calculada:</td><td>{{ cuota_calculada }}</td>
+      <td>Monto &uacute;ltima cuota:</td><td>{{ monto_ultima_cuota }}</td>
+    </tr>
+  </table>
+<br>
+  <table class="tabla_cuotas">
+    <thead>
+      <tr>
+        <th align="center">%</th>
+        <th align="center">#</th>
+        <th align="center">Fecha</th>
+        <th>Aporte</th>
+        <th>Capital</th>
+        <th>Saldo semana</th>
+        <th>Inter&eacute;s pagado</th>
+        <th>Pagado a la fecha</th>
+        <th>Saldo</th>
+        <th>Monto</th>
+        <th>A favor</th>
+        <th>Fecha efectiva de pago</th>
+        <th>Asistente</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for linea in detalle %}
+      <tr>
+        <td align="right">{{ linea.porcentaje }}</td>
+        <td align="center">{{ linea.nro_cuota }}</td>
+        <td align="center">{{ linea.fecha }}</td>
+        <td align="right">{{ linea.aporte }}</td>
+        <td align="right">{{ linea.capital }}</td>
+        <td align="right">{{ linea.saldo_semana }}</td>
+        <td align="right">{{ linea.interes_pagado }}</td>
+        <td align="right">{{ linea.pagado_a_fecha }}</td>
+      <td align="right">{{ linea.saldo }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

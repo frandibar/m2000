@@ -1,0 +1,5 @@
+"id","descripcion","cuotas_adeudadas_min","cuotas_adeudadas_max"
+1,"Regular",0,4
+2,"Riesgo",4,8
+3,"Mora",8,12
+4,"Incobrable",12,9999999

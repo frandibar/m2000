@@ -1,0 +1,77 @@
+<html>
+<body align="justify">
+  <h3 align="center">Micro-cr&eacute;dito para Mejoramiento Habitacional</h3>
+  <h3 align="center">PLAN DE AMORTIZACI&Oacute;N ALEMAN {{ anio }}</h3>
+  <br>
+  <table border="0">
+    <tr>
+      <td><b>C.D.I.:</b></td><td><b>{{ comentarios }}</b></td>
+      <td><b>Beneficiaria</b></td>
+    </tr>
+    <tr>
+      <td>Gastos HAB + Arq.:</td><td>{{ gastos_hab }}</td>
+      <td>Nombre:</td><td>{{ beneficiaria }}</td>
+    </tr>
+    <tr>
+      <td>Presupuesto Construcci&oacute;n:</td><td>{{ monto_cheque }}</td>
+      <td>D.N.I.:</td><td>{{ dni }}</td>
+    </tr>
+    <tr>
+      <td>Fecha otorga cheque:</td><td>{{ fecha_entrega }}</td>
+      <td>Tel&eacute;fono:</td><td>{{ telefono }}</td>
+    </tr>
+    <tr>
+      <td>Total deuda inicial:</td><td>{{ deuda_inicial }}</td>
+      <td>Domicilio:</td><td>{{ domicilio }}</td>
+    </tr>
+    <tr>
+      <td>Total deuda final:</td><td>{{ deuda_final }}</td>
+      <td>Grupo Nro.:</td><td>{{ grupo }}</td>
+    </tr>
+    <tr>
+      <td>Nro. de pr&eacute;stamo:</td><td>{{ nro_credito }}</td>
+      <td>Coordinadores:</td>
+    </tr>
+    <tr>
+      <td>Cantidad de cuotas:</td><td>{{ cuotas }}</td>
+    </tr>
+    <tr>
+      <td>Cuota calculada:</td><td>{{ cuota_calculada }}</td>
+      <td>Monto &uacute;ltima cuota:</td><td>{{ monto_ultima_cuota }}</td>
+    </tr>
+  </table>
+<br>
+  <table border="1">
+    <thead>
+      <tr>
+        <th align="center">#</th>
+        <th align="center">Fecha</th>
+        <th>Saldo Deudor</th>
+        <th>Cuota M2000</th>
+        <th>Cuota Habitat</th>
+        <th>Cuota Total</th>
+        <th>Pagado a la fecha</th>
+        <th>Saldo</th>
+        <th>Monto</th>
+        <th>A favor</th>
+        <th>Fecha efectiva de pago</th>
+        <th>Asistente</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for linea in detalle %}
+      <tr>
+        <td align="center">{{ linea.nro_cuota }}</td>
+        <td align="center">{{ linea.fecha_cuota }}</td>
+        <td align="right">{{ linea.saldo_deudor }}</td>
+        <td align="right">{{ linea.cuota_m2000 }}</td>
+        <td align="right">{{ linea.cuota_habitat }}</td>
+        <td align="right">{{ linea.cuota_total }}</td>
+        <td align="right">{{ linea.pagado_a_fecha }}</td>
+        <td align="right">{{ linea.saldo_restante }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

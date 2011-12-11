@@ -1,0 +1,364 @@
+1	1	Selva	Comeliesi	1	2006-10-02	0	2007-12-03	D.01.01	\N	\N	\N	\n	\N
+2	2	Rosa Amalia	Santillan	1	2006-09-02	0	2008-09-02	D.01.03 (Incobrable 2008)	\N	\N	\N	\n	\N
+3	2	Fabiana	Amoretti	10	2007-01-20	0	2007-01-20	D.10.01	\N	\N	\N	\n	\N
+4	2	Ma. Victoria	Brondo	10	2006-09-02	0	2006-12-09	D.10.02	\N	\N	\N	\n	\N
+5	2	Fabiana	Caceres	10	2006-09-09	0	2007-01-06	D.10.03	\N	\N	\N	\n	\N
+6	2	Noelia	Mendez	10	2006-09-02	0	2008-04-01	D.10.05	\N	\N	\N	\n	\N
+7	2	Norma	Cardozo	11	2006-09-02	0	2007-02-24	D.11.01	\N	\N	\N	\n	\N
+8	2	Mónica M.	Gómez	11	2006-09-02	0	2008-04-29	D.11.02 (Incobrable 2008)	\N	\N	\N	\n	\N
+9	2	Sandra Gabriela	Medina	11	2006-09-02	0	2007-11-05	D.11.04	\N	\N	\N	\n	\N
+10	2	Cecilia Guadalupe	Ponce	11	2006-09-02	0	2007-11-05	D.11.05	\N	\N	\N	\n	\N
+11	2	Alicia del Valle	Gonzalez	12	2006-09-09	0	2008-07-29	D.12.03 (Incobrable 2008)	\N	\N	\N	\n	\N
+12	2	Dolores	Moralez	12	2006-09-02	0	2008-08-07	D.12.04 (Incobrable 2008)	\N	\N	\N	\n	\N
+13	2	Marcela Claudia	Zarate	12	2006-09-02	0	2008-02-04	D.12.05	\N	\N	\N	\n	\N
+14	2	Claudia Noemí	Diaz	3	2006-09-02	0	2008-06-24	D.03.02 (Incobrable 2008)	\N	\N	\N	\n	\N
+15	2	Juana Rosa	Lezcano	3	2006-09-09	0	2007-03-17	D.03.03	\N	\N	\N	\n	\N
+16	2	Selva Rosa	Luna	3	2006-09-02	0	2008-08-07	D.03.04 (Incobrable 2008)	\N	\N	\N	\n	\N
+17	2	Mirta	Bellido	4	2006-09-09	0	2008-03-04	D.04.01	\N	\N	\N	\n	\N
+18	2	Florencia	Oviedo	4	2006-09-02	0	2008-03-25	D.04.03 (Incobrable 2008)	\N	\N	\N	\n	\N
+19	2	Elizabeth	Madrid	5	2006-09-09	0	2008-01-07	D.05.03 (Incobrable 2007)	\N	\N	\N	\n	\N
+20	2	Stella Maris	Borroni	6	2006-11-04	0	2008-01-08	D.06.01 (Incobrable 2008)	\N	\N	\N	\n	\N
+21	3	Teresa de Jesus	Ibañez	6	2006-09-09	0	2006-12-23	D.06.02	\N	\N	\N	\n	\N
+22	2	Marcela Noemí	Verón	6	2006-09-09	0	2006-10-07	D.06.04	\N	\N	\N	\n	\N
+23	2	Cristina	Collazo	7	2006-09-02	0	2008-08-07	D.07.01 (Incobrable 2008)	\N	\N	\N	\n	\N
+24	2	Gloria Isabel	Collazo	7	2006-08-31	0	2008-08-07	D.07.02 (Incobrable 2008)	\N	\N	\N	\n	\N
+25	2	Marcela Beatriz	Ledesma	7	2006-10-07	0	2007-06-04	D.07.03	\N	\N	\N	\n	\N
+26	2	Amanda	Orellano	7	2006-09-16	0	2006-09-16	D.07.04	\N	\N	\N	\n	\N
+27	2	Antonia	Santillan	7	2006-08-31	0	2008-04-15	D.07.05	\N	\N	\N	\n	\N
+28	2	Rosa Esther	Carvonell	8	2006-09-02	0	2008-04-08	D.08.01	\N	\N	\N	\n	\N
+29	2	Nélida	Santillán	8	2006-09-09	0	2008-07-29	D.08.03 (Incobrable 2008)	\N	\N	\N	\n	\N
+30	2	Norma Beatriz	Gonzalez	9	2006-09-02	0	2006-11-25	D.09.02	\N	\N	\N	\n	\N
+31	2	Sandra Cristina	Gonzalez	9	2006-09-02	0	2007-03-24	D.09.03	\N	\N	\N	\n	\N
+32	2	Raquel B.	Ibarra	9	2006-10-28	0	2008-04-08	D.09.04	\N	\N	\N	\n	\N
+33	2	Amelia Ma.	Lopez	9	2006-12-02	0	2008-04-01	D.09.05 (Incobrable 2008)	\N	\N	\N	\n	\N
+34	1	Sonia	Paredes	1	2007-02-24	1	\N	T.01.03	807247	1973-03-14	Da vinci 1929	3	\N
+35	1	María Alicia	Arevalo	12	2006-09-16	0	2007-10-06	T.12.01	\N	\N	\N	\n	\N
+36	1	Maria Ofelia	Arévalo	16	2006-09-02	1	\N	T.16.01	\N	\N	\N	\n	\N
+37	1	Ramona	Arevalo	16	2006-09-02	1	\N	T.16.02	\N	\N	Dardo Rocha 580	\n	4715-5915 / 155-998-2411 (marido, José)
+38	1	Mónica	Navarro	16	2006-10-21	0	2008-04-12	T.16.04	\N	\N	\N	\n	\N
+39	1	Cristina	Gómez	17	2006-09-04	1	\N	T.17.01	\N	\N	Marconi 585	\n	4715-5326 / 116-480-9385
+40	1	Lorena	Luque	17	2006-09-04	0	2008-01-19	T.17.02	\N	\N	\N	\n	\N
+41	1	Concepción	Barrios	19	2006-09-16	1	\N	T.19.02	\N	\N	Triunvirato 1821	\n	1564857752
+42	1	María de los Angeles	Moyano	19	2006-09-04	1	\N	T.19.04	\N	\N	\N	\n	47159038
+43	1	Antonia del Valle	Ortega	19	2006-09-04	1	\N	T.19.05	\N	\N	French 574	\n	4715-9098 / 156-417-4305
+44	1	Irma	Martínez	2	2006-08-31	0	2008-04-12	T.02.01	\N	\N	\N	\n	\N
+45	1	María	Barrionuevo	20	2006-09-02	1	\N	T.20.01	\N	\N	\N	\n	\N
+46	1	Dora	Riguresma	20	2006-09-02	1	\N	T.20.03	\N	\N	\N	\n	\N
+47	1	Alejandra	Castellano	21	2006-09-09	1	\N	T.21.02	\N	\N	\N	\n	\N
+48	1	Silvia	Valdez	21	2006-09-02	1	\N	T.21.03	\N	\N	\N	\n	\N
+49	1	Lorena	Dias	22	2006-09-09	1	\N	T.22.01	\N	\N	Alte Brown 1010	\n	47151814
+50	1	Paola Vanesa	Quevedo	22	2006-09-02	1	\N	T.22.03	\N	\N	Curupayti 460	\n	5197-4409 (vecina) / 153-229-1944
+51	1	Patricia	Bravo	23	2006-08-31	1	\N	T.23.02	\N	\N	Marmol s/n 1 cuadra 197	\n	1569244044
+52	1	Rita	Mirabal	23	2006-08-31	1	\N	T.23.03	\N	\N	\N	\n	\N
+53	1	Marta	Barbosa	24	2006-09-09	0	2007-08-11	T.24.01	\N	\N	\N	\n	\N
+54	1	Mirta	Cabral	24	2006-09-09	0	2007-10-01	T.24.02	\N	\N	\N	\n	\N
+55	1	Sabrina	Godoy	24	2007-02-05	0	2007-06-04	T.24.03	\N	\N	\N	\n	\N
+56	1	Elba	Mateos	24	2006-09-16	0	2007-08-11	T.24.04	\N	\N	\N	\n	\N
+57	1	Marta	Vieyra	24	2007-05-26	0	2007-09-03	T.24.05	\N	\N	\N	\n	\N
+58	1	Viviana	Carnebale	26	2006-09-04	1	\N	T.26.01	\N	\N	\N	\n	\N
+59	1	Liliana	Herrera	26	2006-09-04	1	\N	T.26.02	\N	\N	Belgrano 444	\n	155-643-0273
+60	1	Liliana	Maidana	27	2006-09-04	1	\N	T.27.04	\N	\N	Azopardo 93	\n	47151325
+61	1	Dulce	Gauna	28	2006-09-09	1	\N	T.28.01	\N	\N	\N	\n	\N
+62	1	Emilia	Pericles	28	2006-09-04	1	\N	T.28.02	\N	\N	Pringles 1120	\n	4715-2049 / 1553447514
+63	1	María Rufina	Toloza	28	2006-09-04	1	\N	T.28.04	\N	\N	Pringles 1146	\n	4715-5787
+64	1	Zulema	Acevedo	29	2006-09-09	1	\N	T.29.01	\N	\N	Marconi 376	\n	47152071
+65	1	Graciela	Ibarra	29	2006-09-09	0	2008-02-04	T.29.03 (Incobrable 2008)	\N	\N	\N	\n	\N
+66	1	M. del Carmen	Gonzalez	29	2006-09-02	1	\N	T.29.02	\N	\N	Azopardo 40	\n	47152679
+67	1	Claudia	Navarro	29	2006-08-31	0	2007-05-07	T.29.04	\N	\N	\N	\n	\N
+68	1	María	Bracamonte	30	2006-09-09	1	\N	T.30.01	\N	\N	\N	\n	\N
+69	1	Graciela Isabel	Dominguez	30	2006-09-02	1	\N	T.30.03	\N	\N	Rocha 544	\n	156-408-4276 / 156-694-9052
+70	1	Marta	Olivieri	30	2006-08-31	1	\N	T.30.02	\N	\N	\N	\n	\N
+71	1	Rosana	García	31	2006-08-31	0	2007-08-04	T.31.01	\N	\N	\N	\n	\N
+72	1	Graciela	Gómez	31	2006-09-09	1	\N	T.31.02	\N	\N	\N	\n	\N
+73	1	Julia	Chaparro	32	2006-09-04	1	\N	T.32.01	\N	\N	\N	\n	\N
+74	1	Nora	Fernandez	32	2006-09-02	0	2007-12-08	T.32.02	\N	\N	\N	\n	\N
+75	1	Miriam	Martínez	32	2006-08-31	0	2007-10-01	T.32.03	\N	\N	\N	\n	\N
+76	1	Andrea	Fernandez	33	2006-08-31	0	2007-03-05	T.33.01	\N	\N	\N	\n	\N
+77	1	Ana	Avalos	34	2006-09-09	1	\N	T.34.01	\N	\N	Da Vinci 590	\n	4715-0030 / 156-054-8008
+78	1	Andrea Patricia	Díaz	34	2006-09-16	1	\N	T.34.02	\N	\N	Triunvirato 646	\n	\N
+79	1	Silvia	Leiva	34	2006-09-04	0	2007-09-03	T.34.03	\N	\N	\N	\n	\N
+80	1	Inés	Gasparín	34	2006-08-31	0	2008-03-03	T.34.04	\N	\N	\N	\n	\N
+81	1	Mirta	Salazar	34	2006-09-02	0	2007-12-08	T.34.05	\N	\N	\N	\n	\N
+82	1	Ana	Barturia	35	2007-08-11	1	\N	T.35.02	\N	\N	\N	\n	\N
+83	1	Fabiana	Luján	35	2006-08-31	0	2007-06-04	T.35.03	\N	\N	\N	\n	\N
+84	1	Mercedes	Andrada	36	2007-08-11	1	\N	T.36.01	\N	\N	Marconi 564	\n	1551370364 (hijo)
+85	1	María	Meza	37	2006-11-11	1	\N	T.37.03	\N	\N	Marconi 397	\n	\N
+86	1	Ramona	Perez	37	2006-11-18	1	\N	T.37.04	\N	\N	Marconi 31	\n	\N
+87	1	Mariela	Arce	38	2007-09-15	0	2007-11-10	T.38.01	\N	\N	\N	\n	\N
+88	1	Silvia	Peralta	38	2006-08-31	0	2007-01-20	T.38.02	\N	\N	\N	\n	\N
+89	1	Lidia	Veliz	38	2006-08-31	0	2008-04-12	T.38.03	\N	\N	\N	\n	\N
+90	1	Catalina	Vitullo	38	2006-08-31	0	2007-08-18	T.38.04	\N	\N	\N	\n	\N
+91	1	Doris	Díaz	39	2006-09-02	1	\N	T.39.01	\N	\N	Independencia 2091	\n	4715-4708 / 155-260-0249
+92	1	Olga	Lopez	39	2006-09-09	1	\N	T.39.03	\N	\N	\N	\n	\N
+93	1	Rosa	Luna	39	2006-09-09	0	2007-11-10	T.39.04	\N	\N	\N	\n	\N
+94	1	Nancy	Silva	39	\N	0	\N	T	\N	\N	\N	\n	\N
+95	1	Mabel	Ayala	4	2006-11-06	0	2006-11-06	T.04.05	\N	\N	\N	\n	\N
+96	1	María	González	40	2006-08-31	0	2007-06-04	T.40.01	\N	\N	\N	\n	\N
+97	1	Florentina	Pérez	40	2006-08-31	1	\N	T.40.05	\N	\N	\N	\n	\N
+98	1	Romualda	Rodriguez	41	2006-09-02	1	\N	T.41.01	\N	\N	\N	\n	\N
+99	1	Teresa	Duarte	41	2006-09-02	0	2007-03-10	T.41.02	\N	\N	\N	\n	\N
+100	1	Irma	Nanni	41	2006-09-02	1	\N	T.41.04	\N	\N	Austria 288	\n	4715-5675
+101	1	María	Altamirano	42	2006-09-02	1	\N	T.42.01	\N	\N	Beltran 1874, Benavidez	\n	\N
+102	1	Edith	Fernández	42	2006-09-09	1	\N	T.42.02	\N	\N	Azopardo 24	\n	47150082 / 1567538069
+103	1	Juana	Flores	42	2006-09-02	1	\N	T.42.03	\N	\N	Marconi 342	\n	156-692-4669
+104	1	Ramona	Astiazu Diaz	43	2006-09-16	0	2008-03-29	T.43.01	\N	\N	\N	\n	\N
+105	1	Ana	Barrientos	43	2006-08-31	0	2007-09-08	T.43.02	\N	\N	\N	\n	\N
+106	1	Cristina	Gerez	43	2006-09-09	1	\N	T.43.03	\N	\N	\N	\n	\N
+107	1	Roxana	Martínez	43	2006-09-02	1	\N	T.43.04	\N	\N	Da vinci 1709	\n	1557630162
+108	1	Julia	Escobar	44	2006-08-31	0	2008-03-03	T.44.01 (Incobrable 2008)	\N	\N	\N	\n	\N
+109	1	Susana	Luciano	44	2006-08-31	0	2007-07-07	T.44.02	\N	\N	\N	\n	\N
+110	1	Jorgelina	Paredes	44	2006-09-02	1	\N	T.44.03	\N	\N	Ozanam 675	\n	154-166-4707
+111	1	Mónica	Romero	44	2006-08-31	1	\N	T.44.04	\N	\N	\N	\n	\N
+112	1	Betina	Velie	44	2006-08-31	0	2007-10-06	T.44.05	\N	\N	\N	\n	\N
+113	1	Alicia	Hernandez	45	2006-11-18	0	2007-10-27	T.45.01	\N	\N	\N	\n	\N
+114	1	Veronica del Carmen	Gonzalez Medero	45	2006-11-18	1	\N	T.45.02	\N	\N	Marconi 524	\n	1565958146 / 1532132419
+115	1	Claudia	Miranda	45	2006-11-18	0	2007-10-13	T.45.03	\N	\N	\N	\n	\N
+116	1	Silvia	Oliva	45	2006-11-18	0	2008-06-28	T.45.04 (Incobrable 2008)	\N	\N	\N	\n	\N
+117	1	Norma	Vega	45	2006-11-18	1	\N	T.45.05	\N	\N	\N	\n	\N
+118	1	Mariela	Arevalo	46	2006-12-30	1	\N	T.46.01	\N	\N	Caseros 650	\n	155-780-4056
+119	1	Carina	Costa	46	2007-01-06	0	2007-01-06	T.46.02	\N	\N	\N	\n	\N
+120	1	Dana	Nuñez	46	2006-12-30	0	2008-03-01	T.46.03	\N	\N	\N	\n	\N
+121	1	Marina	Perez	46	2006-12-30	0	2007-05-05	T.46.04	\N	\N	\N	\n	\N
+122	1	Victoria	Sosa	46	2007-01-20	0	2007-01-20	T.46.05	\N	\N	\N	\n	\N
+123	1	Amanda	Gay	47	2007-05-19	1	\N	T.47.01	\N	\N	\N	\n	\N
+124	1	Elisa	Infante	47	2007-05-19	1	\N	T.47.02	\N	\N	Azopardo 640	\n	\N
+125	1	Jacqueline	Morante Nola	47	2007-05-19	0	2007-12-08	T.47.03 (Incobrable 2007)	\N	\N	\N	\n	\N
+126	1	Mirtha	Sanchez	47	2007-05-19	0	2007-11-03	T.47.04	\N	\N	\N	\n	\N
+127	1	Rosa	Sandoval	47	2007-05-19	0	2008-05-03	T.47.05	\N	\N	\N	\n	\N
+128	1	Agustina	Alonso	48	2007-08-04	1	\N	T.48.01	\N	\N	Triunvirato 1231	\n	4715-9214
+129	1	Edith	Bonnin	48	2007-08-11	0	2008-06-21	T.48.02 (Incobrable 2008)	\N	\N	\N	\n	\N
+130	1	Natalia	Carabajal	48	2007-08-04	1	\N	T.48.03	\N	\N	\N	\n	\N
+131	1	Ilda	Domínguez	48	2007-08-04	1	\N	T.48.04	 5690993	1948-02-14	Marconi 542	6	4715-5749
+132	1	María	Gorosito	48	2007-08-04	0	2008-05-17	T.48.05 (Incobrable 2008)	\N	\N	\N	\n	\N
+133	1	Mercedes del Valle	Figueroa	49	2007-10-13	1	\N	T.49.01	\N	\N	\N	\n	\N
+134	1	Cristina Alejandra	Gomez	49	2007-10-13	1	\N	T.49.02	\N	\N	\N	\n	\N
+135	1	Argentina	Lopez	49	2007-10-13	1	\N	T.49.04	\N	\N	\N	\n	\N
+136	1	Maria Cristina	Martinez	49	2007-10-20	1	\N	T.49.05	\N	\N	Saavedra 444	\n	155-139-8851
+137	1	María	Soria	5	2006-09-02	1	\N	T.05.02	\N	\N	Vieytes 483	3	47152928
+138	1	María	Cisneros	50	2007-10-20	1	\N	T.50.01	\N	\N	\N	\n	\N
+139	1	Elena del Valle	Farias	50	2007-10-20	1	\N	T.50.2	\N	\N	\N	\n	\N
+140	1	Blanca	Galeano	50	2007-10-20	1	\N	T.50.3	\N	\N	\N	\n	\N
+141	1	Jesica Alejandra	Ojeda	50	2007-10-20	1	\N	T.50.4	\N	\N	Azopardo 610	\n	1556443022
+142	1	Yolanda	Ore Aguilar	50	2007-10-20	1	\N	T.50.5	2171017	1950-07-01	Curupayti 643	1	\N
+143	1	Silvia	Lemos	6	2006-09-09	1	\N	T.06.1	\N	\N	Marconi 432	\n	47152513 / 1553680689
+144	1	Rosa	Tenorio	6	2006-10-02	1	\N	T.06.02	\N	\N	\N	\n	\N
+145	1	Catalina	Blanco	7	2006-09-23	1	\N	T.07.01	5898521	1946-03-20	Vieytes 445	6	\N
+146	1	Lucía	Martínez	7	2006-09-02	1	\N	T.07.02	\N	\N	Vieytes 456	\n	\N
+147	1	María	Real	8	2007-03-17	1	\N	T.08.01	\N	\N	\N	\n	\N
+148	3	Silvia Elena	Alderetes	1	2006-09-16	0	2008-02-02	V.01.01 (Desenchufada)	\N	\N	\N	\n	\N
+149	3	Fabiana Sandra	Cuello	1	2006-09-16	0	2008-05-03	V.01.02 (Incobrable 2008)	\N	\N	\N	\n	\N
+150	3	Analía del Carmen	Fernández	1	2006-09-16	0	2008-02-09	V.01.03	\N	\N	\N	\n	\N
+151	3	María Gladys	Herrera	1	2006-09-16	1	\N	V.01.04	16.865.585	\N	Urquiza 3885	\n	1559531617
+152	3	Norma Celia	Villagra	1	2006-09-16	1	\N	V.01.05	16.057.119	1963-04-10	Matheu 1575	3	47145327
+153	3	Liliana Elida	Arregui	2	2006-10-14	0	2007-09-29	V.02.01	\N	\N	\N	\n	\N
+154	3	Blanca Alicia	Bazan	2	2006-10-14	0	2007-07-07	V.02.02	\N	\N	\N	\n	\N
+155	3	Aidee Irma	Luna	2	2006-10-14	1	\N	V.02.03	6.499.123	1951-03-21	Monteagudo, casa n°12	\n	1565452281
+156	3	Cintia Analía	Vázquez	2	2006-10-14	1	\N	V.02.04	30.367.964	\N	Balcarce 1267	\n	40057789
+157	3	Elsa Estela	Sosa	2	2006-10-14	0	2007-08-18	V.02.05	\N	\N	\N	\n	\N
+158	3	Verónica Vanesa	Mansilla	3	2006-12-23	1	\N	V.03.01	\N	\N	\N	\n	\N
+159	3	Valeria Elizabeth	Molina	3	2006-12-23	1	\N	V.03.02	\N	\N	\N	\n	\N
+160	3	Martina Andrea	Vizgarra	3	2006-12-23	0	2007-12-01	V.03.03	\N	\N	\N	\n	\N
+161	3	María del Carmen	Romero	3	2006-12-23	1	\N	V.03.04	11.313.504	1954-07-16	Humaitá 4090	\n	1569502519
+162	3	Martha Marisabel	Sosa	3	2006-12-23	0	2008-03-08	V.03.05	\N	\N	\N	\n	\N
+163	3	Rosa Isabel	Blanco	4	2007-03-24	0	2008-02-09	V.04.01	\N	\N	\N	\n	\N
+164	3	Ramona Maricel	Monzon	4	2007-03-24	1	\N	V.04.02	23.741.983	\N	Maipu 3955	\n	1567070570
+165	3	Mercedes del Valle	Mora	4	2007-03-24	0	2008-04-19	V.04.03	\N	\N	\N	\n	\N
+166	3	Monica Alejandra	Perez	4	2007-03-24	1	\N	V.04.04	17.566.038	\N	Humaitá 4500	\n	1565405241
+167	3	Mirta Ramona	Shanghessy	4	2007-03-24	1	\N	V.04.05	\N	\N	\N	\n	\N
+168	3	María Felisa	Arrieta	5	2007-05-05	1	\N	V.05.01	\N	\N	Urquiza 3925	\n	1559100894
+169	3	Cornelia	Paz	5	2007-05-05	1	\N	V.05.02	10.203.342	1952-03-05	Saavedra 1625	\n	47145149
+170	3	Celina	Paz	5	2007-05-05	1	\N	V.05.03	5.165.201	1945-04-30	Balcarce 2242	\n	47143244
+171	3	Margarita Estanislada	Pinto	5	2007-05-05	1	\N	V.05.04	\N	\N	\N	\n	\N
+172	3	Carmen Beatriz	Romero	5	2007-05-05	0	2009-01-24	V.05.05 (Incobrable 2008)	\N	\N	\N	\n	\N
+173	3	Angélica	Borda	6	2007-06-30	1	\N	V.06.01	\N	\N	Monteagudo 1425. Manzana H. Casa 8	3	\N
+174	3	Mirta Elena	Leiva	6	2007-06-30	1	\N	V.06.02	22.950.518	1972-05-27	Maipú 3523	\n	47251685
+175	3	Patricia Noemí	Leiva	6	2007-06-30	1	\N	V.06.03	31.938.893	1985-12-07	Pasaje N°1 1424. Manzana H Casa 23	\n	\N
+176	3	Patricia Esther	Paez	6	2007-06-30	1	\N	V.06.04	\N	\N	\N	\n	\N
+177	3	Adriana Soledad	Romero	6	2007-06-30	1	\N	V.06.05	\N	\N	\N	\n	\N
+178	3	Lidia Ester	Balbuena	7	2007-08-04	0	2008-05-17	V.07.01	\N	\N	\N	\n	\N
+179	3	Graciela Noemí	Barraza	7	2007-08-04	1	\N	V.07.02	24495897	1975-06-28	Balcarce 1344	3	\N
+180	3	Valeria Estela	Monzon	7	2007-08-04	0	2008-05-24	V.07.03 (Desenchufada)	\N	\N	\N	\n	\N
+181	3	Silvia Olga	Romero	7	2007-08-04	1	\N	V.07.04	\N	\N	Urquiza 4459	\n	\N
+182	3	Norma Aida	Ruiz	7	2007-08-04	1	\N	V.07.05	11.046.439	1954-03-27	Balcarce 1344. Manzana A. Casa 21	\n	1566878486
+183	3	Patricia Monica	Fernandez	8	2007-10-06	1	\N	V.08.01	\N	\N	\N	\n	\N
+184	3	Marisa Esther	Montenegro	8	2007-10-06	1	\N	V.08.02	\N	\N	\N	\n	\N
+185	3	Gladys Ester	Ocampo	8	2007-10-06	1	\N	V.08.03	\N	\N	\N	\n	\N
+186	3	Angela Beatrzi	Orellana	8	2007-10-06	1	\N	V.08.04	\N	\N	\N	\n	\N
+187	3	Beatriz Rosa	Robledo	8	2007-10-06	1	\N	V.08.05	\N	\N	Urquiza 4070	\n	47145927
+188	3	Susana Andrea	García	99	2007-06-16	0	2007-10-27	V.99.01 (Incobrable 2007)	\N	\N	\N	\n	\N
+189	2	Alicia	Verón	14	2007-10-01	0	2008-04-08	D.14.01 (Incobrable 2008)	\N	\N	\N	\n	\N
+190	2	Maria Isabel	Charles Mengeon	13	2007-01-20	0	2008-06-10	D.13.02 (Incobrable 2008)	\N	\N	\N	\n	\N
+191	2	Lorena	Rojas	2	\N	0	\N	D	\N	\N	\N	\n	\N
+192	2	Nieves	Sanchez	4	\N	0	\N	D	\N	\N	\N	\n	\N
+193	2	Sabrina	Brondo	8	\N	0	\N	D	\N	\N	\N	\n	\N
+194	2	Elsa Liliana	Pereyra	8	\N	0	\N	D	\N	\N	\N	\n	\N
+195	2	Ester	Chamorro	13	2006-09-09	0	2007-07-02	D.13.01	\N	\N	\N	\n	\N
+196	1	Cintia Cecilia	Gomez	38	\N	0	\N	T	\N	\N	\N	\n	\N
+197	2	Stella Maris	Cornejo	3	2006-09-09	0	2006-10-28	D.03.01	\N	\N	\N	\n	\N
+198	2	Angelica	Gomez	4	\N	0	\N	D	\N	\N	\N	\n	\N
+199	2	Angelica	Cardozo	5	\N	0	\N	D	\N	\N	\N	\n	\N
+200	2	Noemi	Franco	5	\N	0	\N	D	\N	\N	\N	\n	\N
+201	2	Claudia	Perez	5	2006-09-04	0	2006-09-04	D.05.04	\N	\N	\N	\n	\N
+202	2	Maria	Zelaya	5	\N	0	\N	D	\N	\N	\N	\n	\N
+203	2	Tamara	Perez	6	\N	0	\N	D	\N	\N	\N	\n	\N
+204	2	Azucena	Garcia	8	\N	0	\N	D	\N	\N	\N	\n	\N
+205	2	Ana Luisa	Jousset	10	2006-09-02	0	2006-10-21	D.10.04	\N	\N	\N	\n	\N
+206	2	Paola	Machado	11	2006-09-02	0	2006-11-25	D.11.03	\N	\N	\N	\n	\N
+207	2	Emilia Patricia	Camaño	12	2006-09-16	0	2006-12-16	D.12.01	\N	\N	\N	\n	\N
+208	2	Teresa Haidee	Gallardo	12	2006-09-02	0	2007-02-10	D.12.02	\N	\N	\N	\n	\N
+209	2	María Luisa	Chocobar	12	\N	0	\N	D	\N	\N	\N	\n	\N
+210	2	Myriam Viviana	Escalante	12	2007-01-13	0	2008-03-18	D.13.04	\N	\N	\N	\n	\N
+211	2	Carolina Marilyn	Ferreyra	12	2007-01-13	0	2007-09-03	D.13.05	\N	\N	\N	\n	\N
+212	1	Gladys	Coria	1	2006-11-25	0	2006-12-09	T.01.01	\N	\N	\N	\n	\N
+213	1	Rosana	Suarez	7	2006-09-04	0	2007-03-05	T.07.04	\N	\N	\N	\n	\N
+214	1	María Inés	Rosales	7	2006-09-04	0	2007-12-22	T.07.03	\N	\N	\N	\n	\N
+215	1	Adela del Valle	Molina	12	2006-09-04	0	2007-01-01	T.12.02	\N	\N	\N	\n	\N
+216	1	Norma	Ayala	16	2006-09-09	0	2006-09-16	T.16.03	\N	\N	\N	\n	\N
+217	1	Graciela	Lezcano	19	2006-09-04	0	2007-06-04	T.19.03	\N	\N	\N	\n	\N
+218	1	Silvia	Aramayo	19	2006-09-09	0	2007-02-05	T.19.01	\N	\N	\N	\n	\N
+219	1	Dolores	Fernandez	20	2006-11-18	0	2006-11-18	T.20.02	\N	\N	\N	\n	\N
+220	1	Marina	Robledo	20	2006-11-18	0	2006-11-18	T.20.04	\N	\N	\N	\n	\N
+221	1	María Antonia B. de	Ayala	21	2006-11-06	0	2006-12-04	T.21.01	\N	\N	\N	\n	\N
+222	1	Mabel	Miraval	22	2006-11-11	0	2007-07-07	T.22.02	\N	\N	\N	\n	\N
+223	1	Hilda Noemí	Arena	23	\N	0	\N	T	\N	\N	\N	\n	\N
+224	1	Nora Liliana	Luna	27	2006-10-02	0	2007-06-04	T.27.03	\N	\N	\N	\n	\N
+225	1	María Sara	Herrera	27	2006-09-04	0	2007-03-05	T.27.01	\N	\N	Pringles 535	\n	47153275
+226	1	Clementina	Lujan	27	\N	0	\N	T	\N	\N	\N	\n	\N
+227	1	María Cecilia	Romero	28	2006-09-04	0	2006-10-02	T.28.03	\N	\N	\N	\n	\N
+228	1	Natalia	Ojeda	31	2006-11-06	0	2007-06-30	T.31.04	\N	\N	\N	\n	\N
+229	1	Laura M.	Zili	32	2006-09-02	0	2007-01-06	T.32.05	\N	\N	\N	\n	\N
+230	1	Cristina	Zili	32	2006-09-02	0	2007-06-30	T.32.04	\N	\N	\N	\n	\N
+231	1	Silvia Cecilia	Pellalle	33	2006-09-02	0	2007-06-30	T.33.02	\N	\N	\N	\n	\N
+232	1	Claudia Beatriz	Zili	33	2006-09-02	0	2007-06-30	T.33.03	\N	\N	\N	\n	\N
+233	1	Ana	Andrada	35	2007-10-27	0	2007-10-27	T.35.01	\N	\N	\N	\n	\N
+234	1	Mirta Rosa	Andrada	36	2007-01-01	0	2007-01-01	T.36.02	\N	\N	\N	\n	\N
+235	1	Silvina Alejandra	Ruiz Diaz	36	2007-01-01	0	2007-01-01	T.36.04	\N	\N	\N	\n	\N
+236	1	Juana Jesus	Barturia	36	2007-01-01	0	2007-01-01	T.36.03	\N	\N	\N	\n	\N
+237	1	María Alejandra	Leguizamon	37	2006-09-23	0	2006-12-23	T.37.01	\N	\N	\N	\n	\N
+238	1	María Cristina	Matorras	37	2006-10-28	0	2006-12-02	T.37.02	\N	\N	\N	\n	\N
+239	1	Susana del Valle	Santillan	37	2006-11-06	0	2006-11-06	T.37.05	\N	\N	\N	\n	\N
+240	1	María del Carmen	Jaimes	39	2006-09-09	0	2007-09-29	T.39.02	\N	\N	\N	\n	\N
+241	1	Rosalina	Insfran	40	\N	0	\N	T	\N	\N	\N	\n	\N
+242	1	María Elsa	Morel	40	\N	0	\N	T	\N	\N	\N	\n	\N
+243	1	Yésica Alejandra	Ortiz	40	\N	0	\N	T	\N	\N	\N	\n	\N
+244	1	Norma B.	Ledesma	41	2006-09-09	0	2007-06-30	T.41.05	\N	\N	\N	\n	\N
+245	1	María Antonia	Noguera	42	2006-10-28	0	2007-04-28	T.42.05	\N	\N	\N	\n	\N
+246	1	Irene Beatriz	Gonzalez	42	2006-09-02	0	2007-06-30	T.42.04	\N	\N	\N	\n	\N
+247	1	Patricia Elba	Roldan	43	2006-09-02	1	\N	T.43.05	\N	\N	Marconi 476	\n	15-3079-7252 (hija)
+248	2	Norma	Callero	1	2006-09-09	0	2006-12-16	D.01.02	\N	\N	\N	\n	\N
+249	2	Patricia	Brondo	6	\N	0	\N	D	\N	\N	\N	\n	\N
+250	1	Griselda N.	Efler	41	2006-09-02	0	2007-06-30	T.41.03	\N	\N	\N	\n	\N
+252	1	Dora Beatriz	Lamuedra	51	2008-05-24	1	\N	T.51.01	10728619	1953-06-26	Guamini 99	3	153-002-3036
+253	1	Lorena Beatriz	Langelotti	51	2008-05-24	1	\N	T.51.02	28895361	1981-08-21	Guamini 99	1	4715-5266
+254	1	Claudia Isabel	Rojas	51	2008-05-24	1	\N	T.51.03	\N	\N	Ozanam 605	\n	64674538
+255	1	Claudia	Sanchez	51	2008-05-24	1	\N	T.51.04	\N	\N	\N	\n	\N
+256	1	Veronica Soledad	Zalazar	51	2008-05-24	1	\N	T.51.05	\N	\N	Vieytes 317	\n	4715-2162
+258	3	Margarita Azucena	Acuña	9	2008-05-24	1	\N	V.09.01	\N	\N	\N	\n	\N
+259	3	Ivana Lorena	Baez	9	2008-05-24	1	\N	V.09.02	\N	\N	\N	\n	\N
+260	3	Leticia Debora	Cordoba	9	2008-05-24	1	\N	V.09.03	29.932.333	\N	Urquiza 4459	\n	47141850
+261	3	Noelia Margarita	Gerez	9	2008-05-24	1	\N	V.09.04	26.674.440	\N	Urquiza 4459	\n	47141850
+262	3	Susana Veronica	Romero	9	2008-05-24	1	\N	V.09.05	\N	\N	\N	\n	\N
+266	1	Maria Sara	Herrera	27	2008-05-17	1	\N	T.27.1	\N	\N	\N	\n	\N
+268	4	Claudia Beatriz	Callero	1	2008-10-04	1	\N	L.1.1	\N	\N	Jazmin 1142	\n	4736.9487 / 1550452388
+269	4	Patricia Alejandra	Diaz	1	2008-10-04	1	\N	L.1.2	\N	\N	Las Dalias 2350	6	1556554702
+270	4	Idalina	Moreyra	1	2008-10-04	1	\N	L.1.3	\N	\N	Quintana y Roca	\n	\N
+271	4	Felisa Ana	Salazar	1	2008-10-04	1	\N	L.1.4	\N	\N	Quintana y Roca	\n	15 5144 3678
+272	4	Sandra Mabel	Silva	1	2008-10-04	1	\N	L.1.5	\N	\N	Amapolas 2350	\n	1559242916
+273	3	Julia	Aguirre	10	2008-10-11	1	\N	V.10.1	\N	\N	\N	\n	\N
+274	3	Maria Rosa	Amarillo	10	2008-10-11	1	\N	V.10.2	\N	\N	\N	\n	\N
+275	3	Rosa	Corbalan	10	2008-10-11	1	\N	V.10.3	24.927.695	\N	Pocitos 4456	\n	1566666617
+276	3	Alejandra Noemi	Rodriguez	10	2008-10-11	1	\N	V.10.4	25.241.316	\N	Humaitá 4230	\n	1561781038
+277	3	Maria Natalia	Verchelli	10	2008-10-11	1	\N	V.10.5	25389922	1976-11-30	Humaita 4090	3	\N
+278	4	Maria Alejandra	Chara	2	2008-11-08	1	\N	L.2.1	\N	\N	French 781	\n	47261928
+279	4	Carmen Dora	Ortazu	2	2008-11-08	1	\N	L.2.2	\N	\N	Dorrego Norte 2765	\n	\N
+280	4	Pamela	Sosa	2	2008-11-08	1	\N	L.2.3	\N	\N	Vioreta 2279	\n	1564247315
+281	4	Elva	Reinoso	2	2008-11-08	1	\N	L.2.4	\N	\N	Saenz Peña. Entre Richieri y Arroyo	\n	\N
+282	4	Silvia	Taborda	2	2008-11-08	1	\N	L.2.5	\N	\N	\N	\n	\N
+283	1	Zenaida	Chacchi	52	2008-11-01	1	\N	T.52.1	\N	\N	Curupayti 576	\n	4715-0464
+284	1	Monica Rocio	Ortiz	52	2008-11-01	1	\N	T.52.2	\N	\N	Volta 552	\n	4715-0946
+285	1	Marcela Noemi	Pintos	52	2008-11-01	1	\N	T.52.3	\N	\N	Volta 643	\n	4715-1589 /
+286	1	Gladis Mabel	Romero	52	2008-11-01	1	\N	T.52.4	\N	\N	Triunvirato 1450	\n	\N
+293	1	Crecencia	Arca	53	2008-12-06	1	\N	T.53.1	\N	\N	Volta 547	\n	4715-4836 (Emilio)
+294	1	Griselda Jara	Duarte	53	2008-12-06	1	\N	T.53.2	\N	\N	Triunvirato 1490	\n	153-330-1960
+295	1	Ylda Nelida	Gomez	53	2008-12-06	1	\N	T.53.3	\N	\N	Triunvirato 1020 y 1126	\n	156-126-4560
+296	1	Monica	Ullua	53	2008-12-06	1	\N	T.53.4	\N	\N	Lavalle 470	\n	4715-4250 / 155-822-2191
+297	1	Juana	Yngiz	53	2008-12-06	1	\N	T.53.5	\N	\N	Volta 535	\n	4715-4836
+298	4	Juliana Lorena	Sosa	3	2009-01-17	1	\N	L.3.1	\N	\N	Paraguay 2076	\n	15 3004 3146
+299	4	Maria Angélica	Villarruel	3	2009-01-17	1	\N	L.3.2	\N	\N	\N	\n	\N
+300	4	Irma Ester	Rojas	3	2009-01-17	0	2009-06-27	L.3.3	\N	\N	Sarmiento 2820	\n	15 3157 1044
+301	4	Maria del Carmen	Vilar	3	2009-01-17	1	\N	L.3.4	\N	\N	Jazmin 2326	\n	1531265475
+303	1	Isabel	Martins Rebelo	54	2009-05-21	1	\N	T.54.1	\N	\N	Mosconi 2229	\n	4715-0742 / 156-150-0367
+304	1	Antonia Beatriz	Meza Romero	54	2009-05-21	1	\N	T.54.2	\N	\N	San Lorenzo 1642	\n	1530086456
+305	1	Jessica	Lourdes Barrientos	54	2009-05-21	1	\N	T.54.3	\N	\N	Caseros 526	\n	156-138-7404
+306	1	Noemi Olga	Frers	54	2009-05-21	1	\N	T.54.4	\N	\N	Magdalena 45	\n	4715-2213 / 156-293-8906
+307	1	Aniceta	Medina	54	2009-05-21	1	\N	T.54.5	\N	\N	Marconi 284	\n	4715-9535 /
+309	1	Nora	Molina	26	2009-04-14	1	\N	T.26.6	\N	\N	\N	\n	\N
+310	4	Tania Ximena	Gomez	4	2009-06-11	1	\N	L.4.1	33298889	\N	Los Azaheres 2140	\n	1567482616
+311	4	Rosa Luján	Romero	4	2009-06-11	1	\N	L.4.2	\N	\N	Sarmiento 2020	\n	47401525
+312	4	Roxana Noemi	Ruiz	4	2009-06-11	1	\N	L.4.3	\N	\N	Gutierrez y Jazmin	\n	52323030
+313	4	Rafaela	Avalos	4	2009-06-11	1	\N	L.4.4	\N	\N	Sarmiento 1941	\n	1561149885
+314	4	Gabriela Anahí	Chavero	4	2009-06-11	1	\N	L.4.5	30525584	\N	Venezuela 1482	\n	1533398962
+315	1	Arcelia Beatriz	Barrientos	55	2009-06-26	1	\N	T.55.1	\N	\N	Da Vinci 1653 / 63	\n	\N
+316	1	Adriana Graciela	Escobedo	55	2009-06-26	1	\N	T.55.2	\N	\N	Caseros 526	\n	156-290-4443
+317	1	Johanna Priscila	Barrientos	55	2009-06-26	1	\N	T.55.3	\N	\N	Caseros 526	\n	116-360-4613
+318	1	María Rosa	Cosiforti	55	2009-06-26	1	\N	T.55.4	\N	\N	Caseros 59	\n	4715-2760
+319	1	Elba Beatriz	Navarro	55	2009-06-26	1	\N	T.55.5	\N	\N	\N	\n	\N
+320	3	Patricia Myriam	Pereyra	11	2009-07-02	1	\N	V.11.1	21.920.274	1970-12-17	Humaitá 3824	1	47142194 / 1566475358
+321	3	Laura Elena	Salvi	11	2009-07-02	1	\N	V.11.2	21.582.193	1970-04-25	Humaitá 3824	\n	47142194
+322	3	Alicia	Vique	11	2009-07-02	1	\N	V.11.3	20.435.470	1968-12-21	Matheu 1885	3	40057951 / 1560180099
+323	3	Emilce Araceli	Enciso	11	2009-07-02	1	\N	V.11.4	26.320.914	1978-01-04	Maipú 3586	1	47464437 / 1561921777
+324	3	Marta Adriana	Guardia	11	2009-07-02	1	\N	V.11.5	17.566.266	1965-07-20	Humaitá 3885	2	47145116
+325	1	Andres Liliana	Bustos	56	2009-08-19	1	\N	T.56.1	\N	\N	Carriel 1247 (cortada)	\n	4715-0189
+326	1	Andrea Evangelina	Mouquin	56	2009-08-19	1	\N	T.56.2	\N	\N	Manrique 33	\n	4715-5191
+327	1	Laura Patricia	Nuñez	56	2009-08-19	1	\N	T.56.3	\N	\N	Blandengues 623	\n	156-015-4646
+328	1	Laura Vanesa	Acosta	56	2009-08-19	1	\N	T.56.4	\N	\N	Buonarotti 533	\n	156-477-2238
+329	1	Silvia Graciela	Herrera	56	2009-08-19	1	\N	T.56.5	\N	\N	Zapiola 397	\n	155-487-2372
+330	8	Maria Beatriz	Benitez	1	2009-08-25	1	\N	P.1.1	\N	\N	\N	\n	4736-8313 (vecina)
+331	8	Mariana Yesica	Ortiz	1	2009-08-25	1	\N	P.1.2	\N	\N	\N	\n	\N
+332	8	Veronica Mercedes	Perez	1	2009-08-25	1	\N	P.1.3	\N	\N	\N	\n	\N
+333	8	Monica Alejandra	Carboni	1	2009-08-25	1	\N	P.1.4	\N	\N	\N	\n	\N
+334	8	Noemi Carolina	Lara	1	2009-08-25	1	\N	P.1.5	\N	\N	\N	\n	\N
+335	1	Jessica	Fernandez	57	2009-09-25	1	\N	T.57.1	\N	\N	\N	\n	\N
+336	1	Marcela	Corfield	57	2009-09-25	1	\N	T.57.2	\N	\N	\N	\n	\N
+337	1	Susana	Del Valle Castilla	57	2009-09-25	1	\N	T.57.3	\N	\N	\N	\n	\N
+338	1	Isabel	Roldan	57	2009-09-25	1	\N	T.57.4	\N	\N	\N	\n	\N
+339	1	Natalia	Ocampo	57	2009-10-01	1	\N	T.57.5	\N	\N	\N	\n	\N
+340	1	Lorena Laura	Orellana	58	2009-10-21	1	\N	T.58.1	\N	\N	\N	\n	\N
+341	1	Romina Elin	Billardo	58	2009-10-21	1	\N	T.58.2	\N	\N	\N	\n	\N
+342	1	Alejandra Mabel	Vera	58	2009-10-21	1	\N	T.58.3	\N	\N	\N	\n	\N
+343	1	Graciela	Aranda	58	2009-10-21	1	\N	T.58.4	\N	\N	\N	\n	\N
+344	1	Maria del Carmen	Paez	58	2009-10-21	1	\N	T.58.5	\N	\N	\N	\n	\N
+346	8	Graciela Analia	Gutierrez	2	2009-10-30	1	\N	P.2.1	\N	\N	\N	\n	\N
+347	8	Dolli Esther	Gimenez	2	2009-10-30	1	\N	P.2.2	\N	\N	\N	\n	\N
+348	8	Liliana Esther	Calderon	2	2009-10-30	1	\N	P.2.3	\N	\N	\N	\n	\N
+349	8	Erica Daiana	Flores	2	2009-10-30	1	\N	P.2.4	\N	\N	\N	\n	\N
+351	4	Josefa Ester	Andrade	5	2009-12-04	1	\N	L.5.1	\N	\N	Juan Manuel de Rosas 1916	\n	15 3060 4580
+352	4	Lorena	Avalos	5	2009-12-04	1	\N	L.5.2	\N	\N	Saenz Peña 2510	\n	15 6368 6086
+353	4	Rosa Clara	Pascualini	5	2009-12-04	1	\N	L.5.3	\N	\N	J. Roca 2760 esq. Saenz Peña	\n	4727 8856 (pendiente)
+354	4	Noemi Cristina	Ruiz	5	2009-12-04	1	\N	L.5.4	\N	\N	Av. La Paloma 2264	\n	15 3281 4472
+355	4	Rosa Graciela	Coletta	5	2009-12-04	1	\N	L.5.5	\N	\N	Fray Castañeda 2768	\n	15 6836 2239
+356	1	Jesuina Alejandra	Langelotti	59	2009-12-04	1	\N	T.59.1	\N	\N	\N	\n	\N
+357	1	Rossana Yanet	Romero	59	2009-12-04	1	\N	T.59.2	\N	\N	\N	\n	\N
+358	1	Jesica Soledad	Ortiz	59	2009-12-04	1	\N	T.59.3	\N	\N	\N	\n	\N
+359	1	Debora Karina	Rey	59	2009-12-04	1	\N	T.59.4	\N	\N	\N	\n	\N
+360	1	Veronica Andrea	Rey	59	2009-12-04	1	\N	T.59.5	\N	\N	\N	\n	\N
+361	4	Patricia	Lopez	6	2009-12-29	1	\N	L.6.1	21414979	1970-02-07	Uruguay 1665	\n	1569209971
+362	4	Karina Alejandra	Osuna	6	2009-12-29	1	\N	L.6.2	23397729	1973-11-26	29 de Noviembre 2373	\n	15 3567 4136
+363	4	Maria Monica	Claro	6	2009-12-29	1	\N	L.6.3	25515970	1976-11-14	9 de Julio 694	\n	4740 4070
+364	4	Patricia Ramona	Gonzalez	6	2009-12-29	1	\N	L.6.4	30233609	2009-12-29	Amapola 2332	\n	15 6855 3836
+365	4	Valeria Ivana Elsa	Corbalan	6	2009-12-29	1	\N	L.6.5	28523738	1981-01-13	Gutierrez 2067	\n	15 5960 6693
+366	8	Maria del Carmen	Varela	3	2010-01-15	1	\N	P.3.1	13.102.569	1958-09-04	Lavalleja 2821	5	15 5484 6531
+367	8	Cintia	Montenegro	3	2010-01-15	1	\N	P.3.2	35.646.706	1991-07-01	Frias 3247	1	15 5633 6845
+368	8	Estela Eva	Robledo	3	2010-01-15	1	\N	P.3.3	24.053.272	1974-09-03	Marco Sastre y Pacheco (Esc 5, 1A)	1	15 3254 1314
+369	8	Elizabeth Margarita	Sarces	3	2010-01-15	1	\N	P.3.4	22.598.133	1972-06-26	Segurola 1976	1	4748 8586
+370	8	Ines Beatriz	Ormeño	3	2010-01-15	1	\N	P.3.5	14.174.403	1957-09-17	Calderon de la Barca 418	3	15 6695 4362
+372	1	Clemencia Casado	Gonzalez	60	2010-04-09	1	\N	T.60.1	0545849	1946-02-04	Pozo de Vargas 420	4	\N
+373	1	Leslie	Garcés	60	2010-04-09	1	\N	T.60.2	Ps.4391091	1984-08-20	Triunvirato 1961	3	\N
+374	1	Sofía	Gutierrez	60	2010-04-09	1	\N	T.60.3	17492473	1968-03-06	Vieytes 266	4	\N
+375	1	María Ester	Acosta	60	2010-04-09	1	\N	T.60.4	11590582	1951-11-08	Austria 408	1	\N
+376	1	Romina	Del Valle Enrique	60	2010-04-09	1	\N	T.60.5	34056342	1988-10-22	Austria 408	2	\N
+377	8	Verónica	Komiseroff	1	2010-05-21	1	\N	SPS.1.1	35.991.330	1988-02-09	Gral. Pacheco 645	1	\N
+379	8	Sandra Silvia	Perichon	1	2010-05-21	1	\N	SPS.1.2	29.811.196	1983-08-13	Verdi 165	1	\N
+380	8	Yanina Noelia	Encina	1	2010-05-21	1	\N	SPS.1.3	29811196	1987-07-23	Marco Sastre, Esc. 11 2° D	1	\N
+381	8	Silvina Teresa	Carrizo	1	2010-05-21	1	\N	SPS.1.4	24269078	1975-03-03	Urquiza 767	1	\N
+382	8	Ines	Carrizo	1	2010-05-21	1	\N	SPS.1.5	28523406	1980-11-11	San Pablo, Escalera 19 2° A	1	\N
