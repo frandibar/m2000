@@ -1,5 +1,6 @@
 * HORAS DESARROLLO: 106
 * COMO SIGO:
+** DONE agregar licencia: mit
 ** TODO validadores de forms
 ** REPORTES:
 *** TODO planilla pagos: formatear bien. Agregar pagos existentes
@@ -33,7 +34,6 @@ no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** hacer que en table view los campos sean no editables pero en form view si (no se si se puede)
 *** cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error.
 * DEPLOYMENT
-** hacer .egg que incluya todo
 python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
 mysql installer 
 full http://linorg.usp.br/mysqlDownloads/MySQLInstaller/mysql-installer-5.5.19.0.msi
@@ -46,7 +46,6 @@ sqlalchemy source http://ufpr.dl.sourceforge.net/project/sqlalchemy/sqlalchemy/0
 
 * PREGUNTAS:
 ** FUNCIONALES
-
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
 *** como visualizar un form desde otro (model_run)
         camelot.admin.action.application_action.OpenTableView(self.app_admin.get_entity_admin(Beneficiaria))
@@ -55,7 +54,7 @@ sqlalchemy source http://ufpr.dl.sourceforge.net/project/sqlalchemy/sqlalchemy/0
 esto esta roto ahora pero fixed en trunk
 
 *** se pueden hacer filtros por property en vez de columnproperty?
-*** como setear valor por default para una imagen.
+*** TODO como setear valor por default para una imagen. (ya lo pregunte en la lista, espero respuesta)
 *** como puedo buscar por beneficiarias en pagos
 *** como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
   http://dev.mysql.com/doc/refman/5.1/en/storage-engine-setting.html
@@ -64,10 +63,8 @@ esto esta roto ahora pero fixed en trunk
   pero no funciono
 *** como impedir la vista de formulario en un table view
 *** como hacer el table view read only y el form editable.
-*** como hacer para que un filtro de un propertycolumn booleano muestre true y false en vez de 1 y 0?
 *** si tengo un mapeo a un view que existe en la db, lo trato como tabla? si es asi, como evito que la cree.
 creo que con el parametro autoload=True en using_options
-*** los columnproperty no se necesitan siempre y sin embargo lo calculamos todo el tiempo. se puede evitar esto?
 ** MISC
 *** bug cuando hay muchos campos y doy clic en la lupa, la ventana se ensancha demasiado
 *** no puedo hacer que aparezcan la cabecera y pie de pagina en reportes

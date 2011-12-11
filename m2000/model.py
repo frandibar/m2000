@@ -1,4 +1,26 @@
-# coding=utf8
+# -*- coding: latin-1 -*-
+
+#-------------------------------------------------------------------------------
+# Copyright (C) 2011 Francisco Dibar
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in
+# the Software without restriction, including without limitation the rights to
+# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is furnished to do
+# so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#-------------------------------------------------------------------------------
 
 # working without the default model
 # http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/under_the_hood.html
@@ -66,7 +88,7 @@ class Actividad(Entity):
         verbose_name = 'Actividad'
         verbose_name_plural = 'Actividades'
         list_display = ['nombre', 'amortizacion', 'rubros']
-        field_attributes = dict(amortizacion = dict(name = u'AmortizaciÃ³n'),
+        field_attributes = dict(amortizacion = dict(name = u'Amortización'),
                                 rubros = dict(embedded = True,
                                               admin = RubroAdminEmbedded))
         list_search = ['nombre', 'amortizacion.nombre', 'rubros.nombre']
@@ -97,8 +119,8 @@ class Asistencia(Entity):
     class Admin(EntityAdmin):
         verbose_name = 'Asistencia'
         list_display = ['codigo', 'descripcion']
-        field_attributes = { 'codigo': { 'name': u'CÃ³digo' },
-                             'descripcion': { 'name': u'DescripciÃ³n' } }
+        field_attributes = { 'codigo': { 'name': u'Código' },
+                             'descripcion': { 'name': u'Descripción' } }
         list_action = None
         form_size = (450,150)
 
@@ -170,7 +192,7 @@ class PagoAdminBase(EntityAdmin):
                     'fecha',
                     'monto',
                     'asistencia']
-    field_attributes = dict(credito = dict(name = u'CrÃ©dito'),
+    field_attributes = dict(credito = dict(name = u'Crédito'),
                             monto = dict(prefix = '$'))
     search_all_fields = False
     list_search = ['credito.beneficiaria.nombre',
@@ -190,11 +212,11 @@ class CreditoValidator(EntityValidator):
         #                                     sql.where(rubro.actividad.amortizacion.id == entity_instance.rubro.actividad.amortizacion.id),
         #                                     sql.group_by(Credito.id))
         # if creditos_activos_rubro > 0:
-        #     messages.append('Ya existe un crÃ©dito activo con dicha amortizaciÃ³n')
+        #     messages.append('Ya existe un crédito activo con dicha amortización')
         return messages
 
 class CreditoAdminBase(EntityAdmin):
-    verbose_name = u'CrÃ©dito'
+    verbose_name = u'Crédito'
     list_columns_frozen = 1
     list_display = ['beneficiaria',
                     'nro_credito',
@@ -232,7 +254,7 @@ class CreditoAdminBase(EntityAdmin):
                             'cartera.nombre']
     list_filter = ['activo',
                    ComboBoxFilter('cartera.nombre'),
-                   ValidDateFilter('_fecha_entrega', 'fecha_finalizacion', u'PerÃ­odo e/entrega-fin', default=lambda:'')]
+                   ValidDateFilter('_fecha_entrega', 'fecha_finalizacion', u'Período e/entrega-fin', default=lambda:'')]
 
     # ArgumentError: Can't find any foreign key relationships between 'barrio' and '_FromGrouping object'.
     # Perhaps you meant to convert the right side to a subquery using alias()?
@@ -248,16 +270,16 @@ class CreditoAdminBase(EntityAdmin):
 
     field_attributes = dict(beneficiaria = dict(minimal_column_width = 25),
                             rubro = dict(minimal_column_width = 20),
-                            _prestamo = dict(name = u'PrÃ©stamo',
+                            _prestamo = dict(name = u'Préstamo',
                                              prefix = '$',
                                              delegate = CurrencyDelegate,
                                              editable = True),
-                            _tasa_interes = dict(name = u'Tasa de interÃ©s',
+                            _tasa_interes = dict(name = u'Tasa de interés',
                                                  delegate = FloatDelegate,
                                                  editable = True),
-                            nro_credito = dict(name = u'CrÃ©dito #'),
+                            nro_credito = dict(name = u'Crédito #'),
                             fecha_finalizacion = dict(minimal_column_width = 20,
-                                                      name = u'Fecha finalizaciÃ³n'),
+                                                      name = u'Fecha finalización'),
                             gastos_arq = dict(name = 'Gastos HAB + Arq.',
                                               minimal_column_width = 22,
                                               prefix = '$',
@@ -272,7 +294,7 @@ class CreditoAdminBase(EntityAdmin):
                                                    delegate = CurrencyDelegate,
                                                    editable = True),
                             deuda_total = dict(prefix = '$',
-                                               tooltip = u'En principio equivale a: PrÃ©stamo . (1 + Tasa de interÃ©s)'),
+                                               tooltip = u'En principio equivale a: Préstamo . (1 + Tasa de interés)'),
                             activo = dict(delegate = BoolDelegate,
                                           to_string = lambda x:{1:'True', 0:'False'}[x]),
                             pagos = dict(admin = PagoAdminEmbedded),
@@ -281,15 +303,15 @@ class CreditoAdminBase(EntityAdmin):
                                                   minimal_column_width = 17,
                                                   editable = True),
                             fecha_cobro = dict(minimal_column_width = 17,
-                                               tooltip = u'Al modificar la fecha de entrega, este campo toma el valor de la fecha de entrega mÃ¡s 2 dias.'),
+                                               tooltip = u'Al modificar la fecha de entrega, este campo toma el valor de la fecha de entrega más 2 dias.'),
                             # TODO por el momento el name es estatico, no se puede cambiar en funcion de otros valores
                             # monto_cheque = dict(name = lambda o: 'Monto Presupuesto' if o.rubro.actividad.id == constants.ID_ACTIVIDAD_CONSTRUCCION else 'Monto Cheque'),
                             monto_cheque = dict(name = 'Monto Cheque/Presup.',
                                                 prefix = '$',
-                                                tooltip = u'En principio equivale a: PrÃ©stamo - Saldo anterior'),
+                                                tooltip = u'En principio equivale a: Préstamo - Saldo anterior'),
                             )
 
-    form_display = TabForm([(u'CrÃ©dito', Form([HBoxForm([['beneficiaria',
+    form_display = TabForm([(u'Crédito', Form([HBoxForm([['beneficiaria',
                                                           'rubro',
                                                           'cartera',
                                                           'nro_credito',
@@ -405,7 +427,7 @@ class Beneficiaria(Entity):
                            'email',
                            'creditos_activos'
                            ]])])),
-          (u'CrÃ©ditos', WidgetOnlyForm('creditos')),
+          (u'Créditos', WidgetOnlyForm('creditos')),
         ])
 
         list_filter = [GroupBoxFilter('activa', default=True),
@@ -431,19 +453,19 @@ class Beneficiaria(Entity):
                                 ]
 
         field_attributes = dict(fecha_baja = dict(name = 'Fecha Baja',
-                                                  tooltip = u'Al desactivar la beneficiaria, este campo toma la Ãºltima fecha de pago'),
+                                                  tooltip = u'Al desactivar la beneficiaria, este campo toma la última fecha de pago'),
                                 dni = dict(name = 'DNI'),
                                 fecha_alta = dict(name = 'Fecha Alta'),
                                 fecha_nac = dict(name = 'Fecha Nac.'),
                                 estado_civil = dict(name = 'Estado Civil'),
-                                telefono = dict(name = u'TelÃ©fono'),
+                                telefono = dict(name = u'Teléfono'),
                                 email = dict(address_type = 'email'),
                                 creditos = dict(admin = CreditoAdminEmbedded),
                                 _activa = dict(name = 'Activa',
                                                delegate = BoolDelegate,
                                                editable = True,
-                                               tooltip = u'No se puede dar de baja una beneficiaria si tiene crÃ©ditos activos.'),
-                                creditos_activos = dict(name = u'CrÃ©ditos activos',
+                                               tooltip = u'No se puede dar de baja una beneficiaria si tiene créditos activos.'),
+                                creditos_activos = dict(name = u'Créditos activos',
                                                         editable = False),
                                )
 
@@ -485,7 +507,7 @@ class Cartera(Entity):
 class Credito(Entity):
     using_options(tablename='credito')
     beneficiaria = ManyToOne('Beneficiaria', ondelete='cascade', onupdate='cascade', required=True)
-    # rubro = ManyToOne('Rubro', ondelete='cascade', onupdate='cascade', required=True)
+    rubro = ManyToOne('Rubro', ondelete='cascade', onupdate='cascade', required=True)
     fecha_entrega = Field(Date, required=True)
     fecha_cobro = Field(Date, required=True)
     prestamo = Field(Float)
@@ -493,16 +515,16 @@ class Credito(Entity):
     monto_cheque = Field(Float)
     tasa_interes = Field(Float)
     deuda_total = Field(Float)
-    # cartera = ManyToOne('Cartera', ondelete='cascade', onupdate='cascade', required=True)
+    cartera = ManyToOne('Cartera', ondelete='cascade', onupdate='cascade', required=True)
     cuotas = Field(Integer, required=True)
     nro_credito = Field(Unicode(15), required=True)
     fecha_finalizacion = Field(Date)
     comentarios = Field(Unicode(1000))
     gastos_arq = Field(Float)
-    # pagos = OneToMany('Pago')
+    pagos = OneToMany('Pago')
 
     class Admin(EntityAdmin):
-        verbose_name = u'CrÃ©dito'
+        verbose_name = u'Crédito'
         list_display = ['beneficiaria',
                         #'rubro',
                         'nro_credito',
@@ -632,11 +654,11 @@ class EstadoCredito(Entity):
     cuotas_adeudadas = Field(Integer, required=True)
 
     class Admin(EntityAdmin):
-        verbose_name = u'Estado de CrÃ©dito'
-        verbose_name_plural = u'Estado de CrÃ©ditos'
+        verbose_name = u'Estado de Crédito'
+        verbose_name_plural = u'Estado de Créditos'
         list_display = ['descripcion',
                         'cuotas_adeudadas']
-        field_attributes = { 'descripcion': { 'name': u'DescripciÃ³n' } }
+        field_attributes = { 'descripcion': { 'name': u'Descripción' } }
         list_action = None
 
     def __unicode__(self):
@@ -663,13 +685,13 @@ class Pago(Entity):
                         'fecha',
                         'monto',
                         'asistencia']
-        field_attributes = dict(credito = dict(name = u'CrÃ©dito'),
+        field_attributes = dict(credito = dict(name = u'Crédito'),
                                 monto = dict(prefix = '$'))
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:'')]
         
         # list_filter = [ComboBoxFilter('fecha')]
 
-        # field_attributes = dict(credito = dict(name = u'CrÃ©dito',
+        # field_attributes = dict(credito = dict(name = u'Crédito',
         #                                        editable = False),
         #                         fecha = dict(editable = False),
         #                         monto = dict(editable = False),
@@ -692,7 +714,7 @@ class Amortizacion(Entity):
     nombre = Field(Unicode(25), unique=True, required=True)
 
     class Admin(EntityAdmin):
-        verbose_name = u'AmortizaciÃ³n'
+        verbose_name = u'Amortización'
         verbose_name_plural = 'Amortizaciones'
         list_display = ['nombre']
         list_action = None
@@ -745,13 +767,13 @@ class Indicadores(Entity):
                                                      delegate = DateDelegate),
                                 fecha_inicio = dict(name = 'F.Inicio',
                                                     delegate = DateDelegate),
-                                fecha_cancelacion = dict(name = u'F.CancelaciÃ³n',
+                                fecha_cancelacion = dict(name = u'F.Cancelación',
                                                          delegate = DateDelegate),
                                 saldo_anterior = dict(delegate = CurrencyDelegate,
                                                       prefix = '$'),
                                 capital = dict(delegate = CurrencyDelegate,
                                                prefix = '$'),
-                                tasa_interes = dict(name = u'Tasa InterÃ©s',
+                                tasa_interes = dict(name = u'Tasa Interés',
                                                     minimal_column_width = 15,
                                                     delegate = FloatDelegate),
                                 monto_aporte = dict(delegate = CurrencyDelegate,
@@ -766,7 +788,7 @@ class Indicadores(Entity):
                                                       delegate = FloatDelegate),
                                 cuotas_pagadas_porcent = dict(delegate = FloatDelegate,
                                                               name = u'%'),
-                                cuotas_teorico = dict(name = u'Cuotas teÃ³rico',
+                                cuotas_teorico = dict(name = u'Cuotas teórico',
                                                       delegate = IntegerDelegate),
                                 cuotas_teorico_porcent = dict(delegate = FloatDelegate,
                                                               name = u'%'),
@@ -776,7 +798,7 @@ class Indicadores(Entity):
                                              prefix = '$'),
                                 monto_pagado = dict(delegate = CurrencyDelegate,
                                                     prefix = '$'),
-                                monto_teorico = dict(name = u'Monto teÃ³rico',
+                                monto_teorico = dict(name = u'Monto teórico',
                                                      delegate = CurrencyDelegate,
                                                      prefix = '$'),
                                 diferencia_monto = dict(minimal_column_width = 15,
@@ -795,7 +817,7 @@ class RecaudacionMensual(Entity):
     barrio = Field(Unicode(200), primary_key=True)
     
     class Admin(EntityAdmin):
-        verbose_name = u'RecaudaciÃ³n Mensual'
+        verbose_name = u'Recaudación Mensual'
         verbose_name_plural = u'Mensual'
         list_display = ['barrio',
                         'cartera',
@@ -807,7 +829,7 @@ class RecaudacionMensual(Entity):
                        ComboBoxFilter('cartera'),
                        ]
         list_action = None
-        field_attributes = dict(tasa_interes = dict(name = u'Tasa InterÃ©s',
+        field_attributes = dict(tasa_interes = dict(name = u'Tasa Interés',
                                                     minimal_column_width = 15,
                                                     delegate = FloatDelegate),
                                 total_pagos = dict(delegate = CurrencyDelegate,
@@ -823,7 +845,7 @@ class RecaudacionRealTotal(Entity):
     tasa_interes = Field(Float, primary_key=True)
 
     class Admin(EntityAdmin):
-        verbose_name = u'RecaudaciÃ³n Real Total'
+        verbose_name = u'Recaudación Real Total'
         verbose_name_plural = u'Real Total'
         list_display = ['fecha',
                         'cartera',
@@ -835,11 +857,11 @@ class RecaudacionRealTotal(Entity):
                        ComboBoxFilter('cartera'),
                        ]
         list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'RecaudaciÃ³n',
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 fecha = dict(delegate = DateDelegate),
-                                tasa_interes = dict(name = u'Tasa InterÃ©s',
+                                tasa_interes = dict(name = u'Tasa Interés',
                                                     delegate = FloatDelegate)
                                 )
     Admin = notEditableAdmin(Admin)
@@ -853,7 +875,7 @@ class RecaudacionRealTotalPorBarrio(Entity):
     recaudacion = Field(Float)
     
     class Admin(EntityAdmin):
-        verbose_name = u'RecaudaciÃ³n Real Total por Barrio'
+        verbose_name = u'Recaudación Real Total por Barrio'
         verbose_name_plural = u'Real Total por Barrio'
         list_display = ['fecha',
                         'barrio',
@@ -864,7 +886,7 @@ class RecaudacionRealTotalPorBarrio(Entity):
                        ComboBoxFilter('barrio'),
                        ]
         list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'RecaudaciÃ³n',
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 fecha = dict(delegate = DateDelegate),
@@ -881,7 +903,7 @@ class RecaudacionPotencialTotalPorBarrio(Entity):
     porcentaje = Field(Float)
     
     class Admin(EntityAdmin):
-        verbose_name = u'RecaudaciÃ³n Potencial Total por Barrio'
+        verbose_name = u'Recaudación Potencial Total por Barrio'
         verbose_name_plural = u'Potencial Total por Barrio'
         list_display = ['fecha',
                         'barrio',
@@ -894,7 +916,7 @@ class RecaudacionPotencialTotalPorBarrio(Entity):
                        ComboBoxFilter('barrio'),
                        ]
         list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'RecaudaciÃ³n',
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 recaudacion_potencial = dict(name = 'Rec. Potencial',
@@ -914,7 +936,7 @@ class RecaudacionPotencialTotal(Entity):
     porcentaje = Field(Float, primary_key=True)
     
     class Admin(EntityAdmin):
-        verbose_name = u'RecaudaciÃ³n Potencial Total'
+        verbose_name = u'Recaudación Potencial Total'
         verbose_name_plural = u'Potencial Total'
         list_display = ['fecha',
                         'recaudacion',
@@ -925,7 +947,7 @@ class RecaudacionPotencialTotal(Entity):
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
                        ]
         list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'RecaudaciÃ³n',
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 recaudacion_potencial = dict(name = 'Rec. Potencial',
@@ -943,8 +965,8 @@ class ChequesEntregados(Entity):
     nro_credito = Field(Unicode(3), primary_key=True)
     
     class Admin(EntityAdmin):
-        verbose_name = u'Cartera - PrÃ©stamos / Cheques Entregados'
-        verbose_name_plural = u'PrÃ©stamos / Cheques Entregados'
+        verbose_name = u'Cartera - Préstamos / Cheques Entregados'
+        verbose_name_plural = u'Préstamos / Cheques Entregados'
         list_display = ['beneficiaria',
                         'barrio',
                         'cartera',
@@ -971,8 +993,8 @@ class CreditosActivos(Entity):
     credito_id = Field(Integer, primary_key=True)
 
     class Admin(EntityAdmin):
-        verbose_name = u'Cartera - CrÃ©ditos Activos'
-        verbose_name_plural = u'CrÃ©ditos Activos'
+        verbose_name = u'Cartera - Créditos Activos'
+        verbose_name_plural = u'Créditos Activos'
         list_display = ['comentarios',
                         'beneficiaria',
                         'barrio',
@@ -1000,8 +1022,8 @@ class PerdidaPorIncobrable(Entity):
     credito_id = Field(Integer, primary_key=True)
     
     class Admin(EntityAdmin):
-        verbose_name = u'PÃ©rdida por Incobrable'
-        verbose_name_plural = u'PÃ©rdida por Incobrable'
+        verbose_name = u'Pérdida por Incobrable'
+        verbose_name_plural = u'Pérdida por Incobrable'
         list_display = ['comentarios',
                         'beneficiaria',
                         'fecha_baja',
@@ -1032,12 +1054,12 @@ class PerdidaPorIncobrable(Entity):
         list_action = None
         field_attributes = dict(fecha_baja = dict(delegate = DateDelegate),
                                 fecha_finalizacion = dict(delegate = DateDelegate,
-                                                          name = u'Fecha finalizaciÃ³n',
+                                                          name = u'Fecha finalización',
                                                           minimal_column_width = 15),
                                 fecha_entrega = dict(delegate = DateDelegate),
                                 prestamo = dict(delegate = CurrencyDelegate,
                                                 prefix = '$',
-                                                name = u'PrÃ©stamo'),
+                                                name = u'Préstamo'),
                                 deuda_total = dict(delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 saldo = dict(delegate = CurrencyDelegate,
@@ -1055,8 +1077,8 @@ class CreditosFinalizadosSinSaldar(Entity):
     credito_id = Field(Integer, primary_key=True)
     
     class Admin(EntityAdmin):
-        verbose_name = u'CrÃ©ditos finalizados sin saldar'
-        verbose_name_plural = u'CrÃ©ditos finalizados sin saldar'
+        verbose_name = u'Créditos finalizados sin saldar'
+        verbose_name_plural = u'Créditos finalizados sin saldar'
         list_display = ['comentarios',
                         'beneficiaria',
                         'barrio',
@@ -1083,12 +1105,12 @@ class CreditosFinalizadosSinSaldar(Entity):
                        ]
         list_action = None
         field_attributes = dict(fecha_finalizacion = dict(delegate = DateDelegate,
-                                                          name = u'Fecha finalizaciÃ³n',
+                                                          name = u'Fecha finalización',
                                                           minimal_column_width = 15),
                                 fecha_entrega = dict(delegate = DateDelegate),
                                 prestamo = dict(delegate = CurrencyDelegate,
                                                 prefix = '$',
-                                                name = u'PrÃ©stamo'),
+                                                name = u'Préstamo'),
                                 deuda_total = dict(delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 saldo = dict(delegate = CurrencyDelegate,
