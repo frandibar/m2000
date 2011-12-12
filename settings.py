@@ -26,7 +26,7 @@ import os
 import sqlalchemy
 import elixir
 
-import m2000.config
+from m2000 import config, db_setup
 
 logger = logging.getLogger('settings')
 
@@ -57,9 +57,8 @@ def setup_model():
     the model"""
     # TODO: when there is no need for views in the db, remove
     # the setup_db call, and use elixir.setup_all(create_tables=True)
-    conf = m2000.config.Config()
+    conf = config.Config()
     if conf.get('create_db') == 'yes':
-        import db_setup
         db_setup.setup_db()
         conf.set('create_db', 'no')
     

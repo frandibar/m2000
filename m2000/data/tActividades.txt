@@ -1,9 +1,0 @@
-"id","nombre","id_amortizacion"
-1,"Indefinido",1
-2,"Comercial",1
-3,"Servicios",1
-4,"Elaboración de Alimentos",1
-5,"Confección Textil",1
-6,"Productivos Otros",1
-7,"Cambiar a ""productivos otros""",1
-8,"Crédito para Construcción",2

@@ -109,7 +109,7 @@ CREATE TABLE  `m2000`.`parametro` (
 CREATE TABLE  `m2000`.`rubro` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(200) NOT NULL,
-  `actividad_id` int(11) DEFAULT NULL,
+  `actividad_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ix_rubro_actividad_id` (`actividad_id`),
   CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

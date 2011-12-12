@@ -30,6 +30,6 @@ def execute_mysql_script(filename):
     return ret
 
 def setup_db():
-    execute_mysql_script('tables.sql')
-    execute_mysql_script('views.sql')
+    execute_mysql_script('m2000/tables.sql')
+    execute_mysql_script('m2000/views.sql')
 

@@ -1,6 +1,0 @@
-"id","nombre","ciudad","provincia","domicilio_pago"
-1,"Troncos","Tigre","BS. AS.","Capilla San Cayetano"
-2,"Delfino","INCOMPLETO","BS. AS.","INCOMPLETO"
-3,"Virreyes","San Fernando","BS. AS.","Capilla San Paul"
-4,"San Lorenzo","Tigre","BS. AS.","Capilla San Lorenzo"
-8,"San Pablo","Tigre","BS. AS.","Capilla San Francisco"

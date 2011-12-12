@@ -1,4 +1,0 @@
-"id","descripcion","comentario"
-1,"A","Asistio"
-2,"NV","No Visitada"
-3,"V","Visitada y Vista"

@@ -99,7 +99,7 @@ class Actividad(Entity):
 class Rubro(Entity):
     using_options(tablename='rubro')
     nombre = Field(Unicode(200), required=True)
-    actividad = ManyToOne('Actividad', ondelete='cascade', onupdate='cascade')
+    actividad = ManyToOne('Actividad', ondelete='cascade', onupdate='cascade', required=True)
 
     class Admin(EntityAdmin):
         verbose_name = 'Rubro'
@@ -523,35 +523,6 @@ class Credito(Entity):
     gastos_arq = Field(Float)
     pagos = OneToMany('Pago')
 
-    class Admin(EntityAdmin):
-        verbose_name = u'Crédito'
-        list_display = ['beneficiaria',
-                        #'rubro',
-                        'nro_credito',
-                        'fecha_cobro',
-                        #'cartera',
-                        'cuotas',
-                        ]
-
-class XXXCredito(Entity):
-    # using_options(tablename='credito')
-    beneficiaria = ManyToOne('Beneficiaria', ondelete='cascade', onupdate='cascade', required=True)
-    rubro = ManyToOne('Rubro', ondelete='cascade', onupdate='cascade', required=True)
-    fecha_entrega = Field(Date, required=True)
-    fecha_cobro = Field(Date, required=True)
-    prestamo = Field(Float)
-    saldo_anterior = Field(Float)
-    monto_cheque = Field(Float)
-    tasa_interes = Field(Float)
-    deuda_total = Field(Float)
-    cartera = ManyToOne('Cartera', ondelete='cascade', onupdate='cascade', required=True)
-    cuotas = Field(Integer, required=True)
-    nro_credito = Field(Unicode(15), required=True)
-    fecha_finalizacion = Field(Date)
-    comentarios = Field(Unicode(1000))
-    gastos_arq = Field(Float)
-    # pagos = OneToMany('Pago')
-
     def _get_fecha_entrega(self):
         return self.fecha_entrega
     
@@ -560,7 +531,7 @@ class XXXCredito(Entity):
         self.fecha_cobro = fecha + datetime.timedelta(days=2)
 
     _fecha_entrega = property(_get_fecha_entrega, _set_fecha_entrega)
-
+    
     def _deuda_aleman(self):
         factor = self.tasa_interes / 24
         cuota = self.prestamo / self.cuotas
@@ -688,15 +659,7 @@ class Pago(Entity):
         field_attributes = dict(credito = dict(name = u'Crédito'),
                                 monto = dict(prefix = '$'))
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:'')]
-        
-        # list_filter = [ComboBoxFilter('fecha')]
 
-        # field_attributes = dict(credito = dict(name = u'Crédito',
-        #                                        editable = False),
-        #                         fecha = dict(editable = False),
-        #                         monto = dict(editable = False),
-        #                         asistencia = dict(editable = False),
-        #                         )
     def __unicode__(self):
         if self.credito:
             return '%s %s (cred. #%s)' % (self.credito.beneficiaria.nombre,

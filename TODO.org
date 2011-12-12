@@ -1,4 +1,4 @@
-* HORAS DESARROLLO: 106
+* HORAS DESARROLLO: 111
 * COMO SIGO:
 ** DONE agregar licencia: mit
 ** TODO validadores de forms
@@ -25,7 +25,7 @@ no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** ver como asociar una clase a una vista en vez de tabla
 *** agregar cabecera y pie de pagina en contrato mutuo
 ** CREDITOS:
-*** TODO fixear errores al dar alta
+*** TODO SHOWSTOPPER fixear errores al dar alta
 ** BENEFICIARIAS:
 *** TODO fixear imagen
 ** PAGOS:
@@ -83,8 +83,8 @@ creo que con el parametro autoload=True en using_options
 *** estado de credito para que se usa?
 *** las fechas de pago corresponden a viernes o sabado?
 *** en el contrato mutuo, la fecha de la primera cuota se corresponde con la fecha de cobro? ahora es fecha_entrega+14
-*** en que categoria van los nuevos reportes 'perdida por incobrable' y 'finalizados sin saldar'?
-*** de la planilla de cobro, 
+*** DONE en que categoria van los nuevos reportes 'perdida por incobrable' y 'finalizados sin saldar'?
+*** DONE de la planilla de cobro, 
 que significa el 0.5 en M1, veo que se usa para cuota_calculada, pero no entiendo bien.
 total_deuda_final, de donde sale el 4.87?
 deuda_inicial es el monto del prestamo?

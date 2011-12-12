@@ -49,7 +49,7 @@ class ContratoMutuo(Action):
     icon = Icon('tango/16x16/actions/document-print.png')
 
     def model_run(self, model_context):
-        fileloader = FileSystemLoader('templates')
+        fileloader = FileSystemLoader(os.path.join('m2000', 'templates'))
         env = Environment(loader=fileloader)
         obj = model_context.get_object()
         monto_cuota = obj.monto_cheque * (1 + obj.tasa_interes) / obj.cuotas
@@ -66,8 +66,8 @@ class ContratoMutuo(Action):
             'emprendimiento': obj.rubro.actividad,
             'cuotas': obj.cuotas,
             'cuotas_letras': nro_en_letras(obj.cuotas),
-            'monto_prestamo': obj.monto_prestamo,
-            'monto_prestamo_letras': nro_en_letras(obj.monto_prestamo),
+            'monto_prestamo': obj.prestamo,
+            'monto_prestamo_letras': nro_en_letras(obj.prestamo),
             'monto_cuota_letras': nro_en_letras(monto_cuota),
             'monto_cuota': monto_cuota,
             'dia_1ra_cuota': fecha_1ra_cuota.day,
@@ -173,7 +173,7 @@ class PlanillaPagos(Action):
             template = 'planilla_pagos.html'
 
         # mostrar el reporte
-        fileloader = FileSystemLoader('templates')
+        fileloader = FileSystemLoader(os.path.join('m2000', 'templates'))
         env = Environment(loader=fileloader)
         context = {
             'anio': datetime.date.today().year,

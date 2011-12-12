@@ -1,3 +1,0 @@
-"id","descripcion"
-1,"Estandar"
-2,"Aleman"
