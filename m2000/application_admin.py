@@ -29,6 +29,7 @@ import PyQt4
 
 import model
 import reports
+import view
 
 class MyApplicationAdmin(ApplicationAdmin):
     name = u'Mujeres 2000 - Gestión de Créditos'
@@ -77,27 +78,27 @@ class MyApplicationAdmin(ApplicationAdmin):
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
-                                 model.IntervaloFechas(),
-                                 model.Indicadores,
-                                 model.PerdidaPorIncobrable,
-                                 model.CreditosFinalizadosSinSaldar,
+                                 view.IntervaloFechas(),
+                                 view.Indicadores,
+                                 view.PerdidaPorIncobrable,
+                                 view.CreditosFinalizadosSinSaldar,
                             ]),
                 Section(u'Recaudación',
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
-                                 model.RecaudacionMensual,
-                                 model.RecaudacionRealTotal,
-                                 model.RecaudacionPotencialTotal,
-                                 model.RecaudacionRealTotalPorBarrio,
-                                 model.RecaudacionPotencialTotalPorBarrio,
+                                 view.RecaudacionMensual,
+                                 view.RecaudacionRealTotal,
+                                 view.RecaudacionPotencialTotal,
+                                 view.RecaudacionRealTotalPorBarrio,
+                                 view.RecaudacionPotencialTotalPorBarrio,
                             ]),
                 Section(u'Cartera',
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
-                                 model.ChequesEntregados,
-                                 model.CreditosActivos,
+                                 view.ChequesEntregados,
+                                 view.CreditosActivos,
                             ]),
                 Section(u'Configuración',
                         self,
