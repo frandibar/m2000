@@ -1,5 +1,7 @@
 Para instalar en Windows:
 
+TODO terminar y revisar
+
 La primera vez, es necesario hacer lo siguiente:
 
 * Instalar Python
