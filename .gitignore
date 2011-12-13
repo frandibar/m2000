@@ -1,0 +1,10 @@
+.svn
+*.pyc
+migrate/t*.txt
+migrate/*.sql
+migrate/*.dat
+migrate/originals
+build
+deploy
+dist
+m2000.egg-info
