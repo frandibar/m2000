@@ -55,6 +55,10 @@ def ENGINE():
 def setup_model():
     """This function will be called at application startup, it is used to setup
     the model"""
+    # all model files should be imported, to make sure the model has been completely set up.
+    import m2000.model
+    import m2000.view
+    
     # TODO: when there is no need for views in the db, remove
     # the setup_db call, and use elixir.setup_all(create_tables=True)
     conf = config.Config()
@@ -64,6 +68,6 @@ def setup_model():
     
     # tables only get created in mysql if the db exists
     # 'create database m2000' sufices
-    elixir.setup_all(create_tables=False)
+    elixir.setup_all(create_tables=True)
 
     # camelot.model.authentication.updateLastLogin()

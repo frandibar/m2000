@@ -30,26 +30,16 @@ from camelot.admin.not_editable_admin import notEditableAdmin
 from camelot.admin.object_admin import ObjectAdmin
 from camelot.admin.validator.object_validator import ObjectValidator
 from camelot.view.action_steps import ChangeObject, FlushSession, UpdateProgress, Refresh
+from camelot.view.art import ColorScheme
 from camelot.view.controls.delegates import DateDelegate, FloatDelegate, CurrencyDelegate, IntegerDelegate
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter
 from elixir import Entity, Field, using_options
 from sqlalchemy import Unicode, Date, Integer, Float
 
-import model
-
-# begin session setup
-import elixir
-from sqlalchemy import MetaData
-from sqlalchemy.orm import scoped_session, create_session
-elixir.session = scoped_session( create_session )
-import settings
-
-metadata = MetaData()
+from camelot.model import metadata
 __metadata__ = metadata
-__metadata__.bind = settings.ENGINE()
-__metadata__.autoflush = False
-__metadata__.transactional = False
-# end session setup
+
+import model
 
 # esta clase corresponde a un VIEW
 class Indicadores(Entity):

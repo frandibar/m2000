@@ -1,4 +1,4 @@
-* HORAS DESARROLLO: 111
+* HORAS DESARROLLO: 113
 * COMO SIGO:
 ** DONE agregar licencia: mit
 ** TODO validadores de forms
@@ -46,6 +46,7 @@ sqlalchemy source http://ufpr.dl.sourceforge.net/project/sqlalchemy/sqlalchemy/0
 
 * PREGUNTAS:
 ** FUNCIONALES
+*** como pido confirmacion antes de eliminar?
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
 *** como visualizar un form desde otro (model_run)
         camelot.admin.action.application_action.OpenTableView(self.app_admin.get_entity_admin(Beneficiaria))
@@ -102,6 +103,8 @@ deuda_inicial es el monto del prestamo?
 ** en reportes, inhabilitar boton new
 ** poder inhabilitar boton de crear nuevo credito en pago
 ** agregar historial de cambios? (provisto por camelot)
+** al eliminar una actividad con rubros asociados, muestra un mensaje muy feo. mejorarlo
+** pedir confirmacion al eliminar registros.
 * CHECKLIST FINAL
 ** nuevos cambios
 *** TODO Modificar la planilla de cobro para que incluya el redondeo (envío adjunta la planilla que estamos usando actualmente, se completa manualmente)
@@ -111,7 +114,7 @@ deuda_inicial es el monto del prestamo?
 si, arme uno nuevo llamado creditos finalizados sin saldar
 *** DONE ?? Crear una Cartera para los créditos de Construcción
 es inmediato. como se tiene que llamar? los actuales creditos de construccion quedan como estan? hay que restringir 
-* FEATURES A MOSTRAR
+* COSAS A MOSTRAR
 ** como abrir en nueva pestaña
 ** como filtrar (incluyendo busqueda con lupa), aclarar que se pueden especificar por cuales campos buscar por defecto
 ** como ordenar por columna asc/desc
@@ -122,6 +125,8 @@ es inmediato. como se tiene que llamar? los actuales creditos de construccion qu
 ** como imprimir a pdf
 ** como colocar una foto a la beneficiaria
 ** como actualizar nueva version
+** aclarar que la 1ra vez tarda
+** aclarar que la busqueda es por nombre o beneficiaria, pero no los dos
 * TIPS
 ** puedo usar @property en vez de @ColumnProperty, salvo que quiera incluir el campo en un filtro
 ** para que el form sea no editable
@@ -161,8 +166,8 @@ modifique los fuentes en view/controls/tableview.py
 
 ** si se produce un error al cargar la foto de una beneficiaria, se rompe el form (no andan los validadores)
 ** para preservar los formatos al exportar a excel, definir los delegates
+** para el archivo de configuracion pude haber usado camelot.core.conf
 * BUGS
-** cuando creo un nuevo credito, se pierde el rubro y la cartera al cargar las cuotas
 ** CAMELOT
 *** default values en forms no me los toma
 *** list_action = None es ignorado en embedded admins (ver rubro en actividad, pago en credito)
