@@ -34,7 +34,8 @@ setup(
     maintainer = 'Francisco Dibar',
     maintainer_email = 'frandibar+m2000@gmail.com',
     url = 'www.mujeres2000.org.ar',
-    install_requires = ['Camelot>=11.11.16'],
+    install_requires = ['Camelot>=11.11.16',
+                        'MySQL-python>=1.2.1'],
     include_package_data = True,
     packages = find_packages(),
     py_modules = ['settings', 'main'],
@@ -47,6 +48,7 @@ setup(
              '*.png',
              '*.html',
              '*.css',
+             '*.sql',
              ],
         }
     )

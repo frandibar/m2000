@@ -80,8 +80,6 @@ class MyApplicationAdmin(ApplicationAdmin):
                         items = [
                                  view.IntervaloFechas(),
                                  view.Indicadores,
-                                 view.PerdidaPorIncobrable,
-                                 view.CreditosFinalizadosSinSaldar,
                             ]),
                 Section(u'Recaudación',
                         self,
@@ -99,6 +97,8 @@ class MyApplicationAdmin(ApplicationAdmin):
                         items = [
                                  view.ChequesEntregados,
                                  view.CreditosActivos,
+                                 view.PerdidaPorIncobrable,
+                                 view.CreditosFinalizadosSinSaldar,
                             ]),
                 Section(u'Configuración',
                         self,

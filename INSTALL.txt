@@ -1,7 +1,5 @@
 Para instalar en Windows:
 
-TODO terminar y revisar
-
 La primera vez, es necesario hacer lo siguiente:
 
 * Instalar Python
@@ -14,8 +12,15 @@ La primera vez, es necesario hacer lo siguiente:
 * Instalar MySQL
 1. Solo db: Doble clic en mysql-5.5.19-win32.msi, seleccionar 'Typical' y luego clic en 'Install'.
    Cuando aparece el Wizard de configuracion, seleccionar 'Standard configuration', luego tildar 'Include Bin directory in windows path'.
-   Destildar 'Modify Security Settings' y terminar.
+   En 'Modify Security Settings' colocar "root" como password y terminar.
 1. Completo: Doble clic en mysql-installer-5.5.19.0.msi y clic en 'Siguiente' hasta el fin.
+
+* Instalar MySQL-python
+1. Doble clic en MySQL-python-1.2.3.win32-py2.7.exe y clic en 'Siguiente' hasta finalizar.
+
+* Instalar jinja
+1. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo.
+   easy_install path_to\Jinja-1.2-py2.5-win32.egg
 
 * Instalar Camelot (incluye instalacion de SqlAlchemy y Elixir, requiere conexion a internet)
 1. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo.
@@ -24,5 +29,11 @@ La primera vez, es necesario hacer lo siguiente:
 * Instalar PyQt
   Doble clic en PyQt-Py2.7-x86-gpl-4.8.6-1.exe. Seleccionar 'Minimal' en 'Select the type of install:'
 
-Si estos componentes ya fueron instalados, pero se quiere hacer una actualizacion del programa, entonces seguir estos pasos:
+* Instalar m2000
+1. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo, y VERSION con la version a instalar
+   easy_install path_to\m2000-VERSION-py2.7.egg
+
+* Crear shortcut
+
+Si estos componentes ya fueron instalados, pero se quiere hacer una actualizacion del programa, entonces seguir el último paso solamente.
 

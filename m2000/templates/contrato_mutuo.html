@@ -1,15 +1,14 @@
-<html>
-<div id="page_header" width="100%">
-  <img src="media/header.png" width="100%"/>
-</div>
-<h3 align="center">Contrato Mutuo entre la OE y el emprendedor</h3>
+{% extends 'base.html' %}
 
+{% block page_title %}Contrato Mutuo entre la OE y el emprendedor{% endblock %}
+
+{% block page_content %}
 <body align="justify">
 Entre <b>Asociaci&oacute;n Civil Mujeres 2000</b> con domicilio real y legal en la calle Chubut N&deg; 1189, de la Ciudad San Isidro, Provincia de Buenos Aires representada en este acto por el Sr. Gast&oacute;n Federico Mascias DNI. N&deg; 27.203.866 CUIT/CUIL N&deg; 20-27.203.866-0 en su car&aacute;cter de Presidente en adelante <b>LA ORGANIZACI&Oacute;N</b>, por una parte y por la otra, la Sra. <u>{{ beneficiaria }}</u> con DNI. N&deg; <u>{{ dni }}</u>, con fecha de nacimiento <u>{{ fecha_nac }}</u>, de estado civil <u>{{ estado_civil }}</u> y domicilio real y legal en la calle <u>{{ domicilio }}</u> de la Ciudad de <u>{{ ciudad }}</u>, Provincia de <u>{{ provincia }}</u>, en adelante <b>EL EMPRENDEDOR</b>, convienen en celebrar el presente <b>CONTRATO DE PR&Eacute;STAMO</b>, en el marco del <b>PLAN NACIONAL DE DESARROLLO LOCAL Y ECONOMIA SOCIAL - Programa de Promoci&oacute;n del Microcr&eacute;dito para el Desarrollo de la Econom&iacute;a Social &quot;Padre Carlos Cajade&quot;</b>, que se regir&aacute; por las siguientes cl&aacute;usulas:<br>
 
 <u><b>PRIMERA</b></u>: <b>LA ORGANIZACI&Oacute;N</b> otorga y <b>EL EMPRENDEDOR</b> acepta un <b>PR&Eacute;STAMO</b> que ser&aacute; destinado para el desarrollo del emprendimiento <u>{{ emprendimiento }}</u>  y que deber&aacute; invertir en el lapso de <u>{{ cuotas_letras }}</u> (n&uacute;mero <u>{{ cuotas }}</u>) semanas corridos a partir de la fecha de la efectiva recepci&oacute;n del pr&eacute;stamo de acuerdo al medio estipulado por las partes.<br>
 
-<u><b>SEGUNDA</b></u>: El monto del pr&eacute;stamo asciende a la suma de <b>PESOS</b> <u>{{ monto_prestamo_letras }}</u> ($<u>{{ monto_prestamo }}</u>), siendo  el mismo reintegrable por parte de <b>EL EMPRENDEDOR</b>, en dinero en efectivo en <u>{{ cuotas_letras }}</u> CUOTAS (<u>{{ cuotas }}</u>) <b>semanales</b>, iguales y consecutivas de <b>PESOS</b> <u>{{ monto_cuota_letras }}</u> ($<u>{{ monto_cuota }}</u>), que corresponden a la devoluci&oacute;n del monto del pr&eacute;stamo m&aacute;s <b>un medio por ciento (0.5%) mensual</b> en concepto de tasa de inter&eacute;s.<br>
+<u><b>SEGUNDA</b></u>: El monto del pr&eacute;stamo asciende a la suma de <b>PESOS</b> <u>{{ monto_prestamo_letras }}</u> ($<u>{{ monto_prestamo }}</u>), siendo  el mismo reintegrable por parte de <b>EL EMPRENDEDOR</b>, en dinero en efectivo en <u>{{ cuotas_letras }}</u> CUOTAS (<u>{{ cuotas }}</u>) <b>semanales</b>, iguales y consecutivas de <b>PESOS</b> <u>{{ monto_cuota_letras }}</u> ($<u>{{ monto_cuota }}</u>), que corresponden a la devoluci&oacute;n del monto del pr&eacute;stamo m&aacute;s <b>{{ tasa_interes }}%</b> mensual</b> en concepto de tasa de inter&eacute;s.<br>
 
 <u><b>TERCERA</b></u>: Los pagos de las cuotas deber&aacute;n efectuarse - sin necesidad de aviso previo o requerimiento de ninguna naturaleza, los d&iacute;as s&aacute;bados de cada mes venciendo la primera de ellas el <u>{{ dia_1ra_cuota }}</u> del mes de <u>{{ mes_1ra_cuota_letras }}</u> de <u>{{ anio_1ra_cuota }}</u> y la &uacute;ltima el <u>{{ dia_ultima_cuota }}</u> del mes de <u>{{ mes_ultima_cuota_letras }}</u> de <u>{{ anio_ultima_cuota }}</u>, en el domicilio de <u>{{ domicilio_pago }}</u> o donde &eacute;ste indique por escrito en el futuro a <b>EL EMPRENDEDOR</b>.<br>
 
@@ -42,8 +41,4 @@ Firma Emprendedora<br>
 <br>
 <br>
 <table width="80%"><tr><td>Firma Tesorero</td><td>Firma Presidente</td></tr></table>
-</body>
-<div id="page_footer" width="100%">
-  <img src="media/footer.png" width="100%"/>
-</div>
-</html>
+{% endblock %}

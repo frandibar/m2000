@@ -1,3 +1,6 @@
 Mujeres 2000 - Sistema de Gestión de Créditos
+Mas info en http://mujeres2000.org.ar
 
-Para instalar, leer INSTALL.txt
+License: MIT
+
+To install, see INSTALL.txt

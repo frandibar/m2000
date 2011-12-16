@@ -48,6 +48,7 @@ import datetime
 
 from camelot.admin.entity_admin import EntityAdmin
 from camelot.admin.validator.entity_validator import EntityValidator
+from camelot.core.files.storage import Storage, StoredImage
 from camelot.view.controls.delegates import DateDelegate, FloatDelegate, BoolDelegate, NoteDelegate, CurrencyDelegate, IntegerDelegate
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter, GroupBoxFilter
 from camelot.view.forms import Form, TabForm, WidgetOnlyForm, HBoxForm
@@ -354,8 +355,8 @@ class Beneficiaria(Entity):
                                                     (6,'viuda')]))
     telefono = Field(Unicode(50))
     email = Field(camelot.types.VirtualAddress(256))
-    foto = Field(camelot.types.Image(upload_to='fotos')) # TODO no anda con default='sin-foto.jpg')
-    # foto = Field(camelot.types.Image(upload_to='fotos'), default='sin-foto.jpg')
+    default_foto = StoredImage(Storage('fotos', StoredImage), 'sin-foto.jpg')
+    foto = Field(camelot.types.Image(upload_to='fotos'), default=default_foto)
     creditos = OneToMany('Credito')
 
     def _get_activa(self):
@@ -406,10 +407,10 @@ class Beneficiaria(Entity):
                            'fecha_alta',
                            'fecha_baja',
                            'comentarios',
-                           ], 
-                          [#WidgetOnlyForm('foto'),
                            'dni',
                            'fecha_nac',
+                           ], 
+                          [WidgetOnlyForm('foto'),
                            'estado_civil',
                            'domicilio',
                            'telefono',

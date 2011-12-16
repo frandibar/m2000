@@ -33,7 +33,7 @@ logger = logging.getLogger('settings')
 CAMELOT_ATTACHMENTS = ''
 # media root needs to be an absolute path for the file open functions
 # to function correctly
-CAMELOT_MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
+CAMELOT_MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'm2000', 'media')
 
 # backup root is the directory where the default backups are stored
 CAMELOT_BACKUP_ROOT = os.path.join(os.path.dirname(__file__), 'backup')
@@ -47,7 +47,7 @@ CAMELOT_BACKUP_FILENAME_TEMPLATE = 'default-backup-%(text)s.' + CAMELOT_BACKUP_E
 
 def ENGINE():
     """This function should return a connection to the database"""
-    return sqlalchemy.create_engine('mysql://root:root@localhost:5432/m2000',
+    return sqlalchemy.create_engine('mysql://root:root@localhost:3306/m2000',
                                     encoding='latin1',
                                     convert_unicode=True,
                                     echo=False)
