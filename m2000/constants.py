@@ -24,3 +24,5 @@
 
 ID_AMORTIZACION_ALEMAN = 2
 ID_ACTIVIDAD_CONSTRUCCION = 8
+
+PKEY_UNDEFINED = '[indefinido]'  # valor a mostrar cuando aun no se dio de alta un registro

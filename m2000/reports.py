@@ -24,7 +24,7 @@ import datetime
 import os
 from collections import namedtuple
 
-from jinja import Environment, FileSystemLoader
+from jinja import Environment, PackageLoader
 from pkg_resources import resource_filename
 from camelot.admin.action.base import Action
 from camelot.admin.entity_admin import EntityAdmin
@@ -49,13 +49,13 @@ class ContratoMutuo(Action):
     icon = Icon('tango/16x16/actions/document-print.png')
 
     def model_run(self, model_context):
-        fileloader = FileSystemLoader(os.path.join('m2000', 'templates'))
-        env = Environment(loader=fileloader)
         obj = model_context.get_object()
+
         monto_cuota = obj.monto_cheque * (1 + obj.tasa_interes) / obj.cuotas
         # la 1era semana no paga cuota. Recien a los 14 dias de recibido el cheque tiene que pagar la primer cuota.
         fecha_1ra_cuota = obj.fecha_entrega + datetime.timedelta(weeks=2)
         fecha_ultima_cuota = obj.fecha_entrega + datetime.timedelta(weeks=obj.cuotas + 1)
+
         context = {
             'beneficiaria': '%s %s' % (obj.beneficiaria.nombre, obj.beneficiaria.apellido),
             'dni': spacer(obj.beneficiaria.dni),
@@ -80,6 +80,8 @@ class ContratoMutuo(Action):
             'anio_ultima_cuota': fecha_ultima_cuota.year,
             'domicilio_pago': obj.beneficiaria.barrio.domicilio_pago.nombre,
         }
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
         t = env.get_template('contrato_mutuo.html')
         yield PrintHtml(t.render(context))
 
@@ -189,8 +191,7 @@ class PlanillaPagos(Action):
 
         }
         # mostrar el reporte
-        fileloader = FileSystemLoader(os.path.join('m2000', 'templates'))
+        fileloader = PackageLoader('m2000', 'templates')
         env = Environment(loader=fileloader)
         t = env.get_template(template)
         yield PrintHtml(t.render(context))
-

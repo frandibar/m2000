@@ -60,9 +60,7 @@ import camelot
 import sqlalchemy
 
 import reports
-import constants
-
-UNDEFINED = '[indefinido]'              # used in __unicode__()
+from constants import PKEY_UNDEFINED, ID_ACTIVIDAD_CONSTRUCCION
 
 class RubroAdminEmbedded(EntityAdmin):
     verbose_name = 'Rubro'
@@ -254,7 +252,7 @@ class CreditoAdminBase(EntityAdmin):
     def _use_gastos_arq(obj):
         try:
             if obj.rubro:
-                return obj.rubro.actividad.id == constants.ID_ACTIVIDAD_CONSTRUCCION
+                return obj.rubro.actividad.id == ID_ACTIVIDAD_CONSTRUCCION
         except Exception, e:
             pass
         return True
@@ -296,7 +294,7 @@ class CreditoAdminBase(EntityAdmin):
                             fecha_cobro = dict(minimal_column_width = 17,
                                                tooltip = u'Al modificar la fecha de entrega, este campo toma el valor de la fecha de entrega más 2 dias.'),
                             # TODO por el momento el name es estatico, no se puede cambiar en funcion de otros valores
-                            # monto_cheque = dict(name = lambda o: 'Monto Presupuesto' if o.rubro.actividad.id == constants.ID_ACTIVIDAD_CONSTRUCCION else 'Monto Cheque'),
+                            # monto_cheque = dict(name = lambda o: 'Monto Presupuesto' if o.rubro.actividad.id == ID_ACTIVIDAD_CONSTRUCCION else 'Monto Cheque'),
                             monto_cheque = dict(name = 'Monto Cheque/Presup.',
                                                 prefix = '$',
                                                 tooltip = u'En principio equivale a: Préstamo - Saldo anterior'),
@@ -592,7 +590,7 @@ class Credito(Entity):
     @property
     def para_construccion(self):
         if self.rubro:
-            return self.rubro.actividad_id == constants.ID_ACTIVIDAD_CONSTRUCCION
+            return self.rubro.actividad_id == ID_ACTIVIDAD_CONSTRUCCION
         return False
 
     @property
