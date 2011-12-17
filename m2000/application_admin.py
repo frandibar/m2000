@@ -26,6 +26,7 @@ from camelot.view.art import Icon
 from camelot.admin.application_admin import ApplicationAdmin
 from camelot.admin.section import Section
 import PyQt4
+import os
 
 import model
 import reports
@@ -47,8 +48,6 @@ class MyApplicationAdmin(ApplicationAdmin):
     # def get_icon(self):
     #     return Icon('media/32x32icon.png')
 
-    # FIXME transparencia
-    # TODO agrandar para dar lugar a los mensajes
     def get_splashscreen(self):
         return PyQt4.QtGui.QPixmap('media/splashscreen.png')
         
@@ -120,6 +119,9 @@ class MyApplicationAdmin(ApplicationAdmin):
                 #         items = [view.Formulario(), view.Coordinate]),
                 ]
 
+    def get_help_url(self):
+        return PyQt4.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), os.path.pardir, 'doc', 'index.html'))
+                                 
     # override this method to get my own main window instead of camelot's
     # def get_main_window():
     #     pass

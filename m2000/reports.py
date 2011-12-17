@@ -39,7 +39,7 @@ def spacer(field):
     return field
 
 def money_fmt(value):
-    return '$ %.2f' % value
+    return '$ %.1f' % value
 
 def float_fmt(value, dec=2):
     return ('%.' + '%df' % dec) % value

@@ -24,16 +24,19 @@
 #-------------------------------------------------------------------------------
 
 from setuptools import setup, find_packages
+import m2000
 
 setup(
     name = 'm2000',
-    version = '0.1',
+    version = m2000.__version__,
     description = u'Gestión de Créditos',
     author = 'Francisco Dibar',
     author_email = 'frandibar+m2000@gmail.com',
     maintainer = 'Francisco Dibar',
     maintainer_email = 'frandibar+m2000@gmail.com',
     url = 'www.mujeres2000.org.ar',
+    license = 'MIT',
+    platforms = 'Linux, Windows',
     install_requires = ['Camelot>=11.11.16',
                         'MySQL-python>=1.2.1'],
     include_package_data = True,
@@ -51,4 +54,15 @@ setup(
              '*.sql',
              ],
         }
+    classifiers = [
+        'Development Status :: 2 - Pre-Alpha',
+        'Environment :: X11 Applications :: Qt',
+        'Intended Audience :: Financial and Insurance Industry',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: Spanish',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Office/Business :: Financial',
+        ]
     )

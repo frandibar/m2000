@@ -3,21 +3,11 @@
   <title>{% block page_head_title %}{% endblock %}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <style type="text/css">
-    body, html {
-      font-family: Verdana, Arial, sans-serif;
-    }
-    hr {
-      color: #761e81;
-      background-color: #761e81;
-      height: 5px;
-    }
     {% block styles %}{% endblock %}
   </style>
 </head>
 <body>
-  <div id="page_header" width="25%">
-    <img src="/home/fran/projects/m2000/m2000/media/header.jpg" width="25%"/>
-  </div>
+  <img src="/home/fran/projects/m2000/m2000/media/header.jpg"/>
   <h3 id="page_title" align="center">{% block page_title %}{% endblock %}</h3>
   {% block page_content %}{% endblock %}
   <hr>

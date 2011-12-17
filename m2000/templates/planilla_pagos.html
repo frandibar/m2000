@@ -1,6 +1,11 @@
-<html>
-<head>
-<style type="text/css">
+{% extends 'base.html' %}
+
+{% block page_head_title %}Plan de Amortizaci&oacute;n - {{ beneficiaria }}{% endblock %}
+{% block page_title %}
+Ayuda Económica para Microemprendimiento Productivo<br>
+PLAN DE AMORTIZACI&Oacute;N {{ anio }}
+{% endblock %}
+{% block styles %}
   table {
       border-collapse: collapse;
       border-style: hidden;
@@ -31,12 +36,10 @@
   td.col_separator {
       width: 100px;
   }
-</style>
-</head>
-<body align="justify">
-  <h3 align="center">Ayuda Económica para Microemprendimiento Productivo</h3>
-  <h3 align="center">PLAN DE AMORTIZACI&Oacute;N {{ anio }}</h3>
-  <br>
+{% endblock %}
+
+{% block page_content %}
+<div align="justify">
   <table>
     <tr>
       <td><b>C.D.I.:</b></td><td align="right"><b>{{ comentarios }}</b></td>
@@ -113,5 +116,4 @@
       {% endfor %}
     </tbody>
   </table>
-</body>
-</html>
+{% endblock %}

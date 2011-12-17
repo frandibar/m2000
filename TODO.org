@@ -1,8 +1,8 @@
 * COMO SIGO:
-** TODO formato en jinja no lo esta tomando
-** TODO validadores de forms
+** TODO footer en planillas y contrato, ponerlo al final de hoja
 ** REPORTES:
-*** TODO planilla pagos: formatear bien. Agregar pagos existentes
+*** TODO contrato mutuo, falta completar la tasa de interes (espero respuesta de jose para ver como)
+*** TODO planilla pagos: Agregar pagos existentes
 *** segun el reporte, pedir la fecha, cargar la tabla y mostrar el reporte
 no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** DONE creditos terminados con saldo pendiente
@@ -23,13 +23,12 @@ no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** ver como mostrar totales para indicadores
 *** ver como asociar una clase a una vista en vez de tabla
 *** agregar cabecera y pie de pagina en contrato mutuo
-** CREDITOS:
-** BENEFICIARIAS:
 ** PAGOS:
 *** TODO imitar la consulta de pagos por fecha y barrio (agregar barrio a la tabla de pagos, crear vista)
 ** ALL:
-*** hacer que en table view los campos sean no editables pero en form view si (no se si se puede)
-*** cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error.
+*** TODO cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
+IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
+
 * DEPLOYMENT
 python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
 mysql installer 
@@ -48,10 +47,10 @@ cuando instalo un egg, primero desinstala si ya fue instalado
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
 *** como visualizar un form desde otro (model_run)
         camelot.admin.action.application_action.OpenTableView(self.app_admin.get_entity_admin(Beneficiaria))
-*** DONE How can I set a default value for a filter?
+*** TODO How can I set a default value for a filter?
         list_filter = [ComboBoxFilter('activa', default=True)]
 esto esta roto ahora pero fixed en trunk
-
+Cuando salga el nuevo release, usar este feature.
 *** se pueden hacer filtros por property en vez de columnproperty?
 *** como puedo buscar por beneficiarias en pagos
 *** como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
@@ -101,8 +100,9 @@ concepto de tasa de interes"Esta tasa no depende acaso del credito? Es verdad, e
 ** eliminar views de la db, reemplazarlos por sqlalchemy (sobre todo para evitar el uso de tablas parameter y fecha)
 ** agregar tests
 * ENHANCEMENTS:
+** validadores de forms
 ** agregar coordinadores de grupos
-** agregar diccionario (ayuda) con definiciones de formulas y comportamiento.
+** agregar diccionario (ayuda) con definiciones de formulas y comportamiento. (documentacion con sphinx?)
 ** keyboard navigation
 ** en planilla de pagos, agregar los pagos que se realizaron
 ** reutilizar html en planillas de pagos (css?)
@@ -128,6 +128,7 @@ concepto de tasa de interes"Esta tasa no depende acaso del credito? Es verdad, e
 ** como actualizar nueva version
 ** aclarar que la 1ra vez tarda
 ** aclarar que la busqueda es por nombre o apellido beneficiaria, pero no los dos
+** documentacion a completar
 * TIPS
 ** puedo usar @property en vez de @ColumnProperty, salvo que quiera incluir el campo en un filtro
 ** para que el form sea no editable
@@ -233,6 +234,8 @@ Ver de bajarme el libro de oreily essential sqlalchemy
 
 ** deploy
 setuptools  http://peak.telecommunity.com/DevCenter/setuptools
+http://pypi.python.org/pypi?%3Aaction=list_classifiers
+
 python mysql 
 http://stackoverflow.com/questions/645943/mysql-for-python-in-windows
 http://www.fuyun.org/2009/12/install-mysql-for-python-on-windows/
