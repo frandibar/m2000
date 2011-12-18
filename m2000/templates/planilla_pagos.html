@@ -1,119 +1,93 @@
 {% extends 'base.html' %}
 
 {% block page_head_title %}Plan de Amortizaci&oacute;n - {{ beneficiaria }}{% endblock %}
+
 {% block page_title %}
 Ayuda Económica para Microemprendimiento Productivo<br>
 PLAN DE AMORTIZACI&Oacute;N {{ anio }}
 {% endblock %}
-{% block styles %}
-  table {
-      border-collapse: collapse;
-      border-style: hidden;
-      padding-left: 2px;
-      padding-right: 2px;
-  }
 
-  table.cuotas_table {
-      border-collapse: collapse;
-      border: 2px solid black;
-      padding-left: 2px;
-      padding-right: 2px;
-  }
-   
-  table td, table th {
-      border: 1px solid black;
-      padding-left: 2px;
-      padding-right: 2px;
-  }
-  table th { background-color: #DDDDDD;
-             font-weight: normal;
-             vertical-align: middle;
-  }
-   
-  tr.odd { background-color: #FFFFFF }
-  tr.even { background-color: #DDDDDD }
-   
+{% block styles %}
   td.col_separator {
       width: 100px;
   }
 {% endblock %}
 
 {% block page_content %}
-<div align="justify">
-  <table>
-    <tr>
-      <td><b>C.D.I.:</b></td><td align="right"><b>{{ comentarios }}</b></td>
-      <td class="col_separator"></td>
-      <td><b>Beneficiaria</b></td>
-    </tr>
-    <tr>
-      <td>&Uacute;ltima Deuda:</td><td align="right">{{ saldo_anterior }}</td>
-      <td class="col_separator"></td>
-      <td>Nombre:</td><td>{{ beneficiaria }}</td>
-    </tr>
-    <tr>
-      <td>Monto Cheque:</td><td align="right">{{ monto_cheque }}</td>
-      <td class="col_separator"></td>
-      <td>D.N.I.:</td><td>{{ dni }}</td>
-    </tr>
-    <tr>
-      <td>Fecha otorga cheque:</td><td>{{ fecha_entrega }}</td>
-      <td class="col_separator"></td>
-      <td>Tel&eacute;fono:</td><td>{{ telefono }}</td>
-    </tr>
-    <tr>
-      <td>Total deuda inicial</td><td align="right">{{ deuda_inicial }}</td>
-      <td class="col_separator"></td>
-      <td>Domicilio:</td><td>{{ domicilio }}</td>
-    </tr>
-    <tr>
-      <td>Total deuda final</td><td align="right">{{ deuda_final }}</td>
-      <td class="col_separator"></td>
-      <td>Grupo Nro.:</td><td>{{ grupo }}</td>
-    </tr>
-    <tr>
-      <td>Nro. de pr&eacute;stamo:</td><td align="right">{{ nro_credito }}</td>
-      <td class="col_separator"></td>
-      <td>Coordinadores:</td>
-    </tr>
-    <tr>
-      <td>Cantidad de cuotas:</td><td align="right">{{ cuotas }}</td>
-    </tr>
-    <tr>
-      <td>Cuota calculada:</td><td align="right">{{ cuota_calculada }}</td>
-      <td class="col_separator"></td>
-      <td>Monto &uacute;ltima cuota:</td><td>{{ monto_ultima_cuota }}</td>
-    </tr>
-  </table>
+<table>
+  <tr>
+    <td><b>C.D.I.:</b></td><td align="right"><b>{{ comentarios }}</b></td>
+    <td class="col_separator"></td>
+    <td><b>Beneficiaria</b></td>
+  </tr>
+  <tr>
+    <td>&Uacute;ltima Deuda:</td><td align="right">{{ saldo_anterior }}</td>
+    <td class="col_separator"></td>
+    <td>Nombre:</td><td>{{ beneficiaria }}</td>
+  </tr>
+  <tr>
+    <td>Monto Cheque:</td><td align="right">{{ monto_cheque }}</td>
+    <td class="col_separator"></td>
+    <td>D.N.I.:</td><td>{{ dni }}</td>
+  </tr>
+  <tr>
+    <td>Fecha otorga cheque:</td><td>{{ fecha_entrega }}</td>
+    <td class="col_separator"></td>
+    <td>Tel&eacute;fono:</td><td>{{ telefono }}</td>
+  </tr>
+  <tr>
+    <td>Total deuda inicial</td><td align="right">{{ deuda_inicial }}</td>
+    <td class="col_separator"></td>
+    <td>Domicilio:</td><td>{{ domicilio }}</td>
+  </tr>
+  <tr>
+    <td>Total deuda final</td><td align="right">{{ deuda_final }}</td>
+    <td class="col_separator"></td>
+    <td>Grupo Nro.:</td><td>{{ grupo }}</td>
+  </tr>
+  <tr>
+    <td>Nro. de pr&eacute;stamo:</td><td align="right">{{ nro_credito }}</td>
+    <td class="col_separator"></td>
+    <td>Coordinadores:</td>
+  </tr>
+  <tr>
+    <td>Cantidad de cuotas:</td><td align="right">{{ cuotas }}</td>
+  </tr>
+  <tr>
+    <td>Cuota calculada:</td><td align="right">{{ cuota_calculada }}</td>
+    <td class="col_separator"></td>
+    <td>Monto &uacute;ltima cuota:</td><td>{{ monto_ultima_cuota }}</td>
+  </tr>
+</table>
 <br>
-  <table class="cuotas_table">
-    <thead>
-      <tr>
-        <th align="center"># Cuota</th>
-        <th align="center">Fecha de pago</th>
-        <th>Pagado a la fecha</th>
-        <th>Saldo para terminar</th>
-        <th>Monto</th>
-        <th>A favor</th>
-        <th>Fecha efectiva de pago</th>
-        <th>Estado</th>
-        <th>Asistente</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for linea in detalle %}
-      <tr class="{% cycle('odd','even') %}">
-        <td align="center">{{ linea.nro_cuota }}</td>
-        <td align="center">{{ linea.fecha }}</td>
-        <td align="right">{{ linea.pagado_a_fecha }}</td>
-        <td align="right">{{ linea.saldo }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<table class="detalle">
+  <thead>
+    <tr>
+      <th align="center"># Cuota</th>
+      <th align="center">Fecha de pago</th>
+      <th>Pagado a la fecha</th>
+      <th>Saldo para terminar</th>
+      <th>Monto</th>
+      <th>A favor</th>
+      <th>Fecha efectiva de pago</th>
+      <th>Estado</th>
+      <th>Asistente</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for linea in detalle %}
+    <tr class="{% cycle('odd','even') %}">
+      <td align="center">{{ linea.nro_cuota }}</td>
+      <td align="center">{{ linea.fecha }}</td>
+      <td align="right">{{ linea.pagado_a_fecha }}</td>
+      <td align="right">{{ linea.saldo }}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

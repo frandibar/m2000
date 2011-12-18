@@ -29,7 +29,6 @@ import PyQt4
 import os
 
 import model
-import reports
 import view
 
 class MyApplicationAdmin(ApplicationAdmin):

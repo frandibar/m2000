@@ -40,6 +40,7 @@ from camelot.model import metadata
 __metadata__ = metadata
 
 import model
+import reports
 
 # esta clase corresponde a un VIEW
 class Indicadores(Entity):
@@ -81,6 +82,7 @@ class Indicadores(Entity):
         list_filter = [ComboBoxFilter('barrio')]
         list_columns_frozen = 1
         list_action = None
+        list_actions = [reports.ReporteIndicadores()]
         field_attributes = dict(fecha_entrega = dict(name = 'F.Entrega',
                                                      delegate = DateDelegate),
                                 fecha_inicio = dict(name = 'F.Inicio',
@@ -124,7 +126,8 @@ class Indicadores(Entity):
                                                         prefix = '$'),
                                 beneficiaria = dict(minimal_column_width = 25),
                                 )
-    Admin = notEditableAdmin(Admin)
+    # comentado porque sino no aparecen las list_actions
+    # Admin = notEditableAdmin(Admin)
 
 # esta clase corresponde a un VIEW
 class RecaudacionMensual(Entity):
@@ -152,7 +155,9 @@ class RecaudacionMensual(Entity):
                                                     delegate = FloatDelegate),
                                 total_pagos = dict(delegate = CurrencyDelegate,
                                                    prefix = '$'))
-    Admin = notEditableAdmin(Admin)
+        list_actions = [reports.ReporteRecaudacionMensual()]
+
+    # Admin = notEditableAdmin(Admin)
 
 
 # esta clase corresponde a un VIEW

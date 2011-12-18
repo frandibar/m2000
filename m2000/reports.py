@@ -32,17 +32,39 @@ from camelot.view.action_steps import PrintHtml #, WordJinjaTemplate
 from camelot.view.art import Icon
 
 from helpers import nro_en_letras, mes_en_letras
+import model
+import settings
+
+def header_image_filename():
+    return os.path.join(settings.CAMELOT_MEDIA_ROOT, 'header.jpg')
 
 def spacer(field):
     if not field:
         return '_' * 10 
     return field
 
+def fix_decimal_sep(str_num):
+    # warning: forzando separador decimal a ','
+    tmp = str_num.replace('.', ';')
+    tmp = tmp.replace(',', '.')
+    tmp = tmp.replace(';', ',')
+    return tmp
+
 def money_fmt(value):
-    return '$ %.1f' % value
+    # incluir separador de miles y signo de pesos
+    ret = '$ ' + '{:,.1f}'.format(value)
+    return fix_decimal_sep(ret)
 
 def float_fmt(value, dec=2):
-    return ('%.' + '%df' % dec) % value
+    ret = ('%.' + '%df' % dec) % value
+    return fix_decimal_sep(ret)
+
+# TODO: rehacer esto con min y max
+def fecha_desde():
+    return model.Fecha.query.first().fecha
+
+def fecha_hasta():
+    return model.Fecha.query.order_by(model.Fecha.fecha.desc()).first().fecha
 
 class ContratoMutuo(Action):
     verbose_name = 'Contrato Mutuo'
@@ -57,6 +79,7 @@ class ContratoMutuo(Action):
         fecha_ultima_cuota = obj.fecha_entrega + datetime.timedelta(weeks=obj.cuotas + 1)
 
         context = {
+            'header_image_filename': header_image_filename(),
             'beneficiaria': '%s %s' % (obj.beneficiaria.nombre, obj.beneficiaria.apellido),
             'dni': spacer(obj.beneficiaria.dni),
             'fecha_nac': spacer(obj.beneficiaria.fecha_nac),
@@ -172,6 +195,7 @@ class PlanillaPagos(Action):
             template = 'planilla_pagos.html'
 
         context = {
+            'header_image_filename': header_image_filename(),
             'anio': datetime.date.today().year,
             'comentarios': obj.beneficiaria.comentarios,
             'saldo_anterior': money_fmt(obj.saldo_anterior),
@@ -195,4 +219,91 @@ class PlanillaPagos(Action):
         fileloader = PackageLoader('m2000', 'templates')
         env = Environment(loader=fileloader)
         t = env.get_template(template)
+        yield PrintHtml(t.render(context))
+
+class ReporteIndicadores(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['comentarios',
+                                     'barrio',
+                                     'beneficiaria',
+                                     'nro_credito',
+                                     'fecha_entrega',
+                                     'fecha_inicio',
+                                     'fecha_cancelacion',
+                                     'saldo_anterior',
+                                     'tasa_interes',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        suma_saldo_anterior = 0
+        for row in iterator:
+            linea = Linea(row.comentarios,
+                          row.barrio,
+                          row.beneficiaria,
+                          row.nro_credito,
+                          row.fecha_entrega,
+                          row.fecha_inicio,
+                          row.fecha_cancelacion,
+                          money_fmt(row.saldo_anterior),
+                          float_fmt(row.tasa_interes))
+            suma_saldo_anterior += row.saldo_anterior
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total': money_fmt(suma_saldo_anterior),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('indicadores.html')
+        yield PrintHtml(t.render(context))
+
+
+class ReporteRecaudacionMensual(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['barrio',
+                                     'cartera',
+                                     'tasa_interes',
+                                     'total_pagos',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        suma_total = 0
+        for row in iterator:
+            linea = Linea(row.barrio,
+                          row.cartera,
+                          float_fmt(row.tasa_interes),
+                          money_fmt(row.total_pagos))
+            suma_total += row.total_pagos
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total': money_fmt(suma_total),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('recaudacion_mensual.html')
         yield PrintHtml(t.render(context))

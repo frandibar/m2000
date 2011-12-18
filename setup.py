@@ -49,9 +49,11 @@ setup(
         # If any package contains these files, include them:
         '': ['*.txt', 
              '*.png',
+             '*.jpg',
              '*.html',
              '*.css',
              '*.sql',
+             '*.svg',
              ],
         }
     classifiers = [

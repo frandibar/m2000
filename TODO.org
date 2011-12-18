@@ -1,4 +1,8 @@
 * COMO SIGO:
+** TODO terminar reportes con fechas y totales
+probar css en archivo aparte
+probar obtener min, max fecha como query sqlalchemy
+probar sumas en reportes como querys sqlalchemy en vez de iterar
 ** REPORTES:
 *** TODO contrato mutuo, falta completar la tasa de interes (espero respuesta de jose para ver como)
 *** TODO planilla pagos: Agregar pagos existentes
@@ -41,6 +45,7 @@ windows mysql-python
 cuando instalo un egg, primero desinstala si ya fue instalado
 * PREGUNTAS:
 ** FUNCIONALES
+*** porque debe ser editable el tableview para poder usar listactions
 *** footer en templates, se puede?
 *** preguntar como workaroundear el hecho de que no puedo ordenar columnas por properties, dado que deja cliquear y da al usuario la idea de que hace algo.
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
@@ -96,6 +101,9 @@ concepto de tasa de interes"Esta tasa no depende acaso del credito? Es verdad, e
 ** eliminar views de la db, reemplazarlos por sqlalchemy (sobre todo para evitar el uso de tablas parameter y fecha)
 ** agregar tests
 * ENHANCEMENTS:
+** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
+** reemplazar header jpg por svg
+** hacer reportes como pdf's con totales, fechas, etc, en vez de mostrar un tableview
 ** validadores de forms
 ** agregar coordinadores de grupos
 ** en fechas de reportes, guardar la ultima usada y usar como default
@@ -118,6 +126,7 @@ concepto de tasa de interes"Esta tasa no depende acaso del credito? Es verdad, e
 ** como exportar a excel
 ** como dar de alta
 ** como eliminar
+** reporte de recaudacion mensual, aplicar filtro
 ** como imprimir a pdf
 ** como colocar una foto a la beneficiaria
 ** como actualizar nueva version

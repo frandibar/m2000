@@ -3,29 +3,58 @@
   <title>{% block page_head_title %}{% endblock %}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <style type="text/css">
+    table {
+        align: center;
+        border-collapse: collapse;
+        border-style: hidden;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+   
+    table.detalle {
+        border-collapse: collapse;
+        border: 2px solid black;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+     
+    table td, table th {
+        border: 1px solid black;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+    table th { 
+        background-color: #DDDDDD;
+        font-weight: bold;
+        vertical-align: middle;
+    }
+     
+    tr.odd { background-color: #FFFFFF }
+    tr.even { background-color: #DDDDDD }
+   
+    #about {
+        text-align: right;
+        font-size: smaller;
+        font-style: italic;
+    }
     {% block styles %}{% endblock %}
   </style>
 </head>
 <body>
-  <img src="/home/fran/projects/m2000/m2000/media/header.jpg"/>
+  <table>
+    <tr>
+      <td><img src="{{ header_image_filename }}"/></td>
+      <td align="right">
+        <div id="about">
+          Asociaci&oacute;n Civil Mujeres 2000<br>
+          (5411) 4381-6438<br>
+          <a href="http://www.mujeres2000.org.ar">www.mujeres2000.org.ar</a><br>
+          info@mujeres2000.org.ar
+        </div>
+      </td>
+    </tr>
+  </table>
   <h3 id="page_title" align="center">{% block page_title %}{% endblock %}</h3>
   {% block page_content %}{% endblock %}
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <br><br>
-  <hr>
-  <div id="page_footer" align="center">
-    Asociaci&oacute;n Civil Mujeres 2000<br>
-    (5411) 4381-6438 | <a href="http://www.mujeres2000.org.ar">www.mujeres2000.org.ar</a> | info@mujeres2000.org.ar
-  </div>
 </body>
 </html>
