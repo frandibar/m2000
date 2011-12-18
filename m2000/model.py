@@ -61,11 +61,12 @@ import sqlalchemy
 
 import reports
 from constants import PKEY_UNDEFINED, ID_ACTIVIDAD_CONSTRUCCION
-
+    
 class RubroAdminEmbedded(EntityAdmin):
     verbose_name = 'Rubro'
     list_display = ['nombre']
     list_action = None
+    delete_mode = 'on_confirm'
 
 class Actividad(Entity):
     using_options(tablename='actividad')
@@ -81,6 +82,7 @@ class Actividad(Entity):
                                 rubros = dict(embedded = True,
                                               admin = RubroAdminEmbedded))
         list_search = ['nombre', 'amortizacion.nombre', 'rubros.nombre']
+        delete_mode = 'on_confirm'
 
     def __unicode__(self):
         return self.nombre or UNDEFINED
@@ -95,6 +97,7 @@ class Rubro(Entity):
         list_display = ['nombre', 'actividad']
         list_action = None
         list_search = ['nombre', 'actividad.nombre']
+        delete_mode = 'on_confirm'
         form_size = (450,150)
 
     def __unicode__(self):
@@ -111,6 +114,7 @@ class Asistencia(Entity):
         field_attributes = { 'codigo': { 'name': u'Código' },
                              'descripcion': { 'name': u'Descripción' } }
         list_action = None
+        delete_mode = 'on_confirm'
         form_size = (450,150)
 
     def __unicode__(self):
@@ -124,6 +128,7 @@ class Provincia(Entity):
         verbose_name = 'Provincia'
         list_display = ['nombre']
         list_action = None
+        delete_mode = 'on_confirm'
         form_size = (450,100)
 
     def __unicode__(self):
@@ -139,6 +144,7 @@ class Ciudad(Entity):
         verbose_name_plural = 'Ciudades'
         list_display = ['nombre', 'provincia']
         list_action = None
+        delete_mode = 'on_confirm'
         form_size = (450,150)
 
     def __unicode__(self):
@@ -154,6 +160,7 @@ class DomicilioPago(Entity):
         verbose_name_plural = 'Domicilios de Pago'
         list_display = ['nombre', 'ciudad']
         list_action = None
+        delete_mode = 'on_confirm'
         form_size = (450,150)
         
     def __unicode__(self):
@@ -169,6 +176,7 @@ class Barrio(Entity):
         list_display = ['nombre', 'domicilio_pago']
         field_attributes = { 'domicilio_pago': { 'name': u'Domicilio de Pago' } }
         list_action = None
+        delete_mode = 'on_confirm'
         form_size = (450,150)
 
     def __unicode__(self):
@@ -188,6 +196,7 @@ class PagoAdminBase(EntityAdmin):
                    'credito.beneficiaria.apellido',
                    ]
     list_action = None
+    delete_mode = 'on_confirm'
 
 class PagoAdminEmbedded(PagoAdminBase):
     list_display = filter(lambda x: x not in ['credito'], PagoAdminBase.list_display)
@@ -223,7 +232,7 @@ class CreditoAdminBase(EntityAdmin):
                     'comentarios',
                     'gastos_arq',
                     ]
-
+    delete_mode = 'on_confirm'
     list_search = ['beneficiaria.nombre',
                    'beneficiaria.apellido',
                    'beneficiaria.barrio.nombre',
@@ -377,8 +386,10 @@ class Beneficiaria(Entity):
 
     class Admin(EntityAdmin):
         verbose_name = 'Beneficiaria'
+        delete_mode = 'on_confirm'
         list_columns_frozen = 1
         lines_per_row = 1
+        delete_mode = 'on_confirm'
         list_display = ['apellido',
                         'nombre',
                         'grupo',
@@ -617,6 +628,7 @@ class EstadoCredito(Entity):
                         'cuotas_adeudadas']
         field_attributes = { 'descripcion': { 'name': u'Descripción' } }
         list_action = None
+        delete_mode = 'on_confirm'
 
     def __unicode__(self):
         return self.descripcion or UNDEFINED
@@ -644,6 +656,7 @@ class Pago(Entity):
         field_attributes = dict(credito = dict(name = u'Crédito'),
                                 monto = dict(prefix = '$'))
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:'')]
+        delete_mode = 'on_confirm'
 
     def __unicode__(self):
         if self.credito:
@@ -665,6 +678,7 @@ class Amortizacion(Entity):
         verbose_name_plural = 'Amortizaciones'
         list_display = ['nombre']
         list_action = None
+        delete_mode = 'on_confirm'
         form_size = (450,100)
 
     def __unicode__(self):

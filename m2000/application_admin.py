@@ -53,23 +53,14 @@ class MyApplicationAdmin(ApplicationAdmin):
         
     def get_sections(self):
         # from camelot.model.memento import Memento
-        # from camelot.model.authentication import Person, Organization
         # from camelot.model.i18n import Translation
         
         return [
-                # Section('relation',
-                #         Icon('tango/22x22/apps/system-users.png'),
-                #         items = [Person, Organization]),
-                # Section('configuration',
-                #         Icon('tango/22x22/categories/preferences-system.png'),
-                #         items = [Memento, Translation]),
-
                 Section(u'Día a Día',
                         self,
                         Icon('tango/22x22/actions/appointment-new.png'),
                         items = [
                                  model.Beneficiaria,
-                                 # model.CargaSemanal,
                                  model.Credito,
                                  model.Pago,
                             ]),
@@ -114,9 +105,9 @@ class MyApplicationAdmin(ApplicationAdmin):
                                  model.Provincia,
                                  model.Rubro,
                             ]),
-                # Section('Vistas',
+                # Section('configuration',
                 #         Icon('tango/22x22/categories/preferences-system.png'),
-                #         items = [view.Formulario(), view.Coordinate]),
+                #         items = [Memento, Translation]),
                 ]
 
     def get_help_url(self):
@@ -129,3 +120,7 @@ class MyApplicationAdmin(ApplicationAdmin):
     # def get_translator(self):
     #     trans = ApplicationAdmin.get_translator(self)
     #     return trans
+
+    # def get_stylesheet(self):
+    #     from camelot.view import art
+    #     return art.read(os.path.join('stylesheet', 'office2007_blue.qss'))

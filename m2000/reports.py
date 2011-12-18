@@ -28,7 +28,7 @@ from jinja import Environment, PackageLoader
 from pkg_resources import resource_filename
 from camelot.admin.action.base import Action
 from camelot.admin.entity_admin import EntityAdmin
-from camelot.view.action_steps import PrintHtml
+from camelot.view.action_steps import PrintHtml #, WordJinjaTemplate
 from camelot.view.art import Icon
 
 from helpers import nro_en_letras, mes_en_letras
@@ -84,7 +84,8 @@ class ContratoMutuo(Action):
         env = Environment(loader=fileloader)
         t = env.get_template('contrato_mutuo.html')
         yield PrintHtml(t.render(context))
-
+        # TODO probar en windows
+        # yield WordJinjaTemplate(t.render(context))
 
 class PlanillaPagos(Action):
     verbose_name = 'Planilla de Pagos'
