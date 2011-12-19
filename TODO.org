@@ -45,8 +45,7 @@ windows mysql-python
 cuando instalo un egg, primero desinstala si ya fue instalado
 * PREGUNTAS:
 ** FUNCIONALES
-*** se puede filtrar al dar clic en lupa para completar campo referencia (ej creditos activos para carga de pago)
-*** porque debe ser editable el tableview para poder usar listactions
+*** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
 *** footer en templates, se puede?
 *** preguntar como workaroundear el hecho de que no puedo ordenar columnas por properties, dado que deja cliquear y da al usuario la idea de que hace algo.
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
@@ -134,6 +133,7 @@ concepto de tasa de interes"Esta tasa no depende acaso del credito? Es verdad, e
 ** aclarar que la 1ra vez tarda
 ** aclarar que la busqueda es por nombre o apellido beneficiaria, pero no los dos
 ** documentacion a completar
+** en alta de pago, al seleccionar un credito se puede escribir el barrio y funciona el filtro.
 * TIPS
 ** puedo usar @property en vez de @ColumnProperty, salvo que quiera incluir el campo en un filtro
 ** para que el form sea no editable

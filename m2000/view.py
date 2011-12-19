@@ -478,12 +478,9 @@ class IntervaloFechasDialog(object):
                                              editable = True,
                                              tooltip = 'Debe ser mayor o igual que fecha desde',
                                              background_color = lambda o: ColorScheme.orange_1 if o.hasta < o.desde else None))
-        # TODO: como hago esto?
-        # form_close_action = camelot.admin.action.OpenTableView(self.app_admin.get_entity_admin(Indicadores))
         
 class IntervaloFechas(Action):
     verbose_name = 'Definir Intervalo de fechas'
-    # verbose_name = 'Definir el intervalo de fechas para los reportes'
     icon = Icon('tango/16x16/apps/office-calendar.png')
 
     def find_friday(self, date, inc):
@@ -521,5 +518,3 @@ class IntervaloFechas(Action):
 
         model.Fecha.query.session.flush()
         yield Refresh()
-        # camelot.admin.action.application_action.OpenTableView(self.app_admin.get_entity_admin(Beneficiaria))
-        # yield FlushSession(model_context.session)

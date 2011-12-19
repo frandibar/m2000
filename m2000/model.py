@@ -657,7 +657,8 @@ class Pago(Entity):
                                 monto = dict(prefix = '$'))
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:'')]
         delete_mode = 'on_confirm'
-
+        form_size = (450,300)
+        
     def __unicode__(self):
         if self.credito:
             return '%s %s (cred. #%s)' % (self.credito.beneficiaria.nombre,
