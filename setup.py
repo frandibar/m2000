@@ -55,7 +55,7 @@ setup(
              '*.sql',
              '*.svg',
              ],
-        }
+        },
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: X11 Applications :: Qt',
