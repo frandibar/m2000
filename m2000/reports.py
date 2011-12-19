@@ -495,3 +495,212 @@ class ReporteRecaudacionPotencialTotalPorBarrio(Action):
         t = env.get_template('recaudacion_potencial_total_x_barrio.html')
         yield PrintHtml(t.render(context))
 
+class ReporteChequesEntregados(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['beneficiaria',
+                                     'barrio',
+                                     'cartera',
+                                     'nro_credito',
+                                     'fecha_entrega',
+                                     'monto_prestamo',
+                                     'monto_cheque',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_prestamo = 0
+        total_cheque = 0
+        for row in iterator:
+            linea = Linea(row.beneficiaria,
+                          row.barrio,
+                          row.cartera,
+                          row.nro_credito,
+                          row.fecha_entrega,
+                          money_fmt(row.monto_prestamo),
+                          money_fmt(row.monto_cheque),
+                          )
+            total_prestamo += row.monto_prestamo
+            total_cheque += row.monto_cheque
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_prestamo': money_fmt(total_prestamo),
+            'total_cheque': money_fmt(total_cheque),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('cartera_cheques_entregados.html')
+        yield PrintHtml(t.render(context))
+
+class ReporteCreditosActivos(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['cdi',
+                                     'beneficiaria',
+                                     'barrio',
+                                     'nro_credito',
+                                     'fecha_entrega',
+                                     'prestamo',
+                                     'saldo',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_prestamo = 0
+        total_saldo = 0
+        for row in iterator:
+            linea = Linea(row.comentarios,
+                          row.beneficiaria,
+                          row.barrio,
+                          row.nro_credito,
+                          row.fecha_entrega,
+                          money_fmt(row.prestamo),
+                          money_fmt(row.saldo),
+                          )
+            total_prestamo += row.prestamo
+            total_saldo += row.saldo
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_prestamo': money_fmt(total_prestamo),
+            'total_saldo': money_fmt(total_saldo),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('cartera_creditos_activos.html')
+        yield PrintHtml(t.render(context))
+
+class ReportePerdidaPorIncobrable(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['cdi',
+                                     'beneficiaria',
+                                     'fecha_baja',
+                                     'barrio',
+                                     'nro_credito',
+                                     'fecha_finalizacion',
+                                     'comentarios_baja',
+                                     'fecha_entrega',
+                                     'prestamo',
+                                     'deuda_total',
+                                     'saldo',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_prestamo = 0
+        total_deuda = 0
+        total_saldo = 0
+        for row in iterator:
+            linea = Linea(row.comentarios,
+                          row.beneficiaria,
+                          row.fecha_baja,
+                          row.barrio,
+                          row.nro_credito,
+                          row.fecha_finalizacion,
+                          row.comentarios_baja,
+                          row.fecha_entrega,
+                          money_fmt(row.prestamo),
+                          money_fmt(row.deuda_total),
+                          money_fmt(row.saldo),
+                          )
+            total_prestamo += row.prestamo
+            total_deuda += row.deuda_total
+            total_saldo += row.saldo
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_prestamo': money_fmt(total_prestamo),
+            'total_deuda': money_fmt(total_deuda),
+            'total_saldo': money_fmt(total_saldo),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('cartera_perdida_x_incobrable.html')
+        yield PrintHtml(t.render(context))
+
+class ReporteCreditosFinalizadosSinSaldar(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['cdi',
+                                     'beneficiaria',
+                                     'barrio',
+                                     'nro_credito',
+                                     'fecha_finalizacion',
+                                     'fecha_entrega',
+                                     'prestamo',
+                                     'deuda_total',
+                                     'saldo',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_prestamo = 0
+        total_deuda = 0
+        total_saldo = 0
+        for row in iterator:
+            linea = Linea(row.comentarios,
+                          row.beneficiaria,
+                          row.barrio,
+                          row.nro_credito,
+                          row.fecha_finalizacion,
+                          row.fecha_entrega,
+                          money_fmt(row.prestamo),
+                          money_fmt(row.deuda_total),
+                          money_fmt(row.saldo),
+                          )
+            total_prestamo += row.prestamo
+            total_deuda += row.deuda_total
+            total_saldo += row.saldo
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_prestamo': money_fmt(total_prestamo),
+            'total_deuda': money_fmt(total_deuda),
+            'total_saldo': money_fmt(total_saldo),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('cartera_finalizados_sin_saldar.html')
+        yield PrintHtml(t.render(context))

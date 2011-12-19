@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block page_head_title %}Reporte de Pr&eacute;stamos / Cheques Entregados{% endblock %}
+
+{% block page_title %}Reporte de Pr&eacute;stamos / Cheques Entregados{% endblock %}
+
+{% block page_content %}
+<table align="center">
+  <caption>Per&iacute;odo: desde {{ fecha_desde }} hasta {{ fecha_hasta }}</caption>
+  <thead>
+    <tr>
+      <th>Beneficiaria</th>
+      <th>Barrio</th>
+      <th>Cartera</th>
+      <th># Cr&eacute;dito</th>
+      <th>Fecha Entrega</th>
+      <th>Monto Pr&eacute;stamo</th>
+      <th>Monto Cheque</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for linea in detalle %}
+    <tr class="{% cycle('odd','even') %}">
+      <td>{{ linea.beneficiaria }}</td>
+      <td>{{ linea.barrio }}</td>
+      <td>{{ linea.cartera }}</td>
+      <td>{{ linea.nro_credito }}</td>
+      <td>{{ linea.fecha_entrega }}</td>
+      <td align="right">{{ linea.monto_prestamo }}</td>
+      <td align="right">{{ linea.monto_cheque }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="odd"></tr>
+    <tr class="even">
+      <td><b>TOTAL<b></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><b>{{ total_prestamo }}<b></td>
+      <td><b>{{ total_cheque }}<b></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

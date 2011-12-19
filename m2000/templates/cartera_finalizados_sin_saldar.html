@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block page_head_title %}Reporte de Cr&eacute;ditos finalizados sin saldar{% endblock %}
+
+{% block page_title %}Reporte de Cr&eacute;ditos finalizados sin saldar{% endblock %}
+
+{% block page_content %}
+<table align="center">
+  <caption>Per&iacute;odo: desde {{ fecha_desde }} hasta {{ fecha_hasta }}</caption>
+  <thead>
+    <tr>
+      <th>CDI</th>
+      <th>Beneficiaria</th>
+      <th>Barrio</th>
+      <th># Cr&eacute;dito</th>
+      <th>Fecha Finaliz.</th>
+      <th>Fecha Entrega</th>
+      <th>Pr&eacute;stamo</th>
+      <th>Deuda Total</th>
+      <th>Saldo</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for linea in detalle %}
+    <tr class="{% cycle('odd','even') %}">
+      <td align="center">{{ linea.cdi }}</td>
+      <td>{{ linea.beneficiaria }}</td>
+      <td>{{ linea.barrio }}</td>
+      <td align="center">{{ linea.nro_credito }}</td>
+      <td>{{ linea.fecha_finalizacion }}</td>
+      <td>{{ linea.fecha_entrega }}</td>
+      <td align="right">{{ linea.prestamo }}</td>
+      <td align="right">{{ linea.deuda_total }}</td>
+      <td align="right">{{ linea.saldo }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="odd"></tr>
+    <tr class="even">
+      <td><b>TOTAL<b></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><b>{{ total_prestamo }}<b></td>
+      <td><b>{{ total_deuda }}<b></td>
+      <td><b>{{ total_saldo }}<b></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

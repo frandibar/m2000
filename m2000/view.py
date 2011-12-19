@@ -300,6 +300,7 @@ class ChequesEntregados(Entity):
                         'fecha_entrega',
                         'monto_prestamo',
                         'monto_cheque']
+        list_actions = [reports.ReporteChequesEntregados()]
         list_action = None
         list_filter = [ComboBoxFilter('beneficiaria'),
                        ComboBoxFilter('barrio'),
@@ -310,7 +311,7 @@ class ChequesEntregados(Entity):
                                 monto_cheque = dict(delegate = CurrencyDelegate,
                                                     prefix = '$'),
                                 beneficiaria = dict(minimal_column_width = 25))
-    Admin = notEditableAdmin(Admin)
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 # esta clase corresponde a un VIEW
 class CreditosActivos(Entity):
@@ -328,6 +329,7 @@ class CreditosActivos(Entity):
                         'fecha_entrega',
                         'prestamo',
                         'saldo']
+        list_actions = [reports.ReporteCreditosActivos()]
         list_action = None
         list_filter = [ComboBoxFilter('beneficiaria'),
                        ComboBoxFilter('barrio'),
@@ -337,8 +339,9 @@ class CreditosActivos(Entity):
                                                 prefix = '$'),
                                 saldo = dict(delegate = CurrencyDelegate,
                                              prefix = '$'),
-                                beneficiaria = dict(minimal_column_width = 25))
-    Admin = notEditableAdmin(Admin)
+                                beneficiaria = dict(minimal_column_width = 25),
+                                comentarios = dict(name = 'CDI'))
+    # Admin = notEditableAdmin(Admin, actions=True)
     
 
 # esta clase corresponde a un VIEW
@@ -362,7 +365,6 @@ class PerdidaPorIncobrable(Entity):
                         'deuda_total',
                         'saldo',
                         ]
-        
         list_filter = [ComboBoxFilter('barrio'),
                        ]
         # TODO no se muestran los campos de busqueda
@@ -377,6 +379,7 @@ class PerdidaPorIncobrable(Entity):
                        'deuda_total',
                        'saldo',
                        ]
+        list_actions = [reports.ReportePerdidaPorIncobrable()]
         list_action = None
         field_attributes = dict(fecha_baja = dict(delegate = DateDelegate),
                                 fecha_finalizacion = dict(delegate = DateDelegate,
@@ -394,7 +397,7 @@ class PerdidaPorIncobrable(Entity):
                                 comentarios_baja = dict(minimal_column_width = 15),
                                 beneficiaria = dict(minimal_column_width = 25),
                                 )
-    Admin = notEditableAdmin(Admin)
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 # esta clase corresponde a un VIEW
 class CreditosFinalizadosSinSaldar(Entity):
@@ -430,6 +433,7 @@ class CreditosFinalizadosSinSaldar(Entity):
                        'saldo',
                        ]
         list_action = None
+        list_actions = [reports.ReporteCreditosFinalizadosSinSaldar()]
         field_attributes = dict(fecha_finalizacion = dict(delegate = DateDelegate,
                                                           name = u'Fecha finalización',
                                                           minimal_column_width = 15),
@@ -441,10 +445,11 @@ class CreditosFinalizadosSinSaldar(Entity):
                                                    prefix = '$'),
                                 saldo = dict(delegate = CurrencyDelegate,
                                              prefix = '$'),
-                                comentarios = dict(minimal_column_width = 20),
+                                comentarios = dict(name = 'CDI',
+                                                   minimal_column_width = 20),
                                 beneficiaria = dict(minimal_column_width = 25),
                                 )
-    Admin = notEditableAdmin(Admin)
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 class DatesValidator(ObjectValidator):
     def objectValidity(self, entity_instance):
