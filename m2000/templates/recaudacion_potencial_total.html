@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block page_head_title %}Reporte de Recaudaci&oacute;n Potencial Total{% endblock %}
+
+{% block page_title %}Reporte de Recaudaci&oacute;n Potencial Total{% endblock %}
+
+{% block page_content %}
+<table align="center">
+  <caption>Per&iacute;odo: desde {{ fecha_desde }} hasta {{ fecha_hasta }}</caption>
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Recaudaci&oacute;n</th>
+      <th>Recaudaci&oacute;n<br>Potencial</th>
+      <th>%</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for linea in detalle %}
+    <tr class="{% cycle('odd','even') %}">
+      <td>{{ linea.fecha }}</td>
+      <td align="right">{{ linea.recaudacion }}</td>
+      <td align="right">{{ linea.recaudacion_potencial }}</td>
+      <td align="right">{{ linea.porcentaje }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="odd"></tr>
+    <tr class="even">
+      <td><b>TOTAL<b></td>
+      <td align="right"><b>{{ total_recaudacion }}<b></td>
+      <td align="right"><b>{{ total_recaudacion_potencial }}<b></td>
+      <td align="right"><b>{{ total_porcentaje }}<b></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

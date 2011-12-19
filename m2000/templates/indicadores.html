@@ -5,9 +5,11 @@
 {% block page_title %}Reporte de Indicadores{% endblock %}
 
 {% block styles %}
-    table th { background-color: #DDDDDD;
-               font-weight: normal;
-               vertical-align: middle;
+    table {
+        font-size: 10px;
+    }
+    table th { 
+        font-weight: normal;
     }
 {% endblock %}
 
@@ -19,26 +21,26 @@
       <th>CDI</th>
       <th>Barrio</th>
       <th>Beneficiaria</th>
-      <!-- <th># Cr&eacute;dito</th> -->
-      <!-- <th>F. Entrega</th> -->
-      <!-- <th>F. Inicio</th> -->
-      <!-- <th>F. Cancelac.</th> -->
-      <!-- <th>Saldo Ant.</th> -->
-      <!-- <th>Tasa Int.</th> -->
-      <!-- <th>Cartera</th> -->
-      <!-- <th>Monto Aporte</th> -->
-      <!-- <th>Deuda Total</th> -->
-      <!-- <th>Cuotas</th> -->
-      <!-- <th>Cuota Calculada</th> -->
-      <!-- <th>Cuotas Pagadas</th> -->
-      <!-- <th>%</th> -->
-      <!-- <th>Cuotas Te&oacute;rico</th> -->
-      <!-- <th>%</th> -->
-      <!-- <th>Dif. Cuotas</th> -->
-      <!-- <th>Saldo</th> -->
-      <!-- <th>Monto Pagado</th> -->
-      <!-- <th>Monto Te&oacute;rico</th> -->
-      <!-- <th>Dif. Monto</th> -->
+      <th># Cr&eacute;dito</th>
+      <th>F. Entrega</th>
+      <th>F. Inicio</th>
+      <th>F. Cancelac.</th>
+      <th>Saldo Ant.</th>
+      <th>Tasa Int.</th>
+      <th>Cartera</th>
+      <th>Monto Aporte</th>
+      <th>Deuda Total</th>
+      <th>Cuotas</th>
+      <th>Cuota Calculada</th>
+      <th>Cuotas Pagadas</th>
+      <th>%</th>
+      <th>Cuotas Te&oacute;rico</th>
+      <th>%</th>
+      <th>Dif. Cuotas</th>
+      <th>Saldo</th>
+      <th>Monto Pagado</th>
+      <th>Monto Te&oacute;rico</th>
+      <th>Dif. Monto</th>
     </tr>
   </thead>
   <tbody>
@@ -47,21 +49,40 @@
       <td>{{ linea.comentarios }}</td>
       <td>{{ linea.barrio }}</td>
       <td>{{ linea.beneficiaria }}</td>
-      <!-- <td>{{ linea.nro_credito }}</td> -->
-      <!-- <td>{{ linea.fecha_entrega }}</td> -->
-      <!-- <td>{{ linea.fecha_inicio }}</td> -->
-      <!-- <td>{{ linea.fecha_cancelacion }}</td> -->
-      <!-- <td>{{ linea.saldo_anterior }}</td> -->
-      <!-- <td>{{ linea.tasa_interes }}</td> -->
+      <td align="center">{{ linea.nro_credito }}</td>
+      <td>{{ linea.fecha_entrega }}</td>
+      <td>{{ linea.fecha_inicio }}</td>
+      <td>{{ linea.fecha_cancelacion }}</td>
+      <td align="right">{{ linea.saldo_anterior }}</td>
+      <td align="right">{{ linea.tasa_interes }}</td>
+      <td>{{ linea.cartera }}</td>
+      <td align="right">{{ linea.monto_aporte }}</td>
+      <td align="right">{{ linea.deuda_total }}</td>
+      <td align="right">{{ linea.cuotas }}</td>
+      <td align="right">{{ linea.cuota_calculada }}</td>
+      <td align="right">{{ linea.cuotas_pagadas }}</td>
+      <td align="right">{{ linea.cuotas_pagadas_porcent }}</td>
+      <td align="right">{{ linea.cuotas_teorico }}</td>
+      <td align="right">{{ linea.cuotas_teorico_porcent }}</td>
+      <td align="right">{{ linea.diferencia_cuotas }}</td>
+      <td align="right">{{ linea.saldo }}</td>
+      <td align="right">{{ linea.monto_pagado }}</td>
+      <td align="right">{{ linea.monto_teorico }}</td>
+      <td align="right">{{ linea.diferencia_monto }}</td>
     </tr>
     {% endfor %}
-    <tr class="odd"></tr>
-    <tr class="even">
-      <td><b>TOTAL<b></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+    <!-- <tr class="odd"></tr> -->
+    <!-- <tr class="even"> -->
+    <!--   <td><b>TOTAL<b></td> -->
+    <!--   <td></td> -->
+    <!--   <td></td> -->
+    <!--   <td></td> -->
+    <!--   <td></td> -->
+    <!--   <td></td> -->
+    <!--   <td></td> -->
+    <!--   <td></td> -->
+    <!--   <td></td> -->
+    <!-- </tr> -->
   </tbody>
 </table>
 {% endblock %}

@@ -235,10 +235,23 @@ class ReporteIndicadores(Action):
                                      'fecha_cancelacion',
                                      'saldo_anterior',
                                      'tasa_interes',
+                                     'cartera',
+                                     'monto_aporte',
+                                     'deuda_total',
+                                     'cuotas',
+                                     'cuota_calculada',
+                                     'cuotas_pagadas',
+                                     'cuotas_pagadas_porcent',
+                                     'cuotas_teorico',
+                                     'cuotas_teorico_porcent',
+                                     'diferencia_cuotas',
+                                     'saldo',
+                                     'monto_pagado',
+                                     'monto_teorico',
+                                     'diferencia_monto', 
                                      ])
         iterator = model_context.get_collection()
         detalle = []
-        suma_saldo_anterior = 0
         for row in iterator:
             linea = Linea(row.comentarios,
                           row.barrio,
@@ -248,8 +261,21 @@ class ReporteIndicadores(Action):
                           row.fecha_inicio,
                           row.fecha_cancelacion,
                           money_fmt(row.saldo_anterior),
-                          float_fmt(row.tasa_interes))
-            suma_saldo_anterior += row.saldo_anterior
+                          float_fmt(row.tasa_interes),
+                          row.cartera,
+                          money_fmt(row.monto_aporte),
+                          money_fmt(row.deuda_total),
+                          row.cuotas,
+                          money_fmt(row.cuota_calculada),
+                          float_fmt(row.cuotas_pagadas),
+                          float_fmt(row.cuotas_pagadas_porcent),
+                          money_fmt(row.cuotas_teorico),
+                          float_fmt(row.cuotas_teorico_porcent),
+                          money_fmt(row.diferencia_cuotas),
+                          money_fmt(row.saldo),
+                          money_fmt(row.monto_pagado),
+                          money_fmt(row.monto_teorico),
+                          money_fmt(row.diferencia_monto))
             detalle.append(linea)
 
         context = { 
@@ -257,7 +283,6 @@ class ReporteIndicadores(Action):
             'fecha_desde': fecha_desde(),
             'fecha_hasta': fecha_hasta(),
             'detalle': detalle,
-            'total': money_fmt(suma_saldo_anterior),
             }
         return context
 
@@ -307,3 +332,166 @@ class ReporteRecaudacionMensual(Action):
         env = Environment(loader=fileloader)
         t = env.get_template('recaudacion_mensual.html')
         yield PrintHtml(t.render(context))
+
+class ReporteRecaudacionRealTotal(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['fecha',
+                                     'cartera',
+                                     'tasa_interes',
+                                     'recaudacion',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_recaudacion = 0
+        for row in iterator:
+            linea = Linea(row.fecha,
+                          row.cartera,
+                          float_fmt(row.tasa_interes),
+                          money_fmt(row.recaudacion))
+            total_recaudacion += row.recaudacion
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_recaudacion': money_fmt(total_recaudacion),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('recaudacion_real_total.html')
+        yield PrintHtml(t.render(context))
+
+class ReporteRecaudacionPotencialTotal(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['fecha',
+                                     'recaudacion',
+                                     'recaudacion_potencial',
+                                     'porcentaje',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_recaudacion = 0
+        total_recaudacion_potencial = 0
+        for row in iterator:
+            linea = Linea(row.fecha,
+                          money_fmt(row.recaudacion),
+                          money_fmt(row.recaudacion_potencial),
+                          float_fmt(row.porcentaje))
+            total_recaudacion += row.recaudacion
+            total_recaudacion_potencial += row.recaudacion_potencial
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_recaudacion': money_fmt(total_recaudacion),
+            'total_recaudacion_potencial': money_fmt(total_recaudacion_potencial),
+            'total_porcentaje': float_fmt(total_recaudacion / total_recaudacion_potencial)
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('recaudacion_potencial_total.html')
+        yield PrintHtml(t.render(context))
+
+
+class ReporteRecaudacionRealTotalPorBarrio(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['fecha',
+                                     'barrio',
+                                     'recaudacion',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_recaudacion = 0
+        for row in iterator:
+            linea = Linea(row.fecha,
+                          row.barrio,
+                          money_fmt(row.recaudacion))
+            total_recaudacion += row.recaudacion
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_recaudacion': money_fmt(total_recaudacion),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('recaudacion_real_total_x_barrio.html')
+        yield PrintHtml(t.render(context))
+
+class ReporteRecaudacionPotencialTotalPorBarrio(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['fecha',
+                                     'barrio',
+                                     'recaudacion',
+                                     'recaudacion_potencial',
+                                     'porcentaje',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_recaudacion = 0
+        total_recaudacion_potencial = 0
+        for row in iterator:
+            linea = Linea(row.fecha,
+                          row.barrio,
+                          money_fmt(row.recaudacion),
+                          money_fmt(row.recaudacion_potencial),
+                          float_fmt(row.porcentaje),
+                          )
+            total_recaudacion += row.recaudacion
+            total_recaudacion_potencial += row.recaudacion_potencial
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'fecha_desde': fecha_desde(),
+            'fecha_hasta': fecha_hasta(),
+            'detalle': detalle,
+            'total_recaudacion': money_fmt(total_recaudacion),
+            'total_recaudacion_potencial': money_fmt(total_recaudacion_potencial),
+            'total_porcentaje': float_fmt(total_recaudacion / total_recaudacion_potencial),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('recaudacion_potencial_total_x_barrio.html')
+        yield PrintHtml(t.render(context))
+

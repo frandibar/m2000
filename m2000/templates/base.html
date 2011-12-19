@@ -10,14 +10,12 @@
         padding-left: 2px;
         padding-right: 2px;
     }
-   
     table.detalle {
         border-collapse: collapse;
         border: 2px solid black;
         padding-left: 2px;
         padding-right: 2px;
     }
-     
     table td, table th {
         border: 1px solid black;
         padding-left: 2px;
@@ -28,24 +26,27 @@
         font-weight: bold;
         vertical-align: middle;
     }
-     
-    tr.odd { background-color: #FFFFFF }
-    tr.even { background-color: #DDDDDD }
-   
+    tr.odd { 
+        background-color: #FFFFFF; 
+    }
+    tr.even { 
+        background-color: #DDDDDD;
+    }
     #about {
         text-align: right;
-        font-size: smaller;
+        font-size: 11px;
         font-style: italic;
     }
     {% block styles %}{% endblock %}
   </style>
 </head>
 <body>
-  <table>
+  <table width="100%">
     <tr>
       <td><img src="{{ header_image_filename }}"/></td>
       <td align="right">
         <div id="about">
+          <br>
           Asociaci&oacute;n Civil Mujeres 2000<br>
           (5411) 4381-6438<br>
           <a href="http://www.mujeres2000.org.ar">www.mujeres2000.org.ar</a><br>

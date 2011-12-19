@@ -175,7 +175,7 @@ class RecaudacionRealTotal(Entity):
                         'tasa_interes',
                         'recaudacion',
                         ]
-        
+        list_actions = [reports.ReporteRecaudacionRealTotal()]
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
                        ComboBoxFilter('cartera'),
                        ]
@@ -187,7 +187,7 @@ class RecaudacionRealTotal(Entity):
                                 tasa_interes = dict(name = u'Tasa Interés',
                                                     delegate = FloatDelegate)
                                 )
-    Admin = notEditableAdmin(Admin)
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 
 # esta clase corresponde a un VIEW
@@ -209,12 +209,13 @@ class RecaudacionRealTotalPorBarrio(Entity):
                        ComboBoxFilter('barrio'),
                        ]
         list_action = None
+        list_actions = [reports.ReporteRecaudacionRealTotalPorBarrio()]
         field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 fecha = dict(delegate = DateDelegate),
                                 )
-    Admin = notEditableAdmin(Admin)
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 # esta clase corresponde a un VIEW
 class RecaudacionPotencialTotalPorBarrio(Entity):
@@ -239,6 +240,7 @@ class RecaudacionPotencialTotalPorBarrio(Entity):
                        ComboBoxFilter('barrio'),
                        ]
         list_action = None
+        list_actions = [reports.ReporteRecaudacionPotencialTotalPorBarrio()]
         field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
@@ -248,7 +250,7 @@ class RecaudacionPotencialTotalPorBarrio(Entity):
                                 porcentaje = dict(name = '%',
                                                   delegate = FloatDelegate),
                                 )
-    Admin = notEditableAdmin(Admin)
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 # esta clase corresponde a un VIEW
 class RecaudacionPotencialTotal(Entity):
@@ -269,6 +271,7 @@ class RecaudacionPotencialTotal(Entity):
         
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
                        ]
+        list_actions = [reports.ReporteRecaudacionPotencialTotal()]
         list_action = None
         field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
@@ -279,7 +282,7 @@ class RecaudacionPotencialTotal(Entity):
                                 porcentaje = dict(name = '%',
                                                   delegate = FloatDelegate),
                                 )
-    Admin = notEditableAdmin(Admin)
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 # esta clase corresponde a un VIEW
 class ChequesEntregados(Entity):
@@ -490,13 +493,13 @@ class IntervaloFechas(Action):
         return date
 
     def model_run(self, model_context):
-        # truncate tables
-        model.Parametro.query.delete()
-        model.Fecha.query.delete()
-
         # ask for date intervals
         fechas = IntervaloFechasDialog()
         yield ChangeObject(fechas)
+
+        # truncate tables (after ChangeObject since user may cancel)
+        model.Parametro.query.delete()
+        model.Fecha.query.delete()
 
         desde = self.find_friday(fechas.desde, 1)
         hasta = self.find_friday(fechas.hasta, -1)
