@@ -87,7 +87,7 @@ CREATE OR REPLACE VIEW 700_recaudacion_x_cartera AS
 SELECT 
     cartera.nombre AS cartera, 
     credito.tasa_interes, 
-    SUM(pago.monto) AS total_pagos, 
+    SUM(pago.monto) AS recaudacion, 
     barrio.nombre AS barrio
 FROM 
     credito

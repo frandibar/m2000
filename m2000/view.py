@@ -30,7 +30,7 @@ from camelot.admin.not_editable_admin import notEditableAdmin
 from camelot.admin.object_admin import ObjectAdmin
 from camelot.admin.validator.object_validator import ObjectValidator
 from camelot.view.action_steps import ChangeObject, FlushSession, UpdateProgress, Refresh
-from camelot.view.art import ColorScheme
+from camelot.view.art import ColorScheme, Icon
 from camelot.view.controls.delegates import DateDelegate, FloatDelegate, CurrencyDelegate, IntegerDelegate
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter
 from elixir import Entity, Field, using_options
@@ -126,15 +126,15 @@ class Indicadores(Entity):
                                                         prefix = '$'),
                                 beneficiaria = dict(minimal_column_width = 25),
                                 )
-    # comentado porque sino no aparecen las list_actions
-    # Admin = notEditableAdmin(Admin)
 
+    # Admin = notEditableAdmin(Admin, actions=True)
+    
 # esta clase corresponde a un VIEW
 class RecaudacionMensual(Entity):
     using_options(tablename='700_recaudacion_x_cartera', autoload=True, allowcoloverride=True)
     cartera = Field(Unicode(200), primary_key=True)
     tasa_interes = Field(Float, primary_key=True)
-    total_pagos = Field(Float, primary_key=True)
+    recaudacion = Field(Float, primary_key=True)
     barrio = Field(Unicode(200), primary_key=True)
     
     class Admin(EntityAdmin):
@@ -143,7 +143,7 @@ class RecaudacionMensual(Entity):
         list_display = ['barrio',
                         'cartera',
                         'tasa_interes',
-                        'total_pagos',
+                        'recaudacion',
                         ]
         
         list_filter = [ComboBoxFilter('barrio'),
@@ -153,12 +153,12 @@ class RecaudacionMensual(Entity):
         field_attributes = dict(tasa_interes = dict(name = u'Tasa Interés',
                                                     minimal_column_width = 15,
                                                     delegate = FloatDelegate),
-                                total_pagos = dict(delegate = CurrencyDelegate,
+                                recaudacion = dict(name = u'Recaudación',
+                                                   delegate = CurrencyDelegate,
                                                    prefix = '$'))
         list_actions = [reports.ReporteRecaudacionMensual()]
 
-    # Admin = notEditableAdmin(Admin)
-
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 # esta clase corresponde a un VIEW
 class RecaudacionRealTotal(Entity):
@@ -482,7 +482,9 @@ class IntervaloFechasDialog(object):
         # form_close_action = camelot.admin.action.OpenTableView(self.app_admin.get_entity_admin(Indicadores))
         
 class IntervaloFechas(Action):
-    verbose_name = 'Intervalo de fechas'
+    verbose_name = 'Definir Intervalo de fechas'
+    # verbose_name = 'Definir el intervalo de fechas para los reportes'
+    icon = Icon('tango/16x16/apps/office-calendar.png')
 
     def find_friday(self, date, inc):
         day = datetime.timedelta(days=inc)

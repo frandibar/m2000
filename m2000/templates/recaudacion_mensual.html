@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block page_head_title %}Reporte de Recaudaci&oacute;n Mensual{% endblock %}
+
+{% block page_title %}Reporte de Recaudaci&oacute;n Mensual{% endblock %}
+
+{% block page_content %}
+<table align="center">
+  <caption>Per&iacute;odo: desde {{ fecha_desde }} hasta {{ fecha_hasta }}</caption>
+  <thead>
+    <tr>
+      <th>Barrio</th>
+      <th>Cartera</th>
+      <th>Tasa Inter&eacute;s</th>
+      <th>Recaudaci&oacute;n</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for linea in detalle %}
+    <tr class="{% cycle('odd','even') %}">
+      <td>{{ linea.barrio }}</td>
+      <td>{{ linea.cartera }}</td>
+      <td align="right">{{ linea.tasa_interes }}</td>
+      <td align="right">{{ linea.recaudacion }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="odd"></tr>
+    <tr class="even">
+      <td><b>TOTAL<b></td>
+      <td></td>
+      <td></td>
+      <td><b>{{ total_recaudacion }}<b></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

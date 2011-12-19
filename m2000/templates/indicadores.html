@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block page_head_title %}Reporte de Indicadores{% endblock %}
+
+{% block page_title %}Reporte de Indicadores{% endblock %}
+
+{% block styles %}
+    table th { background-color: #DDDDDD;
+               font-weight: normal;
+               vertical-align: middle;
+    }
+{% endblock %}
+
+{% block page_content %}
+<table>
+  <caption>Per&iacute;odo: desde {{ fecha_desde }} hasta {{ fecha_hasta }}</caption>
+  <thead>
+    <tr>
+      <th>CDI</th>
+      <th>Barrio</th>
+      <th>Beneficiaria</th>
+      <!-- <th># Cr&eacute;dito</th> -->
+      <!-- <th>F. Entrega</th> -->
+      <!-- <th>F. Inicio</th> -->
+      <!-- <th>F. Cancelac.</th> -->
+      <!-- <th>Saldo Ant.</th> -->
+      <!-- <th>Tasa Int.</th> -->
+      <!-- <th>Cartera</th> -->
+      <!-- <th>Monto Aporte</th> -->
+      <!-- <th>Deuda Total</th> -->
+      <!-- <th>Cuotas</th> -->
+      <!-- <th>Cuota Calculada</th> -->
+      <!-- <th>Cuotas Pagadas</th> -->
+      <!-- <th>%</th> -->
+      <!-- <th>Cuotas Te&oacute;rico</th> -->
+      <!-- <th>%</th> -->
+      <!-- <th>Dif. Cuotas</th> -->
+      <!-- <th>Saldo</th> -->
+      <!-- <th>Monto Pagado</th> -->
+      <!-- <th>Monto Te&oacute;rico</th> -->
+      <!-- <th>Dif. Monto</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for linea in detalle %}
+    <tr class="{% cycle('odd','even') %}">
+      <td>{{ linea.comentarios }}</td>
+      <td>{{ linea.barrio }}</td>
+      <td>{{ linea.beneficiaria }}</td>
+      <!-- <td>{{ linea.nro_credito }}</td> -->
+      <!-- <td>{{ linea.fecha_entrega }}</td> -->
+      <!-- <td>{{ linea.fecha_inicio }}</td> -->
+      <!-- <td>{{ linea.fecha_cancelacion }}</td> -->
+      <!-- <td>{{ linea.saldo_anterior }}</td> -->
+      <!-- <td>{{ linea.tasa_interes }}</td> -->
+    </tr>
+    {% endfor %}
+    <tr class="odd"></tr>
+    <tr class="even">
+      <td><b>TOTAL<b></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

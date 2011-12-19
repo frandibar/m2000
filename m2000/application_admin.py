@@ -23,6 +23,7 @@
 #-------------------------------------------------------------------------------
 
 from camelot.view.art import Icon
+from camelot.admin.action import OpenNewView
 from camelot.admin.application_admin import ApplicationAdmin
 from camelot.admin.section import Section
 import PyQt4
@@ -63,7 +64,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                                  model.Credito,
                                  model.Pago,
                             ]),
-                Section(u'Reportes...',
+                Section(u'Indicadores',
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
@@ -74,6 +75,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
+                                 view.IntervaloFechas(),
                                  view.RecaudacionMensual,
                                  view.RecaudacionRealTotal,
                                  view.RecaudacionPotencialTotal,
@@ -84,6 +86,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
+                                 view.IntervaloFechas(),
                                  view.ChequesEntregados,
                                  view.CreditosActivos,
                                  view.PerdidaPorIncobrable,
@@ -111,7 +114,12 @@ class MyApplicationAdmin(ApplicationAdmin):
 
     def get_help_url(self):
         return PyQt4.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), os.path.pardir, 'doc', 'index.html'))
-                                 
+
+    def get_actions(self):
+        new_pago_action = OpenNewView(self.get_related_admin(model.Pago))
+        new_pago_action.icon = Icon('tango/32x32/actions/list-add.png')
+        return [new_pago_action]
+    
     # override this method to get my own main window instead of camelot's
     # def get_main_window():
     #     pass

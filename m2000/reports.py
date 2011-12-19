@@ -278,17 +278,17 @@ class ReporteRecaudacionMensual(Action):
         Linea = namedtuple('Linea', ['barrio',
                                      'cartera',
                                      'tasa_interes',
-                                     'total_pagos',
+                                     'recaudacion',
                                      ])
         iterator = model_context.get_collection()
         detalle = []
-        suma_total = 0
+        total_recaudacion = 0
         for row in iterator:
             linea = Linea(row.barrio,
                           row.cartera,
                           float_fmt(row.tasa_interes),
-                          money_fmt(row.total_pagos))
-            suma_total += row.total_pagos
+                          money_fmt(row.recaudacion))
+            total_recaudacion += row.recaudacion
             detalle.append(linea)
 
         context = { 
@@ -296,7 +296,7 @@ class ReporteRecaudacionMensual(Action):
             'fecha_desde': fecha_desde(),
             'fecha_hasta': fecha_hasta(),
             'detalle': detalle,
-            'total': money_fmt(suma_total),
+            'total_recaudacion': money_fmt(total_recaudacion),
             }
         return context
 
