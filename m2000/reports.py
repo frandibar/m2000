@@ -38,9 +38,9 @@ import settings
 def header_image_filename():
     return os.path.join(settings.CAMELOT_MEDIA_ROOT, 'header.jpg')
 
-def spacer(field):
+def spacer(field, width=10):
     if not field:
-        return '_' * 10 
+        return '_' * width
     return field
 
 def fix_decimal_sep(str_num):
@@ -50,9 +50,10 @@ def fix_decimal_sep(str_num):
     tmp = tmp.replace(';', ',')
     return tmp
 
-def money_fmt(value):
+def money_fmt(value, dec=1):
     # incluir separador de miles y signo de pesos
-    ret = '$ ' + '{:,.1f}'.format(value)
+    fmtstring = '{:,.%df}' % dec
+    ret = '$ %s' % fmtstring.format(value)
     return fix_decimal_sep(ret)
 
 def float_fmt(value, dec=2):
@@ -88,13 +89,13 @@ class ContratoMutuo(Action):
             'ciudad': obj.beneficiaria.barrio.domicilio_pago.ciudad.nombre,
             'provincia': obj.beneficiaria.barrio.domicilio_pago.ciudad.provincia.nombre,
             'emprendimiento': obj.rubro.actividad,
-            'tasa_interes': 'TODO',
+            'tasa_interes_mensual': float_fmt(obj.tasa_interes * 100 * 4 / obj.cuotas),  # 4 -> semanas en un mes
             'cuotas': obj.cuotas,
             'cuotas_letras': nro_en_letras(obj.cuotas),
-            'monto_prestamo': obj.prestamo,
+            'monto_prestamo': money_fmt(obj.prestamo, 2),
             'monto_prestamo_letras': nro_en_letras(obj.prestamo),
             'monto_cuota_letras': nro_en_letras(monto_cuota),
-            'monto_cuota': monto_cuota,
+            'monto_cuota': money_fmt(monto_cuota, 2),
             'dia_1ra_cuota': fecha_1ra_cuota.day,
             'mes_1ra_cuota_letras': mes_en_letras(fecha_1ra_cuota.month),
             'anio_1ra_cuota': fecha_1ra_cuota.year,
@@ -175,8 +176,7 @@ class PlanillaPagos(Action):
     def model_run(self, model_context):
         obj = model_context.get_object()
 
-        deuda_inicial = obj.monto_cheque + obj.saldo_anterior
-        deuda_final = deuda_inicial + deuda_inicial * .0487
+        deuda_final = obj.prestamo * (1 + obj.tasa_interes)
         redondeo = 0.5
         cuota_sin_redondeo = round(deuda_final / obj.cuotas)
         if deuda_final - (obj.cuotas - 1) * cuota_sin_redondeo > cuota_sin_redondeo:
@@ -201,7 +201,7 @@ class PlanillaPagos(Action):
             'saldo_anterior': money_fmt(obj.saldo_anterior),
             'monto_cheque': money_fmt(obj.monto_cheque),
             'fecha_entrega': obj.fecha_entrega,
-            'deuda_inicial': money_fmt(deuda_inicial),
+            'deuda_inicial': money_fmt(obj.prestamo),
             'deuda_final': money_fmt(deuda_final),
             'nro_credito': obj.nro_credito,
             'cuotas': obj.cuotas,

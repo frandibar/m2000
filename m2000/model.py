@@ -274,7 +274,8 @@ class CreditoAdminBase(EntityAdmin):
                                              editable = True),
                             _tasa_interes = dict(name = u'Tasa de interés',
                                                  delegate = FloatDelegate,
-                                                 editable = True),
+                                                 editable = True,
+                                                 precision = 5),
                             nro_credito = dict(name = u'Crédito #'),
                             fecha_finalizacion = dict(minimal_column_width = 20,
                                                       name = u'Fecha finalización'),
@@ -511,7 +512,7 @@ class Credito(Entity):
     prestamo = Field(Float)
     saldo_anterior = Field(Float)
     monto_cheque = Field(Float)
-    tasa_interes = Field(Float)
+    tasa_interes = Field(Float(precision=5))
     deuda_total = Field(Float)
     cartera = ManyToOne('Cartera', ondelete='cascade', onupdate='cascade', required=True)
     cuotas = Field(Integer, required=True)

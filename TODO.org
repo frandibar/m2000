@@ -101,6 +101,7 @@ concepto de tasa de interes"Esta tasa no depende acaso del credito? Es verdad, e
 ** eliminar views de la db, reemplazarlos por sqlalchemy (sobre todo para evitar el uso de tablas parameter y fecha)
 ** agregar tests
 * ENHANCEMENTS:
+** en contrato mutuo colocar tasa de interes en letras
 ** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
 ** reemplazar header jpg por svg
 ** hacer reportes como pdf's con totales, fechas, etc, en vez de mostrar un tableview
