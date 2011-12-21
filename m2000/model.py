@@ -196,6 +196,7 @@ class PagoAdminBase(EntityAdmin):
                    'credito.beneficiaria.apellido',
                    ]
     list_action = None
+    list_actions = [reports.ReportePagos()]
     delete_mode = 'on_confirm'
 
 class PagoAdminEmbedded(PagoAdminBase):

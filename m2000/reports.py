@@ -67,6 +67,42 @@ def fecha_desde():
 def fecha_hasta():
     return model.Fecha.query.order_by(model.Fecha.fecha.desc()).first().fecha
 
+class ReportePagos(Action):
+    verbose_name = ''
+    icon = Icon('tango/16x16/actions/document-print.png')
+
+    def _build_context(self, model_context):
+        Linea = namedtuple('Linea', ['credito',
+                                     'fecha',
+                                     'monto',
+                                     'asistencia',
+                                     ])
+        iterator = model_context.get_collection()
+        detalle = []
+        total_monto = 0
+        for row in iterator:
+            linea = Linea(row.credito,
+                          row.fecha,
+                          money_fmt(row.monto),
+                          row.asistencia)
+            total_monto += row.monto
+            detalle.append(linea)
+
+        context = { 
+            'header_image_filename': header_image_filename(),
+            'detalle': detalle,
+            'total_monto': money_fmt(total_monto),
+            }
+        return context
+
+    def model_run(self, model_context):
+        context = self._build_context(model_context)
+        # mostrar el reporte
+        fileloader = PackageLoader('m2000', 'templates')
+        env = Environment(loader=fileloader)
+        t = env.get_template('pagos.html')
+        yield PrintHtml(t.render(context))
+
 class ContratoMutuo(Action):
     verbose_name = 'Contrato Mutuo'
     icon = Icon('tango/16x16/actions/document-print.png')
