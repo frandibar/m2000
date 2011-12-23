@@ -1,10 +1,7 @@
 * COMO SIGO:
-** TODO terminar reportes con fechas y totales
-probar css en archivo aparte
-probar obtener min, max fecha como query sqlalchemy
-probar sumas en reportes como querys sqlalchemy en vez de iterar
 ** REPORTES:
-*** TODO contrato mutuo, falta completar la tasa de interes (espero respuesta de jose para ver como)
+*** probar obtener min, max fecha como query sqlalchemy
+*** probar sumas en reportes como querys sqlalchemy en vez de iterar
 *** TODO planilla pagos: Agregar pagos existentes
 *** segun el reporte, pedir la fecha, cargar la tabla y mostrar el reporte
 no se como hacer para que el dialogo con la fecha invoque el opentableview
@@ -23,9 +20,7 @@ no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** "800 Monto promedio de pago F","Monto promedio pagado en la vida del credito" ?
 *** "900 pagos CONAMI","Recaudaci�n Conami por beneficiaria" ?
 *** resolver si usar tabla parameter
-*** ver como mostrar totales para indicadores
 *** ver como asociar una clase a una vista en vez de tabla
-*** agregar cabecera y pie de pagina en contrato mutuo
 ** PAGOS:
 *** TODO imitar la consulta de pagos por fecha y barrio (agregar barrio a la tabla de pagos, crear vista)
 ** ALL:
@@ -46,7 +41,6 @@ cuando instalo un egg, primero desinstala si ya fue instalado
 * PREGUNTAS:
 ** FUNCIONALES
 *** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
-*** footer en templates, se puede?
 *** preguntar como workaroundear el hecho de que no puedo ordenar columnas por properties, dado que deja cliquear y da al usuario la idea de que hace algo.
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
 *** como visualizar un form desde otro (model_run)
@@ -62,40 +56,26 @@ Cuando salga el nuevo release, usar este feature.
   probe declarar en la clase del entity
     __table_args__ = {'mysql_engine':'InnoDB'}
   pero no funciono
-*** como impedir la vista de formulario en un table view
 *** como hacer el table view read only y el form editable.
 *** si tengo un mapeo a un view que existe en la db, lo trato como tabla? si es asi, como evito que la cree.
 creo que con el parametro autoload=True en using_options
 ** MISC
 *** bug cuando hay muchos campos y doy clic en la lupa, la ventana se ensancha demasiado
-*** no puedo hacer que aparezcan la cabecera y pie de pagina en reportes
 *** como hacer andar las teclas de flecha en camelot_manage console
-*** como setear un nombre al reporte cuando se imprime a pdf
 ** ESTETICAS
+*** como centrar campos en table view (especialmente booleans)
 *** como modificar la ubicacion de las actions
 *** como setear el ancho de los campos en table view
 *** como evito mostrar el id en el titulo del form?
-*** como centrar campos en table view (especialmente booleans)
 *** como agregar una imagen al tab de home, o quitarla del todo
 ** DONE como filtrar por @property (al parecer no se puede)
   http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
 
 ** PARA M2000
 *** el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
-*** Planilla de pagos: 
-1. Que significa el 0.5 en la celda M1? Veo que se usa para
-cuota_calculada, pero no entiendo bien. Esto es lo que te contamos del redondeo. hicimos una celda de ajuste para que la cuota no quede con centavos raros y sea mas facil cobrar.
-2. total_deuda_final, de donde sale el 4.87? Esto es lo que falta para cancelar el credito por haber usado el redondeo.
-TODO no entiendo.
-3. deuda_inicial es el monto del prestamo? Si es el monto del prestamo + el saldo que le hubiera quedado del credito anterior. A veces lo que hacen es renuevan anticipadamente entonces agregamos el saldo al nuevo credito.
-ACLARACION: en la planilla la deuda inicial no es el monto del prestamo + saldo sino monto_cheque + saldo.
-La planilla de cobro modelo es distinta a la posta (tambien es conami), cual debo usar?
-*** en contrato mutuo esta fija la tasa de interes en 0.5, como saco la cuenta?
-Contrato mutuo:
-1. En la clausula 2, dice "un medio por ciento (0,5%) mensual en
-concepto de tasa de interes"Esta tasa no depende acaso del credito? Es verdad, este porcentaje depende del numero del interes (que esta atado al nro de credito) y del plazo en semanas.
 *** estado de credito para que se usa?
 *** las fechas de pago corresponden a viernes o sabado?
+se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
 * FUTURE
 ** enforzar primary key compuesto en rubro.
 ** eliminar views de la db, reemplazarlos por sqlalchemy (sobre todo para evitar el uso de tablas parameter y fecha)
