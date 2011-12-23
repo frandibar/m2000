@@ -2,7 +2,6 @@
 ** REPORTES:
 *** probar obtener min, max fecha como query sqlalchemy
 *** probar sumas en reportes como querys sqlalchemy en vez de iterar
-*** TODO planilla pagos: Agregar pagos existentes
 *** segun el reporte, pedir la fecha, cargar la tabla y mostrar el reporte
 no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** DONE creditos terminados con saldo pendiente
@@ -72,6 +71,7 @@ creo que con el parametro autoload=True en using_options
   http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
 
 ** PARA M2000
+*** que se supone que va en la columna estado de planilla de pagos?
 *** el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
 *** estado de credito para que se usa?
 *** las fechas de pago corresponden a viernes o sabado?

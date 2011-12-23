@@ -155,18 +155,42 @@ class PlanillaPagos(Action):
         Linea = namedtuple('Linea', ['nro_cuota',
                                      'fecha',
                                      'pagado_a_fecha',
-                                     'saldo'])
+                                     'saldo',
+                                     'monto',
+                                     'a_favor',
+                                     'fecha_efectiva_pago',
+                                     'asistencia',
+                                     ])
         detalle = []
         fecha = obj.fecha_entrega + datetime.timedelta(weeks=2)
         saldo = deuda_final
+        suma_pagos = 0
         for i in range(1, obj.cuotas + 1):
             nro_cuota = i
             pagado_a_fecha = min(cuota_calculada * i, deuda_final)
             saldo = max(saldo - cuota_calculada, 0)
+
+            # obtener el pago para la fecha correspondiente, si es que hubo
+            # ATENCION: si hay pagos fuera del periodo comprendido entre la 1 y ultima cuota,
+            # no aparecen listados.
+            row = model.Pago.query.filter(model.Pago.credito_id == obj.id).filter(model.Pago.fecha >= fecha).filter(model.Pago.fecha < fecha + datetime.timedelta(weeks=1)).first()
+            if row:
+                suma_pagos += row.monto
+                monto = money_fmt(row.monto)
+                a_favor = money_fmt(suma_pagos - pagado_a_fecha)
+                fecha_efectiva_pago = row.fecha
+                asistencia = row.asistencia
+            else:
+                monto = a_favor = fecha_efectiva_pago = asistencia = None
             linea = Linea(nro_cuota,
                           fecha,
                           money_fmt(pagado_a_fecha),
-                          money_fmt(saldo))
+                          money_fmt(saldo),
+                          monto,
+                          a_favor,
+                          fecha_efectiva_pago,
+                          asistencia,
+                          )
             detalle.append(linea)
             fecha += datetime.timedelta(weeks=1)
         return detalle
