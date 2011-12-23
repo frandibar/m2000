@@ -81,11 +81,11 @@ PLAN DE AMORTIZACI&Oacute;N {{ anio }}
       <td align="center">{{ linea.fecha }}</td>
       <td align="right">{{ linea.pagado_a_fecha }}</td>
       <td align="right">{{ linea.saldo }}</td>
+      <td align="right">{{ linea.monto }}</td>
+      <td align="right">{{ linea.a_favor }}</td>
+      <td align="center">{{ linea.fecha_efectiva_pago }}</td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td align="center">{{ linea.asistencia }}</td>
     </tr>
     {% endfor %}
   </tbody>
