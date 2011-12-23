@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block page_head_title %}Pagos Efectuados{% endblock %}
+{% block page_title %}Pagos Efectuados{% endblock %}
+
+{% block page_content %}
+<table>
+  <thead>
+    <tr>
+      <th>Cr&eacute;dito</th>
+      <th>Fecha</th>
+      <th>Monto</th>
+      <th>Asistencia</th>
+    </tr>
+    <tr>
+  </thead>
+  <tbody>
+    {% for linea in detalle %}
+    <tr class="{% cycle('odd','even') %}">
+      <td>{{ linea.credito }}</td>
+      <td>{{ linea.fecha }}</td>
+      <td align="right"><b>{{ linea.monto }}</b></td>
+      <td>{{ linea.asistencia }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="odd"></tr>
+    <tr class="even">
+      <td><b>TOTAL<b></td>
+      <td></td>
+      <td align="right"><b>{{ total_monto }}<b></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
