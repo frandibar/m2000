@@ -31,11 +31,12 @@ import os
 
 import model
 import view
+import m2000
 
 class MyApplicationAdmin(ApplicationAdmin):
     name = u'Mujeres 2000 - Gestión de Créditos'
     application_url = 'http://www.mujeres2000.org.ar'
-    version = '0.1'
+    version = m2000.__version__
 
     def get_about(self):
         html = """<html><b>Mujeres 2000</b><br>
@@ -124,9 +125,15 @@ class MyApplicationAdmin(ApplicationAdmin):
     # def get_main_window():
     #     pass
 
-    # def get_translator(self):
-    #     trans = ApplicationAdmin.get_translator(self)
-    #     return trans
+    def get_translator(self):
+        # Camelot-11.11.16 no tiene translations en es_AR, descomentar para la proxima version de camelot
+        # camelot_translator = self._load_translator_from_file( 'camelot', 
+        #                                                       'camelot',
+        #                                                       'art/translations/es_AR/LC_MESSAGES/')
+        camelot_translator = self._load_translator_from_file( 'm2000', 
+                                                              'camelot',
+                                                              'translations/')
+        return [camelot_translator]
 
     # def get_stylesheet(self):
     #     from camelot.view import art
