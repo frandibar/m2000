@@ -45,9 +45,8 @@ class MyApplicationAdmin(ApplicationAdmin):
                   </html>"""
         return html.replace('_version_', self.version)
 
-    # FIXME no anda
-    # def get_icon(self):
-    #     return Icon('media/32x32icon.png')
+    def get_icon(self):
+        return Icon('32x32icon.png', m2000).getQIcon()
 
     def get_splashscreen(self):
         return PyQt4.QtGui.QPixmap('media/splashscreen.png')
