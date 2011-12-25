@@ -31,7 +31,7 @@ PLAN DE AMORTIZACI&Oacute;N {{ anio }}
     <td>D.N.I.:</td><td>{{ dni }}</td>
   </tr>
   <tr>
-    <td>Fecha otorga cheque:</td><td>{{ fecha_entrega }}</td>
+    <td>Fecha otorga cheque:</td><td align="right">{{ fecha_entrega }}</td>
     <td class="col_separator"></td>
     <td>Tel&eacute;fono:</td><td>{{ telefono }}</td>
   </tr>
@@ -48,22 +48,24 @@ PLAN DE AMORTIZACI&Oacute;N {{ anio }}
   <tr>
     <td>Nro. de pr&eacute;stamo:</td><td align="right">{{ nro_credito }}</td>
     <td class="col_separator"></td>
-    <td>Coordinadores:</td>
+    <td>Coordinadores:</td><td></td>
   </tr>
   <tr>
     <td>Cantidad de cuotas:</td><td align="right">{{ cuotas }}</td>
+    <td class="col_separator"></td>
+    <td>Monto &uacute;ltima cuota:</td><td align="right">{{ monto_ultima_cuota }}</td>
   </tr>
   <tr>
     <td>Cuota calculada:</td><td align="right">{{ cuota_calculada }}</td>
     <td class="col_separator"></td>
-    <td>Monto &uacute;ltima cuota:</td><td>{{ monto_ultima_cuota }}</td>
+    <td>Pagado al {{ fecha }}:</td><td align="right">{{ pagado_a_fecha }}</td>
   </tr>
 </table>
 <br>
 <table class="detalle">
   <thead>
     <tr>
-      <th align="center"># Cuota</th>
+      <th align="center">Cuota</th>
       <th align="center">Fecha de pago</th>
       <th>Pagado a la fecha</th>
       <th>Saldo para terminar</th>
@@ -81,11 +83,11 @@ PLAN DE AMORTIZACI&Oacute;N {{ anio }}
       <td align="center">{{ linea.fecha }}</td>
       <td align="right">{{ linea.pagado_a_fecha }}</td>
       <td align="right">{{ linea.saldo }}</td>
-      <td align="right">{{ linea.monto }}</td>
-      <td align="right">{{ linea.a_favor }}</td>
-      <td align="center">{{ linea.fecha_efectiva_pago }}</td>
       <td></td>
-      <td align="center">{{ linea.asistencia }}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     {% endfor %}
   </tbody>

@@ -9,6 +9,7 @@
         border-style: hidden;
         padding-left: 2px;
         padding-right: 2px;
+        font-size: 10px;
     }
     table.detalle {
         border-collapse: collapse;
@@ -41,21 +42,22 @@
   </style>
 </head>
 <body>
-  <table width="100%">
-    <tr>
-      <td><img src="{{ header_image_filename }}"/></td>
-      <td align="right">
-        <div id="about">
-          <br>
-          Asociaci&oacute;n Civil Mujeres 2000<br>
-          (5411) 4381-6438<br>
-          <a href="http://www.mujeres2000.org.ar">www.mujeres2000.org.ar</a><br>
-          info@mujeres2000.org.ar
-        </div>
-      </td>
-    </tr>
-  </table>
-  <h3 id="page_title" align="center">{% block page_title %}{% endblock %}</h3>
+  <!-- <table width="100%"> -->
+  <!--   <tr> -->
+  <!--     <td><img src="{{ header_image_filename }}"/></td> -->
+  <!--     <td align="right"> -->
+  <!--       <div id="about"> -->
+  <!--         <br> -->
+  <!--         Asociaci&oacute;n Civil Mujeres 2000<br> -->
+  <!--         (5411) 4381-6438<br> -->
+  <!--         <a href="http://www.mujeres2000.org.ar">www.mujeres2000.org.ar</a><br> -->
+  <!--         info@mujeres2000.org.ar -->
+  <!--       </div> -->
+  <!--     </td> -->
+  <!--   </tr> -->
+  <!-- </table> -->
+  <h4 id="page_title" align="center">{% block page_title %}{% endblock %}</h4>
+  <br>
   {% block page_content %}{% endblock %}
 </body>
 </html>

@@ -155,42 +155,18 @@ class PlanillaPagos(Action):
         Linea = namedtuple('Linea', ['nro_cuota',
                                      'fecha',
                                      'pagado_a_fecha',
-                                     'saldo',
-                                     'monto',
-                                     'a_favor',
-                                     'fecha_efectiva_pago',
-                                     'asistencia',
-                                     ])
+                                     'saldo'])
         detalle = []
         fecha = obj.fecha_entrega + datetime.timedelta(weeks=2)
         saldo = deuda_final
-        suma_pagos = 0
         for i in range(1, obj.cuotas + 1):
             nro_cuota = i
             pagado_a_fecha = min(cuota_calculada * i, deuda_final)
             saldo = max(saldo - cuota_calculada, 0)
-
-            # obtener el pago para la fecha correspondiente, si es que hubo
-            # ATENCION: si hay pagos fuera del periodo comprendido entre la 1 y ultima cuota,
-            # no aparecen listados.
-            row = model.Pago.query.filter(model.Pago.credito_id == obj.id).filter(model.Pago.fecha >= fecha).filter(model.Pago.fecha < fecha + datetime.timedelta(weeks=1)).first()
-            if row:
-                suma_pagos += row.monto
-                monto = money_fmt(row.monto)
-                a_favor = money_fmt(suma_pagos - pagado_a_fecha)
-                fecha_efectiva_pago = row.fecha
-                asistencia = row.asistencia
-            else:
-                monto = a_favor = fecha_efectiva_pago = asistencia = None
             linea = Linea(nro_cuota,
                           fecha,
                           money_fmt(pagado_a_fecha),
-                          money_fmt(saldo),
-                          monto,
-                          a_favor,
-                          fecha_efectiva_pago,
-                          asistencia,
-                          )
+                          money_fmt(saldo))
             detalle.append(linea)
             fecha += datetime.timedelta(weeks=1)
         return detalle
@@ -243,7 +219,12 @@ class PlanillaPagos(Action):
             cuota_calculada = cuota_sin_redondeo + redondeo
         else:
             cuota_calculada = cuota_sin_redondeo
-        monto_ultima_cuota = deuda_final - cuota_calculada * (obj.cuotas - 1)
+        # debido al redondeo, puede ocurrir que la deuda se cancela antes.
+        # obtener el monto de la ultima cuota
+        for i in range(1, obj.cuotas):
+            monto_ultima_cuota = deuda_final - cuota_calculada * (obj.cuotas - i)
+            if monto_ultima_cuota >= 0:
+                break
 
         # generar la planilla
         detalle = []
@@ -255,7 +236,7 @@ class PlanillaPagos(Action):
             template = 'planilla_pagos.html'
 
         context = {
-            'header_image_filename': header_image_filename(),
+            # 'header_image_filename': header_image_filename(),
             'anio': datetime.date.today().year,
             'comentarios': obj.beneficiaria.comentarios,
             'saldo_anterior': money_fmt(obj.saldo_anterior),
@@ -267,6 +248,8 @@ class PlanillaPagos(Action):
             'cuotas': obj.cuotas,
             'cuota_calculada': money_fmt(cuota_calculada),
             'monto_ultima_cuota': money_fmt(monto_ultima_cuota),
+            'fecha': datetime.date.today(),
+            'pagado_a_fecha': money_fmt(obj.total_pagos),
             'beneficiaria': '%s %s' % (obj.beneficiaria.nombre, obj.beneficiaria.apellido),
             'dni': obj.beneficiaria.dni,
             'telefono': obj.beneficiaria.telefono,
