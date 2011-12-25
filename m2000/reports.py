@@ -236,7 +236,6 @@ class PlanillaPagos(Action):
             template = 'planilla_pagos.html'
 
         context = {
-            # 'header_image_filename': header_image_filename(),
             'anio': datetime.date.today().year,
             'comentarios': obj.beneficiaria.comentarios,
             'saldo_anterior': money_fmt(obj.saldo_anterior),
