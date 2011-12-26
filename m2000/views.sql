@@ -77,7 +77,7 @@ WHERE
     beneficiaria.activa = TRUE
 	AND credito.deuda_total != 0
 	AND credito.fecha_entrega <= parametro.fecha
-	AND credito.fecha_finalizacion > parametro.fecha OR credito.fecha_finalizacion IS NULL;
+	AND (credito.fecha_finalizacion > parametro.fecha OR credito.fecha_finalizacion IS NULL);
 
 CREATE OR REPLACE VIEW 102_indicadores AS
 -- Es el reporte 'Indicadores'
