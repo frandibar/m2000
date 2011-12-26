@@ -192,7 +192,8 @@ class PagoAdminBase(EntityAdmin):
     field_attributes = dict(credito = dict(name = u'Crédito'),
                             monto = dict(prefix = '$'))
     search_all_fields = False
-    list_search = ['credito.beneficiaria.nombre',
+    list_search = ['credito_id',
+                   'credito.beneficiaria.nombre',
                    'credito.beneficiaria.apellido',
                    ]
     list_action = None
@@ -234,7 +235,8 @@ class CreditoAdminBase(EntityAdmin):
                     'gastos_arq',
                     ]
     delete_mode = 'on_confirm'
-    list_search = ['beneficiaria.nombre',
+    list_search = ['id',
+                   'beneficiaria.nombre',
                    'beneficiaria.apellido',
                    'beneficiaria.barrio.nombre',
                    'rubro.nombre',
@@ -435,7 +437,8 @@ class Beneficiaria(Entity):
                        ComboBoxFilter('barrio.nombre'),
                        ComboBoxFilter('grupo')]
         search_all_fields = False
-        list_search = ['apellido',
+        list_search = ['id',
+                       'apellido',
                        'nombre',
                        'comentarios',
                        'dni',
