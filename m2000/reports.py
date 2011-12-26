@@ -290,7 +290,8 @@ class ReporteIndicadores(Action):
                                      'saldo',
                                      'monto_pagado',
                                      'monto_teorico',
-                                     'diferencia_monto', 
+                                     'diferencia_monto',
+                                     'estado',
                                      ])
         iterator = model_context.get_collection()
         detalle = []
@@ -317,7 +318,9 @@ class ReporteIndicadores(Action):
                           money_fmt(row.saldo),
                           money_fmt(row.monto_pagado),
                           money_fmt(row.monto_teorico),
-                          money_fmt(row.diferencia_monto))
+                          money_fmt(row.diferencia_monto),
+                          row.estado,
+                          )
             detalle.append(linea)
 
         context = { 

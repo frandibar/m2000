@@ -84,6 +84,7 @@ CREATE TABLE  `m2000`.`beneficiaria` (
 CREATE TABLE  `m2000`.`cartera` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(200) NOT NULL,
+  `tasa_interes_anual` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -91,7 +92,8 @@ CREATE TABLE  `m2000`.`cartera` (
 CREATE TABLE  `m2000`.`estado_credito` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(200) NOT NULL,
-  `cuotas_adeudadas` int(11) NOT NULL,
+  `cuotas_adeudadas_min` int(11) NOT NULL,
+  `cuotas_adeudadas_max` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `descripcion` (`descripcion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -128,7 +130,7 @@ CREATE TABLE  `m2000`.`credito` (
   `deuda_total` float DEFAULT NULL,
   `cartera_id` int(11) NOT NULL,
   `cuotas` int(11) NOT NULL,
-  `nro_credito` varchar(15) NOT NULL,
+  `nro_credito` int(11) NOT NULL,
   `fecha_finalizacion` date DEFAULT NULL,
   `comentarios` varchar(1000) DEFAULT NULL,
   `gastos_arq` float DEFAULT NULL,

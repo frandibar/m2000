@@ -277,7 +277,7 @@ class CreditoAdminBase(EntityAdmin):
                                                  delegate = FloatDelegate,
                                                  editable = True,
                                                  precision = 5),
-                            nro_credito = dict(name = u'Crédito #'),
+                            nro_credito = dict(name = u'Nro. Crédito'),
                             fecha_finalizacion = dict(minimal_column_width = 20,
                                                       name = u'Fecha finalización'),
                             gastos_arq = dict(name = 'Gastos HAB + Arq.',
@@ -294,7 +294,7 @@ class CreditoAdminBase(EntityAdmin):
                                                    delegate = CurrencyDelegate,
                                                    editable = True),
                             deuda_total = dict(prefix = '$',
-                                               tooltip = u'En principio equivale a: Préstamo . (1 + Tasa de interés)'),
+                                               tooltip = u'Se inicializa en: Préstamo . (1 + Tasa de interés)'),
                             activo = dict(delegate = BoolDelegate,
                                           to_string = lambda x:{1:'True', 0:'False'}[x]),
                             pagos = dict(admin = PagoAdminEmbedded),
@@ -303,12 +303,12 @@ class CreditoAdminBase(EntityAdmin):
                                                   minimal_column_width = 17,
                                                   editable = True),
                             fecha_cobro = dict(minimal_column_width = 17,
-                                               tooltip = u'Al modificar la fecha de entrega, este campo toma el valor de la fecha de entrega más 2 dias.'),
+                                               tooltip = u'Se incializa en: Fecha entrega + 2 días.'),
                             # TODO por el momento el name es estatico, no se puede cambiar en funcion de otros valores
                             # monto_cheque = dict(name = lambda o: 'Monto Presupuesto' if o.rubro.actividad.id == ID_ACTIVIDAD_CONSTRUCCION else 'Monto Cheque'),
                             monto_cheque = dict(name = 'Monto Cheque/Presup.',
                                                 prefix = '$',
-                                                tooltip = u'En principio equivale a: Préstamo - Saldo anterior'),
+                                                tooltip = u'Se inicializa en: Préstamo - Saldo anterior'),
                             )
 
     form_display = TabForm([(u'Crédito', Form([HBoxForm([['beneficiaria',
@@ -468,6 +468,7 @@ class Beneficiaria(Entity):
                                                tooltip = u'No se puede dar de baja una beneficiaria si tiene créditos activos.'),
                                 creditos_activos = dict(name = u'Créditos activos',
                                                         editable = False),
+                                #nombre_completo = dict(name = 'Nombre y Apellido'),
                                )
 
         form_size = (850,400)
@@ -486,6 +487,12 @@ class Beneficiaria(Entity):
                           and_(Credito.beneficiaria_id == Beneficiaria.id,
                                sql.column('fecha_finalizacion') == sql.null()))
 
+    # TODO comentado porque rompe la busqueda
+    # # use columnproperty instead of property to allow sorting and searching
+    # @ColumnProperty
+    # def nombre_completo(self):
+    #     return sql.select([sql.func.concat(sql.column('nombre'), ' ', sql.column('apellido'))])
+    
     def __unicode__(self):
         if self.nombre and self.apellido:
             return '%s %s' % (self.nombre, self.apellido)
@@ -494,12 +501,13 @@ class Beneficiaria(Entity):
 class Cartera(Entity):
     using_options(tablename='cartera')
     nombre = Field(Unicode(200), unique=True, required=True)
+    tasa_interes_anual = Field(Float(precision=5))
 
     class Admin(EntityAdmin):
         verbose_name = 'Cartera'
-        list_display = ['nombre']
+        list_display = ['nombre', 'tasa_interes_anual']
         list_action = None
-        form_size = (450,100)
+        form_size = (450,150)
 
     def __unicode__(self):
         return self.nombre or UNDEFINED
@@ -517,7 +525,7 @@ class Credito(Entity):
     deuda_total = Field(Float)
     cartera = ManyToOne('Cartera', ondelete='cascade', onupdate='cascade', required=True)
     cuotas = Field(Integer, required=True)
-    nro_credito = Field(Unicode(15), required=True)
+    nro_credito = Field(Integer, default=0, required=True)
     fecha_finalizacion = Field(Date)
     comentarios = Field(Unicode(1000))
     gastos_arq = Field(Float)
@@ -621,13 +629,15 @@ class Credito(Entity):
 class EstadoCredito(Entity):
     using_options(tablename='estado_credito')
     descripcion = Field(Unicode(200), unique=True, required=True)
-    cuotas_adeudadas = Field(Integer, required=True)
+    cuotas_adeudadas_min = Field(Integer, required=True)
+    cuotas_adeudadas_max = Field(Integer, required=True)
 
     class Admin(EntityAdmin):
         verbose_name = u'Estado de Crédito'
         verbose_name_plural = u'Estado de Créditos'
         list_display = ['descripcion',
-                        'cuotas_adeudadas']
+                        'cuotas_adeudadas_min',
+                        'cuotas_adeudadas_max']
         field_attributes = { 'descripcion': { 'name': u'Descripción' } }
         list_action = None
         delete_mode = 'on_confirm'

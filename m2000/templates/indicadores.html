@@ -41,6 +41,7 @@
       <th>Monto Pagado</th>
       <th>Monto Te&oacute;rico</th>
       <th>Dif. Monto</th>
+      <th>Estado</th>
     </tr>
   </thead>
   <tbody>
@@ -69,6 +70,7 @@
       <td align="right">{{ linea.monto_pagado }}</td>
       <td align="right">{{ linea.monto_teorico }}</td>
       <td align="right">{{ linea.diferencia_monto }}</td>
+      <td align="center">{{ linea.estado }}</td>
     </tr>
     {% endfor %}
     <!-- <tr class="odd"></tr> -->

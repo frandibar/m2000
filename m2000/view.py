@@ -44,10 +44,10 @@ import reports
 
 # esta clase corresponde a un VIEW
 class Indicadores(Entity):
-    using_options(tablename='101_indicadores', autoload=True, allowcoloverride=True)
+    using_options(tablename='102_indicadores', autoload=True, allowcoloverride=True)
     # override columns since a primary must be defined
     beneficiaria_id = Field(Integer, primary_key=True)
-    nro_credito = Field(Unicode(3), primary_key=True)                         
+    nro_credito = Field(Integer, primary_key=True)                         
 
     class Admin(EntityAdmin):
         verbose_name = 'Indicadores'
@@ -76,7 +76,8 @@ class Indicadores(Entity):
             'saldo',
             'monto_pagado',
             'monto_teorico',
-            'diferencia_monto'
+            'diferencia_monto',
+            'estado',
             ]
 
         list_filter = [ComboBoxFilter('barrio')]
@@ -288,7 +289,7 @@ class RecaudacionPotencialTotal(Entity):
 class ChequesEntregados(Entity):
     using_options(tablename='403_creditos_entregados', autoload=True, allowcoloverride=True)
     beneficiaria = Field(Unicode(401), primary_key=True)
-    nro_credito = Field(Unicode(3), primary_key=True)
+    nro_credito = Field(Integer, primary_key=True)
     
     class Admin(EntityAdmin):
         verbose_name = u'Cartera - Préstamos / Cheques Entregados'

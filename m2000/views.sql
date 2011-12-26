@@ -40,8 +40,6 @@ GROUP BY
     v100.credito_id;
 
 CREATE OR REPLACE VIEW 101_indicadores AS
--- Es el reporte 'Indicadores'
--- Para cada beneficiaria activa, el estado de sus creditos.
 SELECT 
     beneficiaria.id AS beneficiaria_id,
     beneficiaria.comentarios,
@@ -61,7 +59,7 @@ SELECT
     credito.deuda_total / credito.cuotas AS cuota_calculada,
     TP.total_pagos * cuotas / credito.deuda_total AS cuotas_pagadas,
     TP.total_pagos / credito.deuda_total AS cuotas_pagadas_porcent,
-    cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) as cuotas_teorico,       
+    cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) AS cuotas_teorico,       
     cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) / credito.cuotas AS cuotas_teorico_porcent,
     cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) - (TP.total_pagos * cuotas / credito.deuda_total) AS diferencia_cuotas,
     credito.deuda_total - TP.total_pagos AS saldo,
@@ -80,6 +78,42 @@ WHERE
 	AND credito.deuda_total != 0
 	AND credito.fecha_entrega <= parametro.fecha
 	AND credito.fecha_finalizacion > parametro.fecha OR credito.fecha_finalizacion IS NULL;
+
+CREATE OR REPLACE VIEW 102_indicadores AS
+-- Es el reporte 'Indicadores'
+-- Para cada beneficiaria activa, el estado de sus creditos.
+SELECT 
+    beneficiaria_id,
+    comentarios,
+    barrio,
+    beneficiaria,
+    nro_credito,
+    fecha_entrega,
+    fecha_inicio,
+    fecha_cancelacion,
+    saldo_anterior,
+    capital,
+    tasa_interes,
+    cartera,
+    monto_aporte,
+    deuda_total,
+    cuotas,
+    cuota_calculada,
+    cuotas_pagadas,
+    cuotas_pagadas_porcent,
+    cuotas_teorico,       
+    cuotas_teorico_porcent,
+    diferencia_cuotas,
+    saldo,
+	monto_pagado,
+	monto_teorico,
+    diferencia_monto,
+    estado_credito.descripcion AS estado
+FROM
+    101_indicadores 
+    JOIN estado_credito 
+    ON 101_indicadores.diferencia_cuotas > estado_credito.cuotas_adeudadas_min 
+    AND 101_indicadores.diferencia_cuotas <= estado_credito.cuotas_adeudadas_max;
 
 CREATE OR REPLACE VIEW 700_recaudacion_x_cartera AS
 -- Es el reporte 'Recaudacion Mensual'
