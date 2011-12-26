@@ -54,7 +54,12 @@ setup(
              '*.css',
              '*.sql',
              '*.svg',
+             '*.ico',
              ],
+        'translations': [
+            'camelot.po',
+            'camelot.qm',
+            ],
         },
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
