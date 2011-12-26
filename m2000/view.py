@@ -110,7 +110,7 @@ class Indicadores(Entity):
                                 cuotas_pagadas_porcent = dict(delegate = FloatDelegate,
                                                               name = u'%'),
                                 cuotas_teorico = dict(name = u'Cuotas teórico',
-                                                      delegate = IntegerDelegate),
+                                                      delegate = FloatDelegate),
                                 cuotas_teorico_porcent = dict(delegate = FloatDelegate,
                                                               name = u'%'),
                                 diferencia_cuotas = dict(minimal_column_width = 15,

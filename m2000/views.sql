@@ -2,10 +2,10 @@ USE m2000;
 
 DELIMITER $$
 DROP FUNCTION IF EXISTS `m2000`.`cuotas_teorico`$$
-CREATE DEFINER=`root`@`localhost` FUNCTION `cuotas_teorico`(fecha DATE, fecha_entrega DATE, cuotas INTEGER) RETURNS int(11)
+CREATE DEFINER=`root`@`localhost` FUNCTION `cuotas_teorico`(fecha DATE, fecha_entrega DATE, cuotas INTEGER) RETURNS float
 BEGIN
-    SET @mas_catorce = ADDDATE(fecha_entrega, 14);
-    SET @res = (fecha - @mas_catorce) / 7;
+    SET @fecha_inicio = ADDDATE(fecha_entrega, 14);
+    SET @res = DATEDIFF(fecha, @fecha_inicio) / 7;
     RETURN IF(@res > cuotas, cuotas, @res);
 END$$
 DELIMITER ;
@@ -34,7 +34,7 @@ FROM
     100_credito_pagos AS v100
 WHERE 
     v100.fecha_pago_o_entrega <= parametro.fecha
-    AND (v100.fecha_finalizacion > parametro.fecha OR (v100.fecha_finalizacion IS NULL))
+    AND (v100.fecha_finalizacion > parametro.fecha OR v100.fecha_finalizacion IS NULL)
 GROUP BY 
     parametro.fecha,
     v100.credito_id;
@@ -60,12 +60,8 @@ SELECT
     TP.total_pagos * cuotas / credito.deuda_total AS cuotas_pagadas,
     TP.total_pagos / credito.deuda_total AS cuotas_pagadas_porcent,
     cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) AS cuotas_teorico,       
-    cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) / credito.cuotas AS cuotas_teorico_porcent,
-    cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) - (TP.total_pagos * cuotas / credito.deuda_total) AS diferencia_cuotas,
     credito.deuda_total - TP.total_pagos AS saldo,
-	TP.total_pagos AS monto_pagado,
-	credito.deuda_total * cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) / credito.cuotas AS monto_teorico,
-    credito.deuda_total * cuotas_teorico(parametro.fecha, credito.fecha_entrega, credito.cuotas) / credito.cuotas - TP.total_pagos AS diferencia_monto
+	TP.total_pagos AS monto_pagado
 FROM 
     parametro, 
 	credito
@@ -102,18 +98,18 @@ SELECT
     cuotas_pagadas,
     cuotas_pagadas_porcent,
     cuotas_teorico,       
-    cuotas_teorico_porcent,
-    diferencia_cuotas,
+    cuotas_teorico / cuotas AS cuotas_teorico_porcent,
+    cuotas_teorico - cuotas_pagadas AS diferencia_cuotas,
     saldo,
 	monto_pagado,
-	monto_teorico,
-    diferencia_monto,
+	deuda_total * cuotas_teorico / cuotas AS monto_teorico,
+    deuda_total * cuotas_teorico / cuotas - monto_pagado AS diferencia_monto,
     estado_credito.descripcion AS estado
 FROM
     101_indicadores 
     JOIN estado_credito 
-    ON 101_indicadores.diferencia_cuotas > estado_credito.cuotas_adeudadas_min 
-    AND 101_indicadores.diferencia_cuotas <= estado_credito.cuotas_adeudadas_max;
+    ON cuotas_teorico - cuotas_pagadas > estado_credito.cuotas_adeudadas_min 
+    AND cuotas_teorico - cuotas_pagadas <= estado_credito.cuotas_adeudadas_max;
 
 CREATE OR REPLACE VIEW 700_recaudacion_x_cartera AS
 -- Es el reporte 'Recaudacion Mensual'
