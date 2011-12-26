@@ -1,0 +1,18 @@
+* master
+** Se agregó la columna tasa_interes_anual a la tabla cartera
+** La columna nro_credito en credito paso a ser de tipo Integer en vez de Unicode.
+** Planilla de Pagos:
+*** Se ajusto a una hoja por carilla. (Quitando el logo de la cabecera)
+*** Se agregó el total de pagos a la fecha de emisión.
+*** Se quitaron los pagos parciales del detalle.
+** Se ajustó el contrato mutuo a una sola carilla.
+** Se agregó traduccion al castellano.
+** Se agregó el icono de la aplicacion.
+** Se modificó el reporte de indicadores para incluir el estado:
+*** Se agrego la columna cuotas_adeudadas_max a la tabla estado_credito
+*** Se corrigio la vista, tenian mal la clausula WHERE
+*** Se corrigió la columna cuota_calculada
+** Se agregó busqueda por id para beneficiaria y credito, y por credito_id para pago.
+
+* v11.12.22
+** Primer release

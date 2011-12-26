@@ -1,10 +1,14 @@
 * COMO SIGO:
-** TODO revisar indicadores
 ** TODO procurar que se pueda filtrar por nombre y apellido
 ** TODO en carga de pagos agregar boton "nuevo pago"
 ** REPORTES:
 *** probar obtener min, max fecha como query sqlalchemy
 *** probar sumas en reportes como querys sqlalchemy en vez de iterar
+<<<<<<< HEAD
+=======
+*** segun el reporte, pedir la fecha, cargar la tabla y mostrar el reporte
+no se como hacer para que el dialogo con la fecha invoque el opentableview
+>>>>>>> c3ef03a29fb7a11ffe7454782d0c1342195b409f
 *** DONE creditos terminados con saldo pendiente
 *** DONE 901 Perdida por Incobrable
 *** DONE recaudacion potencial
