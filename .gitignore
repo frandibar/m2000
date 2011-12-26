@@ -1,5 +1,6 @@
 .svn
 *.pyc
+*.pyo
 migrate/t*.txt
 migrate/*.sql
 migrate/*.dat
