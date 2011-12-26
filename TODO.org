@@ -1,10 +1,10 @@
 * COMO SIGO:
+** TODO revisar indicadores
+** TODO procurar que se pueda filtrar por nombre y apellido
+** TODO en carga de pagos agregar boton "nuevo pago"
 ** REPORTES:
 *** probar obtener min, max fecha como query sqlalchemy
 *** probar sumas en reportes como querys sqlalchemy en vez de iterar
-*** TODO planilla pagos: Agregar pagos existentes
-*** segun el reporte, pedir la fecha, cargar la tabla y mostrar el reporte
-no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** DONE creditos terminados con saldo pendiente
 *** DONE 901 Perdida por Incobrable
 *** DONE recaudacion potencial
@@ -19,8 +19,6 @@ no se como hacer para que el dialogo con la fecha invoque el opentableview
 *** "501 saldo F","Por Beneficiaria" ?
 *** "800 Monto promedio de pago F","Monto promedio pagado en la vida del credito" ?
 *** "900 pagos CONAMI","Recaudaci�n Conami por beneficiaria" ?
-*** resolver si usar tabla parameter
-*** ver como asociar una clase a una vista en vez de tabla
 ** PAGOS:
 *** TODO imitar la consulta de pagos por fecha y barrio (agregar barrio a la tabla de pagos, crear vista)
 ** ALL:
@@ -67,11 +65,11 @@ creo que con el parametro autoload=True en using_options
 *** como modificar la ubicacion de las actions
 *** como setear el ancho de los campos en table view
 *** como evito mostrar el id en el titulo del form?
-*** como agregar una imagen al tab de home, o quitarla del todo
 ** DONE como filtrar por @property (al parecer no se puede)
   http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
 
 ** PARA M2000
+*** que se supone que va en la columna estado de planilla de pagos?
 *** el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
 *** estado de credito para que se usa?
 *** las fechas de pago corresponden a viernes o sabado?
@@ -84,17 +82,11 @@ se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabad
 ** en contrato mutuo colocar tasa de interes en letras
 ** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
 ** reemplazar header jpg por svg
-** hacer reportes como pdf's con totales, fechas, etc, en vez de mostrar un tableview
 ** validadores de forms
-** agregar coordinadores de grupos
 ** en fechas de reportes, guardar la ultima usada y usar como default
 ** agregar diccionario (ayuda) con definiciones de formulas y comportamiento. (documentacion con sphinx?)
-** keyboard navigation
-** en planilla de pagos, agregar los pagos que se realizaron
-** reutilizar html en planillas de pagos (css?)
+** keyboard navigation (depende de camelot?)
 ** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
-** traducir a castellano
-** agregar una imagen al tab de home
 ** en reportes, inhabilitar boton new
 ** poder inhabilitar boton de crear nuevo credito en pago
 ** agregar historial de cambios? (provisto por camelot)
@@ -157,6 +149,7 @@ modifique los fuentes en view/controls/tableview.py
 ** para el archivo de configuracion pude haber usado camelot.core.conf
 ** ordenamiento por properties en tableview no funciona. es asi por diseno
 https://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f/88b71699cd831a87?hl=es&ie=UTF-8&q=tableview+order+by+property+camelot&pli=1#88b71699cd831a87
+** en windows, al lanzar desde un shortcut se abre una ventana de dos, esta sirve para ver los mensajes de error asi que no quitarla.
 * BUGS
 ** las columnas property no pueden usarse para ordenar, ver como workaroundearlo
 ** pies de pagina en jinja no se pueden setear, como workaround tener un template externo con los mismos, y eliminarlos de los documentos.
@@ -176,9 +169,6 @@ http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_adm
 en vim :%s/\(^\d\+;\)\(1\);/\1Troncos;/
 
 ** reporte de cheques entregados, hay duplicados?
-* OBSERVACIONES
-** TODO en access la carga de pagos esta restringida a un barrio y fecha por vez. Para la fecha elegida, se listan todos los creditos que deberian cargarse.
-Esto no va mas, preguntar si aun desean la carga semanal
 * CAMBIOS EN DB
 ** vistas renombradas
 100 qTotalPagos ant -> 100_credito_pagos

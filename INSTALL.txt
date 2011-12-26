@@ -35,5 +35,19 @@ La primera vez, es necesario hacer lo siguiente:
 
 * Crear shortcut
 
-Si estos componentes ya fueron instalados, pero se quiere hacer una actualizacion del programa, entonces seguir el último paso solamente.
 
+
+Para actualizar en Windows:
+
+1. Asegurarse que el programa no se encuentra en ejecución.
+2. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo, y VERSION con la version a instalar
+   easy_install path_to\m2000-VERSION-py2.7.egg
+
+
+Migración de datos:
+
+De version 11.12.22 a ?
+
+* Desde m2000, hacer copia de respaldo de los datos, y cerrar el programa
+* Eliminar archivo .m2000.cfg en el path de user (TODO: averiguar donde se encuentra en windows)
+* Lanzar el programa y hacer una restauracion los datos a partir de la copia hecha en 1.
