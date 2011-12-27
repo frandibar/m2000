@@ -86,7 +86,6 @@ class MyApplicationAdmin(ApplicationAdmin):
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
-                                 view.IntervaloFechas(),
                                  view.ChequesEntregados,
                                  view.CreditosActivos,
                                  view.PerdidaPorIncobrable,

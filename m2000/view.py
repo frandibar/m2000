@@ -288,7 +288,7 @@ class RecaudacionPotencialTotal(Entity):
 # esta clase corresponde a un VIEW
 class ChequesEntregados(Entity):
     using_options(tablename='403_creditos_entregados', autoload=True, allowcoloverride=True)
-    beneficiaria = Field(Unicode(401), primary_key=True)
+    beneficiaria_id = Field(Integer, primary_key=True)
     nro_credito = Field(Integer, primary_key=True)
     
     class Admin(EntityAdmin):
@@ -303,9 +303,13 @@ class ChequesEntregados(Entity):
                         'monto_cheque']
         list_actions = [reports.ReporteChequesEntregados()]
         list_action = None
-        list_filter = [ComboBoxFilter('beneficiaria'),
-                       ComboBoxFilter('barrio'),
+        list_filter = [ComboBoxFilter('barrio'),
                        ComboBoxFilter('cartera')]
+        search_all_fields = True
+        list_search = ['beneficiaria', 'fecha_entrega']
+        expanded_list_search = ['beneficiaria',
+                                'fecha_entrega',
+                                ]
         field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
                                 monto_prestamo = dict(delegate = CurrencyDelegate,
                                                       prefix = '$'),

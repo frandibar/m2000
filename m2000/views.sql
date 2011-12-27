@@ -136,6 +136,7 @@ GROUP BY
 CREATE OR REPLACE VIEW 403_creditos_entregados AS
 -- Es el reporte 'Cartera - Cheques Entregados'
 SELECT 
+    beneficiaria.id AS beneficiaria_id,
     CONCAT(beneficiaria.nombre, " ", beneficiaria.apellido) AS beneficiaria,
 	barrio.nombre AS barrio, 
 	cartera.nombre AS cartera, 
@@ -149,7 +150,7 @@ FROM
 	INNER JOIN beneficiaria ON credito.beneficiaria_id = beneficiaria.id
 	INNER JOIN barrio ON beneficiaria.barrio_id = barrio.id
 GROUP BY 
-    CONCAT(beneficiaria.nombre, " ", beneficiaria.apellido),
+    beneficiaria.id,
 	barrio.nombre, 
 	cartera.nombre, 
 	credito.nro_credito, 

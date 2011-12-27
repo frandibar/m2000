@@ -572,8 +572,6 @@ class ReporteChequesEntregados(Action):
 
         context = { 
             'header_image_filename': header_image_filename(),
-            'fecha_desde': fecha_desde(),
-            'fecha_hasta': fecha_hasta(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),
             'total_cheque': money_fmt(total_cheque),
@@ -620,8 +618,6 @@ class ReporteCreditosActivos(Action):
 
         context = { 
             'header_image_filename': header_image_filename(),
-            'fecha_desde': fecha_desde(),
-            'fecha_hasta': fecha_hasta(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),
             'total_saldo': money_fmt(total_saldo),
@@ -678,8 +674,6 @@ class ReportePerdidaPorIncobrable(Action):
 
         context = { 
             'header_image_filename': header_image_filename(),
-            'fecha_desde': fecha_desde(),
-            'fecha_hasta': fecha_hasta(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),
             'total_deuda': money_fmt(total_deuda),
@@ -733,8 +727,6 @@ class ReporteCreditosFinalizadosSinSaldar(Action):
 
         context = { 
             'header_image_filename': header_image_filename(),
-            'fecha_desde': fecha_desde(),
-            'fecha_hasta': fecha_hasta(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),
             'total_deuda': money_fmt(total_deuda),
