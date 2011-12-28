@@ -69,5 +69,6 @@ def setup_model():
     # tables only get created in mysql if the db exists
     # 'create database m2000' sufices
     elixir.setup_all(create_tables=True)
+    m2000.view.setup_views()
 
     # camelot.model.authentication.updateLastLogin()

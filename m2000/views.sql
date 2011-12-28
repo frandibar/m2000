@@ -133,29 +133,6 @@ GROUP BY
 	credito.tasa_interes, 
 	barrio.nombre;
 
-CREATE OR REPLACE VIEW 403_creditos_entregados AS
--- Es el reporte 'Cartera - Cheques Entregados'
-SELECT 
-    beneficiaria.id AS beneficiaria_id,
-    CONCAT(beneficiaria.nombre, " ", beneficiaria.apellido) AS beneficiaria,
-	barrio.nombre AS barrio, 
-	cartera.nombre AS cartera, 
-	credito.nro_credito, 
-	credito.fecha_entrega, 
-	SUM(credito.prestamo) AS monto_prestamo,
-	SUM(credito.monto_cheque) AS monto_cheque
-FROM 
-    credito
-	INNER JOIN cartera ON credito.cartera_id = cartera.id
-	INNER JOIN beneficiaria ON credito.beneficiaria_id = beneficiaria.id
-	INNER JOIN barrio ON beneficiaria.barrio_id = barrio.id
-GROUP BY 
-    beneficiaria.id,
-	barrio.nombre, 
-	cartera.nombre, 
-	credito.nro_credito, 
-	credito.fecha_entrega;
-
 CREATE OR REPLACE VIEW 700_recaudacion_x_barrio AS
 -- Total de pagos por semana y barrio, entre fechas.
 SELECT 

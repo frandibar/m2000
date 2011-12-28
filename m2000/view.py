@@ -35,10 +35,13 @@ from camelot.view.controls.delegates import DateDelegate, FloatDelegate, Currenc
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter
 from elixir import Entity, Field, using_options
 from sqlalchemy import Unicode, Date, Integer, Float
+from sqlalchemy.orm import mapper
+from sqlalchemy.sql import select, func, and_
 
 from camelot.model import metadata
 __metadata__ = metadata
 
+from model import Beneficiaria, Cartera, Credito, Barrio
 import model
 import reports
 
@@ -286,39 +289,6 @@ class RecaudacionPotencialTotal(Entity):
     # Admin = notEditableAdmin(Admin, actions=True)
 
 # esta clase corresponde a un VIEW
-class ChequesEntregados(Entity):
-    using_options(tablename='403_creditos_entregados', autoload=True, allowcoloverride=True)
-    beneficiaria_id = Field(Integer, primary_key=True)
-    nro_credito = Field(Integer, primary_key=True)
-    
-    class Admin(EntityAdmin):
-        verbose_name = u'Cartera - Préstamos / Cheques Entregados'
-        verbose_name_plural = u'Préstamos / Cheques Entregados'
-        list_display = ['beneficiaria',
-                        'barrio',
-                        'cartera',
-                        'nro_credito',
-                        'fecha_entrega',
-                        'monto_prestamo',
-                        'monto_cheque']
-        list_actions = [reports.ReporteChequesEntregados()]
-        list_action = None
-        list_filter = [ComboBoxFilter('barrio'),
-                       ComboBoxFilter('cartera')]
-        search_all_fields = True
-        list_search = ['beneficiaria', 'fecha_entrega']
-        expanded_list_search = ['beneficiaria',
-                                'fecha_entrega',
-                                ]
-        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
-                                monto_prestamo = dict(delegate = CurrencyDelegate,
-                                                      prefix = '$'),
-                                monto_cheque = dict(delegate = CurrencyDelegate,
-                                                    prefix = '$'),
-                                beneficiaria = dict(minimal_column_width = 25))
-    # Admin = notEditableAdmin(Admin, actions=True)
-
-# esta clase corresponde a un VIEW
 class CreditosActivos(Entity):
     using_options(tablename='402_creditos_activos', autoload=True, allowcoloverride=True)
     beneficiaria_id = Field(Integer, primary_key=True)
@@ -531,3 +501,55 @@ class IntervaloFechas(Action):
 
         model.Fecha.query.session.flush()
         yield Refresh()
+
+
+class ChequesEntregados(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Cartera - Préstamos / Cheques Entregados'
+        verbose_name_plural = u'Préstamos / Cheques Entregados'
+        list_display = ['beneficiaria',
+                        'barrio',
+                        'cartera',
+                        'nro_credito',
+                        'fecha_entrega',
+                        'monto_prestamo',
+                        'monto_cheque']
+        list_actions = [reports.ReporteChequesEntregados()]
+        list_action = None
+        list_filter = [ComboBoxFilter('barrio'),
+                       ComboBoxFilter('cartera')]
+        search_all_fields = True
+        list_search = ['beneficiaria', 
+                       'fecha_entrega']
+        expanded_list_search = ['beneficiaria',
+                                'fecha_entrega',
+                                ]
+        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
+                                monto_prestamo = dict(delegate = CurrencyDelegate,
+                                                      prefix = '$'),
+                                monto_cheque = dict(delegate = CurrencyDelegate,
+                                                    prefix = '$'),
+                                beneficiaria = dict(minimal_column_width = 25))
+
+def setup_cheques_entregados():
+    s = select([Credito.id.label('credito_id'),
+                func.concat(Beneficiaria.nombre, ' ', Beneficiaria.apellido).label('beneficiaria'),
+                Barrio.nombre.label('barrio'),
+                Cartera.nombre.label('cartera'),
+                Credito.nro_credito,
+                Credito.fecha_entrega,
+                func.sum(Credito.prestamo).label('monto_prestamo'),
+                func.sum(Credito.monto_cheque).label('monto_cheque'),
+                ],
+                whereclause = and_(Beneficiaria.barrio_id == Barrio.id,
+                                   Credito.beneficiaria_id == Beneficiaria.id,
+                                   Credito.cartera_id == Cartera.id),
+                group_by = [Credito.id]
+               )
+                            
+    s = s.alias('cheques_entregados')
+    mapper(ChequesEntregados, s, always_refresh=True)
+
+def setup_views():
+    setup_cheques_entregados()
+    
