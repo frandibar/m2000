@@ -245,7 +245,7 @@ class CreditoAdminBase(EntityAdmin):
     search_all_fields = False
     # TODO no me toma los campos referenciados
     expanded_list_search = ['beneficiaria.nombre', 
-                            'beneficiaria.apellio', 
+                            'beneficiaria.apellido', 
                             'rubro.nombre', 
                             'nro_credito', 
                             'fecha_entrega',
