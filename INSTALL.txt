@@ -30,24 +30,16 @@ La primera vez, es necesario hacer lo siguiente:
   Doble clic en PyQt-Py2.7-x86-gpl-4.8.6-1.exe. Seleccionar 'Minimal' en 'Select the type of install:'
 
 * Instalar m2000
-1. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo, y VERSION con la version a instalar
-   easy_install path_to\m2000-VERSION-py2.7.egg
+1. Copiar XXMKLINK.EXE en C:\WINDOWS\system32. Se usa para crear el shortcut.
+2. Doble clic en update-win.bat
 
-* Crear shortcut
-
+* Opcionalmente instalar una impresora pdf.
+1. Doble clic en BullzipPDFPrinter_7_2_0_1320.exe
 
 
 Para actualizar en Windows:
 
 1. Asegurarse que el programa no se encuentra en ejecución.
-2. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo, y VERSION con la version a instalar
-   easy_install path_to\m2000-VERSION-py2.7.egg
-
-
-Migración de datos:
-
-De version 11.12.22 a ?
-
-* Desde m2000, hacer copia de respaldo de los datos, y cerrar el programa
-* Eliminar archivo .m2000.cfg en el path de user (TODO: averiguar donde se encuentra en windows)
-* Lanzar el programa y hacer una restauracion los datos a partir de la copia hecha en 1.
+2. Hacer copia de respaldo de los datos.
+3. Doble clic en update-win.bat
+4. Si hace falta, hacer una restauración de los datos.

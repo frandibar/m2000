@@ -1,14 +1,10 @@
 * COMO SIGO:
-** TODO procurar que se pueda filtrar por nombre y apellido
+** TODO convertir views de cartera a sqlalchemy
+** TODO procurar que se pueda filtrar por nombre y apellido en creditos y beneficiarias
 ** TODO en carga de pagos agregar boton "nuevo pago"
 ** REPORTES:
 *** probar obtener min, max fecha como query sqlalchemy
 *** probar sumas en reportes como querys sqlalchemy en vez de iterar
-<<<<<<< HEAD
-=======
-*** segun el reporte, pedir la fecha, cargar la tabla y mostrar el reporte
-no se como hacer para que el dialogo con la fecha invoque el opentableview
->>>>>>> c3ef03a29fb7a11ffe7454782d0c1342195b409f
 *** DONE creditos terminados con saldo pendiente
 *** DONE 901 Perdida por Incobrable
 *** DONE recaudacion potencial
@@ -40,8 +36,11 @@ camelot egg (instala sqlalchemy y elixir)
 sqlalchemy source http://ufpr.dl.sourceforge.net/project/sqlalchemy/sqlalchemy/0.7.3/SQLAlchemy-0.7.3.tar.gz
 windows mysql-python
 cuando instalo un egg, primero desinstala si ya fue instalado
+pdf printer para windows
+http://www.bullzip.com/products/pdf/info.php
 * PREGUNTAS:
 ** FUNCIONALES
+*** como obtengo el filtro para mostrar en un reporte?
 *** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
 *** preguntar como workaroundear el hecho de que no puedo ordenar columnas por properties, dado que deja cliquear y da al usuario la idea de que hace algo.
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
@@ -164,15 +163,8 @@ https://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb9
 http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_admin.html
 *** cuando se escribe un valor en un filtro de table view y se empiezan a filtrar, al llegar a 0 resultados, si se vuelve atras con backspace, no aparece la 1ra columna con la carpetita. Es necesario clic en la escoba.
 * NOTAS SOBRE LOS DATOS:
-** cambie los nombres de campos de la tabla asistencia:
-*** descripcion por codigo
-*** comentario por descripcion
-** tabla estadocredito: elimine el campo cuotas_adeudadas_max por innecesario.
-** El barrio delfino esta en la ciudad General Pacheco, y no en 'INCOMPLETO'
-** para importar las beneficiarias:
-en vim :%s/\(^\d\+;\)\(1\);/\1Troncos;/
-
-** reporte de cheques entregados, hay duplicados?
+mar dic 27, 2011
+elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)
 * CAMBIOS EN DB
 ** vistas renombradas
 100 qTotalPagos ant -> 100_credito_pagos
@@ -224,10 +216,15 @@ http://www.fuyun.org/2009/12/install-mysql-for-python-on-windows/
 
 ** html
 http://matthewjamestaylor.com/blog/keeping-footers-at-the-bottom-of-the-page
+** icono windows generador online
+http://www.digital-pic.com/icon/
+** shortcut generator en windows
+http://www.xxcopy.com/xxcopy38.htm
 * SNIPPETS
     # set all fields as non editable
     def get_field_attributes(self, field_name):
         field_attributes = super(EntityAdmin, self).get_field_attributes(field_name)
         field_attributes['editable'] = False
         return field_attributes
+
 

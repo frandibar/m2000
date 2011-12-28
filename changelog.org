@@ -1,5 +1,8 @@
 * master
-** Se agregó la columna tasa_interes_anual a la tabla cartera
+** Se modificó la vista del reporte de cheques entregados como un select de sqlalchemy
+
+* v11.12.26
+** Se agregó la columna tasa_interes_anual a la tabla cartera.
 ** La columna nro_credito en credito paso a ser de tipo Integer en vez de Unicode.
 ** Planilla de Pagos:
 *** Se ajusto a una hoja por carilla. (Quitando el logo de la cabecera)
@@ -9,10 +12,12 @@
 ** Se agregó traduccion al castellano.
 ** Se agregó el icono de la aplicacion.
 ** Se modificó el reporte de indicadores para incluir el estado:
-*** Se agrego la columna cuotas_adeudadas_max a la tabla estado_credito
-*** Se corrigio la vista, tenian mal la clausula WHERE
-*** Se corrigió la columna cuota_calculada
+*** Se agrego la columna cuotas_adeudadas_max a la tabla estado_credito.
+*** Se corrigio la vista, tenian mal la clausula WHERE.
+*** Se corrigió la columna cuota_calculada.
 ** Se agregó busqueda por id para beneficiaria y credito, y por credito_id para pago.
+** Se agregó un icono de aplicacion para el shortcut de windows.
+** Se quito el intervalo de fechas para los reportes de cartera.
 
 * v11.12.22
 ** Primer release
