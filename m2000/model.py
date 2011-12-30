@@ -253,7 +253,7 @@ class CreditoAdminBase(EntityAdmin):
                             'fecha_finalizacion', 
                             'prestamo',
                             'cartera.nombre']
-    list_filter = ['activo',
+    list_filter = [GroupBoxFilter('activo', default=True),
                    ComboBoxFilter('cartera.nombre'),
                    ValidDateFilter('_fecha_entrega', 'fecha_finalizacion', u'Período e/entrega-fin', default=lambda:'')]
 
@@ -298,7 +298,7 @@ class CreditoAdminBase(EntityAdmin):
                             deuda_total = dict(prefix = '$',
                                                tooltip = u'Se inicializa en: Préstamo . (1 + Tasa de interés)'),
                             activo = dict(delegate = BoolDelegate,
-                                          to_string = lambda x:{1:'True', 0:'False'}[x]),
+                                          to_string = lambda x:{1:'Si', 0:'No'}[x]),
                             pagos = dict(admin = PagoAdminEmbedded),
                             _fecha_entrega = dict(delegate = DateDelegate,
                                                   name = 'Fecha entrega',
@@ -467,6 +467,7 @@ class Beneficiaria(Entity):
                                 creditos = dict(admin = CreditoAdminEmbedded),
                                 _activa = dict(name = 'Activa',
                                                delegate = BoolDelegate,
+                                               # to_string = lambda x:{True:'Si', False:'No'}[x],
                                                editable = True,
                                                tooltip = u'No se puede dar de baja una beneficiaria si tiene créditos activos.'),
                                 creditos_activos = dict(name = u'Créditos activos',
