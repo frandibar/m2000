@@ -250,26 +250,6 @@ FROM
 GROUP BY 
     v100.credito_id;
 
-CREATE OR REPLACE VIEW 402_creditos_activos AS
--- Es el reporte 'Creditos activos'
-SELECT
-    beneficiaria.id AS beneficiaria_id,
-    credito.id AS credito_id,
-    beneficiaria.comentarios, 
-    CONCAT(beneficiaria.nombre, " ", beneficiaria.apellido) as beneficiaria,
-    barrio.nombre AS barrio, 
-    credito.nro_credito, 
-    credito.prestamo, 
-    credito.fecha_entrega, 
-    credito.deuda_total - pagos_credito.monto AS saldo
-FROM 
-    barrio 
-    INNER JOIN beneficiaria ON barrio.id = beneficiaria.barrio_id
-    INNER JOIN credito ON beneficiaria.id = credito.beneficiaria_id
-    INNER JOIN pagos_credito ON credito.id = pagos_credito.credito_id
-WHERE
-    credito.fecha_finalizacion IS NULL;
-
 CREATE OR REPLACE VIEW 901_perdida_x_incobrable AS
 -- Es el reporte 'Pérdida por Incobrable'
 SELECT 

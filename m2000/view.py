@@ -41,7 +41,7 @@ from sqlalchemy.sql import select, func, and_
 from camelot.model import metadata
 __metadata__ = metadata
 
-from model import Beneficiaria, Cartera, Credito, Barrio
+from model import Beneficiaria, Cartera, Credito, Barrio, Pago
 import model
 import reports
 
@@ -193,7 +193,6 @@ class RecaudacionRealTotal(Entity):
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
-
 # esta clase corresponde a un VIEW
 class RecaudacionRealTotalPorBarrio(Entity):
     using_options(tablename='recaudacion_real_x_barrio', autoload=True, allowcoloverride=True)
@@ -287,37 +286,6 @@ class RecaudacionPotencialTotal(Entity):
                                                   delegate = FloatDelegate),
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
-
-# esta clase corresponde a un VIEW
-class CreditosActivos(Entity):
-    using_options(tablename='402_creditos_activos', autoload=True, allowcoloverride=True)
-    beneficiaria_id = Field(Integer, primary_key=True)
-    credito_id = Field(Integer, primary_key=True)
-
-    class Admin(EntityAdmin):
-        verbose_name = u'Cartera - Créditos Activos'
-        verbose_name_plural = u'Créditos Activos'
-        list_display = ['comentarios',
-                        'beneficiaria',
-                        'barrio',
-                        'nro_credito',
-                        'fecha_entrega',
-                        'prestamo',
-                        'saldo']
-        list_actions = [reports.ReporteCreditosActivos()]
-        list_action = None
-        list_filter = [ComboBoxFilter('beneficiaria'),
-                       ComboBoxFilter('barrio'),
-                       ]
-        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
-                                prestamo = dict(delegate = CurrencyDelegate,
-                                                prefix = '$'),
-                                saldo = dict(delegate = CurrencyDelegate,
-                                             prefix = '$'),
-                                beneficiaria = dict(minimal_column_width = 25),
-                                comentarios = dict(name = 'CDI'))
-    # Admin = notEditableAdmin(Admin, actions=True)
-    
 
 # esta clase corresponde a un VIEW
 class PerdidaPorIncobrable(Entity):
@@ -502,7 +470,6 @@ class IntervaloFechas(Action):
         model.Fecha.query.session.flush()
         yield Refresh()
 
-
 class ChequesEntregados(object):
     class Admin(EntityAdmin):
         verbose_name = u'Cartera - Préstamos / Cheques Entregados'
@@ -541,15 +508,86 @@ def setup_cheques_entregados():
                 func.sum(Credito.prestamo).label('monto_prestamo'),
                 func.sum(Credito.monto_cheque).label('monto_cheque'),
                 ],
-                whereclause = and_(Beneficiaria.barrio_id == Barrio.id,
-                                   Credito.beneficiaria_id == Beneficiaria.id,
-                                   Credito.cartera_id == Cartera.id),
-                group_by = [Credito.id]
+               whereclause = and_(Beneficiaria.barrio_id == Barrio.id,
+                                  Credito.beneficiaria_id == Beneficiaria.id,
+                                  Credito.cartera_id == Cartera.id),
+               group_by = [Credito.id]
                )
                             
     s = s.alias('cheques_entregados')
     mapper(ChequesEntregados, s, always_refresh=True)
 
+class CreditosActivos(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Cartera - Créditos Activos'
+        verbose_name_plural = u'Créditos Activos'
+        list_display = ['comentarios',
+                        'beneficiaria',
+                        'barrio',
+                        'nro_credito',
+                        'fecha_entrega',
+                        'prestamo',
+                        'saldo']
+        list_actions = [reports.ReporteCreditosActivos()]
+        list_action = None
+        list_filter = [ComboBoxFilter('barrio')]
+        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
+                                prestamo = dict(delegate = CurrencyDelegate,
+                                                prefix = '$'),
+                                saldo = dict(delegate = CurrencyDelegate,
+                                             prefix = '$'),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                comentarios = dict(name = 'CDI'))
+    # Admin = notEditableAdmin(Admin, actions=True)
+
+def setup_creditos_activos():
+    tpc = total_pagos_x_credito()
+
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    
+    s = select([tbl_credito.c.id.label('credito_id'),
+                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                tbl_benef.c.comentarios,
+                tbl_barrio.c.nombre.label('barrio'),
+                tbl_credito.c.nro_credito,
+                tbl_credito.c.prestamo,
+                tbl_credito.c.fecha_entrega,
+                (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
+                ],
+               from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
+               whereclause = and_(tbl_credito.c.fecha_finalizacion == None,
+                                  tpc.c.credito_id == tbl_credito.c.id,),
+               )
+                            
+    s = s.alias('creditos_activos')
+    mapper(CreditosActivos, s, always_refresh=True)
+        
+def credito_pagos():
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_pago = Pago.mapper.mapped_table
+    
+    s = select([tbl_credito.c.id.label('credito_id'),
+                func.ifnull(tbl_pago.c.fecha, tbl_credito.c.fecha_entrega).label('fecha_pago_o_entrega'),
+                func.ifnull(tbl_pago.c.monto, 0).label('monto'),
+                tbl_credito.c.fecha_finalizacion,
+                ],
+                from_obj = tbl_credito.outerjoin(tbl_pago),
+               )
+    s = s.alias('credito_pagos')
+    return s
+
+def total_pagos_x_credito():
+    cp = credito_pagos()
+    s = select([cp.c.credito_id,
+                func.sum(cp.c.monto).label('monto'),
+                ],
+               group_by = [cp.c.credito_id],
+               )
+    s = s.alias('total_pagos_x_credito')
+    return s
+
 def setup_views():
     setup_cheques_entregados()
-    
+    setup_creditos_activos()

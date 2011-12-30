@@ -1,4 +1,8 @@
 * master
+** Reportes de cartera son vistas sqlalchemy. Se arreglaron los filtros de busqueda
+** Se actualizó la version de Camelot a 11.12.30 (y sqlalchemy a 0.7.4)
+** Nueva barra de herramientas personalizada
+** Valores de filtros predeterminados (ej. en creditos y beneficiarias)
 ** Se modificó la vista del reporte de cheques entregados como un select de sqlalchemy
 
 * v11.12.26
