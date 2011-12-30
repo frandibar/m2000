@@ -480,38 +480,38 @@ class ChequesEntregados(object):
                         'nro_credito',
                         'fecha_entrega',
                         'monto_prestamo',
-                        'monto_cheque']
+                        'monto_cheque',
+                        ]
         list_actions = [reports.ReporteChequesEntregados()]
         list_action = None
         list_filter = [ComboBoxFilter('barrio'),
-                       ComboBoxFilter('cartera')]
-        search_all_fields = True
-        list_search = ['beneficiaria', 
-                       'fecha_entrega']
-        expanded_list_search = ['beneficiaria',
-                                'fecha_entrega',
-                                ]
+                       ComboBoxFilter('cartera'),
+                       ]
         field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
                                 monto_prestamo = dict(delegate = CurrencyDelegate,
                                                       prefix = '$'),
                                 monto_cheque = dict(delegate = CurrencyDelegate,
                                                     prefix = '$'),
-                                beneficiaria = dict(minimal_column_width = 25))
+                                beneficiaria = dict(minimal_column_width = 25),
+                                )
 
 def setup_cheques_entregados():
-    s = select([Credito.id.label('credito_id'),
-                func.concat(Beneficiaria.nombre, ' ', Beneficiaria.apellido).label('beneficiaria'),
-                Barrio.nombre.label('barrio'),
-                Cartera.nombre.label('cartera'),
-                Credito.nro_credito,
-                Credito.fecha_entrega,
-                func.sum(Credito.prestamo).label('monto_prestamo'),
-                func.sum(Credito.monto_cheque).label('monto_cheque'),
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    tbl_cartera = Cartera.mapper.mapped_table
+
+    s = select([tbl_credito.c.id.label('credito_id'),
+                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                tbl_barrio.c.nombre.label('barrio'),
+                tbl_cartera.c.nombre.label('cartera'),
+                tbl_credito.c.nro_credito,
+                tbl_credito.c.fecha_entrega,
+                func.sum(tbl_credito.c.prestamo).label('monto_prestamo'),
+                func.sum(tbl_credito.c.monto_cheque).label('monto_cheque'),
                 ],
-               whereclause = and_(Beneficiaria.barrio_id == Barrio.id,
-                                  Credito.beneficiaria_id == Beneficiaria.id,
-                                  Credito.cartera_id == Cartera.id),
-               group_by = [Credito.id]
+               from_obj = tbl_credito.join(tbl_cartera).join(tbl_benef).join(tbl_barrio),
+               group_by = tbl_credito.c.id
                )
                             
     s = s.alias('cheques_entregados')
@@ -573,7 +573,7 @@ def credito_pagos():
                 func.ifnull(tbl_pago.c.monto, 0).label('monto'),
                 tbl_credito.c.fecha_finalizacion,
                 ],
-                from_obj = tbl_credito.outerjoin(tbl_pago),
+               from_obj = tbl_credito.outerjoin(tbl_pago),
                )
     s = s.alias('credito_pagos')
     return s
@@ -583,7 +583,7 @@ def total_pagos_x_credito():
     s = select([cp.c.credito_id,
                 func.sum(cp.c.monto).label('monto'),
                 ],
-               group_by = [cp.c.credito_id],
+               group_by = cp.c.credito_id,
                )
     s = s.alias('total_pagos_x_credito')
     return s
