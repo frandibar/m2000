@@ -37,7 +37,7 @@ setup(
     url = 'www.mujeres2000.org.ar',
     license = 'MIT',
     platforms = 'Linux, Windows',
-    install_requires = ['Camelot>=11.11.16',
+    install_requires = ['Camelot>=11.12.30',
                         'MySQL-python>=1.2.1'],
     include_package_data = True,
     packages = find_packages(),
@@ -56,10 +56,6 @@ setup(
              '*.svg',
              '*.ico',
              ],
-        'translations': [
-            'camelot.po',
-            'camelot.qm',
-            ],
         },
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',

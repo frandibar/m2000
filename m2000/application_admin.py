@@ -124,13 +124,9 @@ class MyApplicationAdmin(ApplicationAdmin):
     #     pass
 
     def get_translator(self):
-        # Camelot-11.11.16 no tiene translations en es_AR, descomentar para la proxima version de camelot
-        # camelot_translator = self._load_translator_from_file( 'camelot', 
-        #                                                       'camelot',
-        #                                                       'art/translations/es_AR/LC_MESSAGES/')
-        camelot_translator = self._load_translator_from_file( 'm2000', 
+        camelot_translator = self._load_translator_from_file( 'camelot', 
                                                               'camelot',
-                                                              'translations/')
+                                                              'art/translations/es_AR/LC_MESSAGES/')
         return [camelot_translator]
 
     # def get_stylesheet(self):
