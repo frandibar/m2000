@@ -275,29 +275,6 @@ WHERE
     credito.fecha_finalizacion IS NOT NULL
     AND credito.comentarios IS NOT NULL;
 
-CREATE OR REPLACE VIEW creditos_finalizados_sin_saldar AS
--- Es el reporte 'Creditos finalizados sin saldar'
-SELECT 
-    beneficiaria.id AS beneficiaria_id,
-    credito.id AS credito_id,
-    beneficiaria.comentarios, 
-    CONCAT(beneficiaria.nombre, " ", beneficiaria.apellido) as beneficiaria,
-    barrio.nombre AS barrio,
-    credito.nro_credito,
-    credito.fecha_finalizacion,
-    credito.fecha_entrega, 
-    credito.prestamo,
-    credito.deuda_total,
-    credito.deuda_total - pagos_credito.monto AS saldo
-FROM 
-    barrio 
-    INNER JOIN beneficiaria ON barrio.id = beneficiaria.barrio_id
-    INNER JOIN credito ON beneficiaria.id = credito.beneficiaria_id
-    INNER JOIN pagos_credito ON credito.id = pagos_credito.credito_id
-WHERE
-    credito.fecha_finalizacion IS NOT NULL
-    AND credito.deuda_total - pagos_credito.monto > 1; -- 1 en vez de 0 x razones de redondeo
-
 -- -- REVISAR por ahora no la necesito
 -- CREATE OR REPLACE VIEW 210_pagos AS
 -- -- Todos los pagos con fecha >= fecha_desde de los creditos activos

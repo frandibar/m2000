@@ -342,12 +342,7 @@ class PerdidaPorIncobrable(Entity):
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
-# esta clase corresponde a un VIEW
-class CreditosFinalizadosSinSaldar(Entity):
-    using_options(tablename='creditos_finalizados_sin_saldar', autoload=True, allowcoloverride=True)
-    beneficiaria_id = Field(Integer, primary_key=True)
-    credito_id = Field(Integer, primary_key=True)
-    
+class CreditosFinalizadosSinSaldar(object):
     class Admin(EntityAdmin):
         verbose_name = u'Créditos finalizados sin saldar'
         verbose_name_plural = u'Créditos finalizados sin saldar'
@@ -363,17 +358,6 @@ class CreditosFinalizadosSinSaldar(Entity):
                         ]
         
         list_filter = [ComboBoxFilter('barrio'),
-                       ]
-        # TODO no se muestran los campos de busqueda
-        search_all_fields = False
-        list_search = ['beneficiaria',
-                       'barrio'
-                       'nro_credito',
-                       'fecha_finalizacion',
-                       'fecha_entrega',
-                       'prestamo',
-                       'deuda_total',
-                       'saldo',
                        ]
         list_action = None
         list_actions = [reports.ReporteCreditosFinalizadosSinSaldar()]
@@ -558,7 +542,8 @@ def setup_creditos_activos():
                 ],
                from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
                whereclause = and_(tbl_credito.c.fecha_finalizacion == None,
-                                  tpc.c.credito_id == tbl_credito.c.id,),
+                                  tpc.c.credito_id == tbl_credito.c.id,
+                                  ),
                )
                             
     s = s.alias('creditos_activos')
@@ -588,6 +573,38 @@ def total_pagos_x_credito():
     s = s.alias('total_pagos_x_credito')
     return s
 
-def setup_views():
+def setup_creditos_finalizados_sin_saldar():
+    tpc = total_pagos_x_credito()
+
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    
+    s = select([tbl_credito.c.id.label('credito_id'),
+                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                tbl_benef.c.comentarios,
+                tbl_barrio.c.nombre.label('barrio'),
+                tbl_credito.c.nro_credito,
+                tbl_credito.c.fecha_finalizacion,
+                tbl_credito.c.fecha_entrega,
+                tbl_credito.c.prestamo,
+                tbl_credito.c.deuda_total,
+                (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
+                ],
+               from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
+               whereclause = and_(tbl_credito.c.fecha_finalizacion == None,
+                                  tbl_credito.c.deuda_total - tpc.c.monto > 1, # 1 y no 0 x redondeo
+                                  tpc.c.credito_id == tbl_credito.c.id,
+                                  ),
+               )
+                            
+    s = s.alias('creditos_finalizados_sin_saldar')
+    mapper(CreditosFinalizadosSinSaldar, s, always_refresh=True)
+
+def setup_views_cartera():
     setup_cheques_entregados()
     setup_creditos_activos()
+    setup_creditos_finalizados_sin_saldar()
+
+def setup_views():
+    setup_views_cartera()
