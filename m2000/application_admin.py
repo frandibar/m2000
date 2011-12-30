@@ -23,7 +23,7 @@
 #-------------------------------------------------------------------------------
 
 from camelot.view.art import Icon
-from camelot.admin.action import OpenNewView
+from camelot.admin import action
 from camelot.admin.application_admin import ApplicationAdmin
 from camelot.admin.section import Section
 import PyQt4
@@ -115,7 +115,7 @@ class MyApplicationAdmin(ApplicationAdmin):
         return PyQt4.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), os.path.pardir, 'doc', 'index.html'))
 
     def get_actions(self):
-        new_pago_action = OpenNewView(self.get_related_admin(model.Pago))
+        new_pago_action = action.OpenNewView(self.get_related_admin(model.Pago))
         new_pago_action.icon = Icon('tango/32x32/actions/list-add.png')
         return [new_pago_action]
     
@@ -129,6 +129,24 @@ class MyApplicationAdmin(ApplicationAdmin):
                                                               'art/translations/es_AR/LC_MESSAGES/')
         return [camelot_translator]
 
+    def get_toolbar_actions(self, toolbar_area):
+        if toolbar_area == PyQt4.QtCore.Qt.TopToolBarArea:
+            actions = [
+                action.list_action.OpenNewView(),
+                action.list_action.DeleteSelection(),
+                action.list_action.ToPreviousRow(),
+                action.list_action.ToNextRow(),
+                action.list_action.ToFirstRow(),
+                action.list_action.ToLastRow(),
+                action.list_action.ExportSpreadsheet(),
+                action.application_action.Backup(),
+                action.application_action.Restore(),
+                # action.application_action.Refresh(),
+                # action.application_action.ShowHelp(),
+                action.application_action.ShowAbout(),
+                ]
+            return actions
+    
     # def get_stylesheet(self):
     #     from camelot.view import art
     #     return art.read(os.path.join('stylesheet', 'office2007_blue.qss'))
