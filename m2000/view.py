@@ -287,12 +287,7 @@ class RecaudacionPotencialTotal(Entity):
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
-# esta clase corresponde a un VIEW
-class PerdidaPorIncobrable(Entity):
-    using_options(tablename='901_perdida_x_incobrable', autoload=True, allowcoloverride=True)
-    beneficiaria_id = Field(Integer, primary_key=True)
-    credito_id = Field(Integer, primary_key=True)
-    
+class PerdidaPorIncobrable(object):
     class Admin(EntityAdmin):
         verbose_name = u'Pérdida por Incobrable'
         verbose_name_plural = u'Pérdida por Incobrable'
@@ -310,18 +305,17 @@ class PerdidaPorIncobrable(Entity):
                         ]
         list_filter = [ComboBoxFilter('barrio'),
                        ]
-        # TODO no se muestran los campos de busqueda
-        search_all_fields = False
-        list_search = ['beneficiaria',
-                       'fecha_baja',
-                       'barrio'
-                       'nro_credito',
-                       'fecha_finalizacion',
-                       'fecha_entrega',
-                       'prestamo',
-                       'deuda_total',
-                       'saldo',
-                       ]
+        expanded_list_search = ['comentarios',
+                        'beneficiaria',
+                        'fecha_baja',
+                        'barrio',
+                        'nro_credito',
+                        'fecha_finalizacion',
+                        'fecha_entrega',
+                        'prestamo',
+                        'deuda_total',
+                        'saldo',
+                        ]
         list_actions = [reports.ReportePerdidaPorIncobrable()]
         list_action = None
         field_attributes = dict(fecha_baja = dict(delegate = DateDelegate),
@@ -601,9 +595,40 @@ def setup_creditos_finalizados_sin_saldar():
     s = s.alias('creditos_finalizados_sin_saldar')
     mapper(CreditosFinalizadosSinSaldar, s, always_refresh=True)
 
+def setup_perdida_x_incobrable():
+    tpc = total_pagos_x_credito()
+
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    
+    s = select([tbl_credito.c.id.label('credito_id'),
+                tbl_benef.c.comentarios,
+                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                tbl_benef.c.fecha_baja,
+                tbl_barrio.c.nombre.label('barrio'),
+                tbl_credito.c.nro_credito,
+                tbl_credito.c.fecha_finalizacion,
+                tbl_credito.c.comentarios.label('comentarios_baja'),
+                tbl_credito.c.fecha_entrega,
+                tbl_credito.c.prestamo,
+                tbl_credito.c.deuda_total,
+                (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
+                ],
+               from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
+               whereclause = and_(tbl_credito.c.fecha_finalizacion != None,
+                                  tbl_credito.c.comentarios != None,
+                                  tpc.c.credito_id == tbl_credito.c.id,
+                                  ),
+               )
+                            
+    s = s.alias('perdida_x_incobrable')
+    mapper(PerdidaPorIncobrable, s, always_refresh=True)
+
 def setup_views_cartera():
     setup_cheques_entregados()
     setup_creditos_activos()
+    setup_perdida_x_incobrable()
     setup_creditos_finalizados_sin_saldar()
 
 def setup_views():

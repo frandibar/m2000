@@ -250,31 +250,6 @@ FROM
 GROUP BY 
     v100.credito_id;
 
-CREATE OR REPLACE VIEW 901_perdida_x_incobrable AS
--- Es el reporte 'Pérdida por Incobrable'
-SELECT 
-    beneficiaria.id AS beneficiaria_id,
-    credito.id AS credito_id,
-    beneficiaria.comentarios, 
-    CONCAT(beneficiaria.nombre, " ", beneficiaria.apellido) as beneficiaria,
-    beneficiaria.fecha_baja,
-    barrio.nombre AS barrio,
-    credito.nro_credito,
-    credito.fecha_finalizacion,
-    credito.comentarios AS comentarios_baja,
-    credito.fecha_entrega, 
-    credito.prestamo,
-    credito.deuda_total,
-    credito.deuda_total - pagos_credito.monto AS saldo
-FROM 
-    barrio 
-    INNER JOIN beneficiaria ON barrio.id = beneficiaria.barrio_id
-    INNER JOIN credito ON beneficiaria.id = credito.beneficiaria_id
-    INNER JOIN pagos_credito ON credito.id = pagos_credito.credito_id
-WHERE
-    credito.fecha_finalizacion IS NOT NULL
-    AND credito.comentarios IS NOT NULL;
-
 -- -- REVISAR por ahora no la necesito
 -- CREATE OR REPLACE VIEW 210_pagos AS
 -- -- Todos los pagos con fecha >= fecha_desde de los creditos activos
