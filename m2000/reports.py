@@ -60,9 +60,8 @@ def float_fmt(value, dec=2):
     ret = ('%.' + '%df' % dec) % value
     return fix_decimal_sep(ret)
 
-# TODO: rehacer esto con min y max
 def fecha_desde():
-    return model.Fecha.query.first().fecha
+    return model.Fecha.query.order_by(model.Fecha.fecha.asc()).first().fecha
 
 def fecha_hasta():
     return model.Fecha.query.order_by(model.Fecha.fecha.desc()).first().fecha

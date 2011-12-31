@@ -20,11 +20,11 @@
   <tbody>
     {% for linea in detalle %}
     <tr class="{% cycle('odd','even') %}">
-      <td>{{ linea.cdi }}</td>
+      <td align="center">{{ linea.cdi }}</td>
       <td>{{ linea.beneficiaria }}</td>
       <td>{{ linea.barrio }}</td>
-      <td>{{ linea.nro_credito }}</td>
-      <td>{{ linea.fecha_entrega }}</td>
+      <td align="center">{{ linea.nro_credito }}</td>
+      <td align="center">{{ linea.fecha_entrega }}</td>
       <td align="right">{{ linea.prestamo }}</td>
       <td align="right">{{ linea.saldo }}</td>
     </tr>

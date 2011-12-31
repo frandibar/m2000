@@ -330,7 +330,8 @@ class PerdidaPorIncobrable(object):
                                                    prefix = '$'),
                                 saldo = dict(delegate = CurrencyDelegate,
                                              prefix = '$'),
-                                comentarios = dict(minimal_column_width = 20),
+                                comentarios = dict(minimal_column_width = 20,
+                                                   name = 'CDI'),
                                 comentarios_baja = dict(minimal_column_width = 15),
                                 beneficiaria = dict(minimal_column_width = 25),
                                 )
