@@ -41,7 +41,7 @@ from sqlalchemy.sql import select, func, and_
 from camelot.model import metadata
 __metadata__ = metadata
 
-from model import Beneficiaria, Cartera, Credito, Barrio, Pago
+from model import Beneficiaria, Cartera, Credito, Barrio, Pago, Fecha
 import model
 import reports
 
@@ -89,6 +89,7 @@ class Indicadores(Entity):
         list_actions = [reports.ReporteIndicadores()]
         field_attributes = dict(fecha_entrega = dict(name = 'F.Entrega',
                                                      delegate = DateDelegate),
+                                comentarios = dict(name = 'CDI'),
                                 fecha_inicio = dict(name = 'F.Inicio',
                                                     delegate = DateDelegate),
                                 fecha_cancelacion = dict(name = u'F.Cancelación',
@@ -133,93 +134,6 @@ class Indicadores(Entity):
 
     # Admin = notEditableAdmin(Admin, actions=True)
     
-# esta clase corresponde a un VIEW
-class RecaudacionMensual(Entity):
-    using_options(tablename='700_recaudacion_x_cartera', autoload=True, allowcoloverride=True)
-    cartera = Field(Unicode(200), primary_key=True)
-    tasa_interes = Field(Float, primary_key=True)
-    recaudacion = Field(Float, primary_key=True)
-    barrio = Field(Unicode(200), primary_key=True)
-    
-    class Admin(EntityAdmin):
-        verbose_name = u'Recaudación Mensual'
-        verbose_name_plural = u'Mensual'
-        list_display = ['barrio',
-                        'cartera',
-                        'tasa_interes',
-                        'recaudacion',
-                        ]
-        
-        list_filter = [ComboBoxFilter('barrio'),
-                       ComboBoxFilter('cartera'),
-                       ]
-        list_action = None
-        field_attributes = dict(tasa_interes = dict(name = u'Tasa Interés',
-                                                    minimal_column_width = 15,
-                                                    delegate = FloatDelegate),
-                                recaudacion = dict(name = u'Recaudación',
-                                                   delegate = CurrencyDelegate,
-                                                   prefix = '$'))
-        list_actions = [reports.ReporteRecaudacionMensual()]
-
-    # Admin = notEditableAdmin(Admin, actions=True)
-
-# esta clase corresponde a un VIEW
-class RecaudacionRealTotal(Entity):
-    using_options(tablename='recaudacion_real_total', autoload=True, allowcoloverride=True)
-    fecha = Field(Date, primary_key=True)
-    cartera = Field(Unicode(200), primary_key=True)
-    tasa_interes = Field(Float, primary_key=True)
-
-    class Admin(EntityAdmin):
-        verbose_name = u'Recaudación Real Total'
-        verbose_name_plural = u'Real Total'
-        list_display = ['fecha',
-                        'cartera',
-                        'tasa_interes',
-                        'recaudacion',
-                        ]
-        list_actions = [reports.ReporteRecaudacionRealTotal()]
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ComboBoxFilter('cartera'),
-                       ]
-        list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
-                                                   delegate = CurrencyDelegate,
-                                                   prefix = '$'),
-                                fecha = dict(delegate = DateDelegate),
-                                tasa_interes = dict(name = u'Tasa Interés',
-                                                    delegate = FloatDelegate)
-                                )
-    # Admin = notEditableAdmin(Admin, actions=True)
-
-# esta clase corresponde a un VIEW
-class RecaudacionRealTotalPorBarrio(Entity):
-    using_options(tablename='recaudacion_real_x_barrio', autoload=True, allowcoloverride=True)
-    fecha = Field(Date, primary_key=True)
-    barrio = Field(Unicode(200), primary_key=True)
-    recaudacion = Field(Float)
-    
-    class Admin(EntityAdmin):
-        verbose_name = u'Recaudación Real Total por Barrio'
-        verbose_name_plural = u'Real Total por Barrio'
-        list_display = ['fecha',
-                        'barrio',
-                        'recaudacion',
-                        ]
-        
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ComboBoxFilter('barrio'),
-                       ]
-        list_action = None
-        list_actions = [reports.ReporteRecaudacionRealTotalPorBarrio()]
-        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
-                                                   delegate = CurrencyDelegate,
-                                                   prefix = '$'),
-                                fecha = dict(delegate = DateDelegate),
-                                )
-    # Admin = notEditableAdmin(Admin, actions=True)
-
 # esta clase corresponde a un VIEW
 class RecaudacionPotencialTotalPorBarrio(Entity):
     using_options(tablename='702_recaudacion_potencial_x_barrio', autoload=True, allowcoloverride=True)
@@ -284,92 +198,6 @@ class RecaudacionPotencialTotal(Entity):
                                                              prefix = '$'),
                                 porcentaje = dict(name = '%',
                                                   delegate = FloatDelegate),
-                                )
-    # Admin = notEditableAdmin(Admin, actions=True)
-
-class PerdidaPorIncobrable(object):
-    class Admin(EntityAdmin):
-        verbose_name = u'Pérdida por Incobrable'
-        verbose_name_plural = u'Pérdida por Incobrable'
-        list_display = ['comentarios',
-                        'beneficiaria',
-                        'fecha_baja',
-                        'barrio',
-                        'nro_credito',
-                        'fecha_finalizacion',
-                        'comentarios_baja',
-                        'fecha_entrega',
-                        'prestamo',
-                        'deuda_total',
-                        'saldo',
-                        ]
-        list_filter = [ComboBoxFilter('barrio'),
-                       ]
-        expanded_list_search = ['comentarios',
-                        'beneficiaria',
-                        'fecha_baja',
-                        'barrio',
-                        'nro_credito',
-                        'fecha_finalizacion',
-                        'fecha_entrega',
-                        'prestamo',
-                        'deuda_total',
-                        'saldo',
-                        ]
-        list_actions = [reports.ReportePerdidaPorIncobrable()]
-        list_action = None
-        field_attributes = dict(fecha_baja = dict(delegate = DateDelegate),
-                                fecha_finalizacion = dict(delegate = DateDelegate,
-                                                          name = u'Fecha finalización',
-                                                          minimal_column_width = 15),
-                                fecha_entrega = dict(delegate = DateDelegate),
-                                prestamo = dict(delegate = CurrencyDelegate,
-                                                prefix = '$',
-                                                name = u'Préstamo'),
-                                deuda_total = dict(delegate = CurrencyDelegate,
-                                                   prefix = '$'),
-                                saldo = dict(delegate = CurrencyDelegate,
-                                             prefix = '$'),
-                                comentarios = dict(minimal_column_width = 20,
-                                                   name = 'CDI'),
-                                comentarios_baja = dict(minimal_column_width = 15),
-                                beneficiaria = dict(minimal_column_width = 25),
-                                )
-    # Admin = notEditableAdmin(Admin, actions=True)
-
-class CreditosFinalizadosSinSaldar(object):
-    class Admin(EntityAdmin):
-        verbose_name = u'Créditos finalizados sin saldar'
-        verbose_name_plural = u'Créditos finalizados sin saldar'
-        list_display = ['comentarios',
-                        'beneficiaria',
-                        'barrio',
-                        'nro_credito',
-                        'fecha_finalizacion',
-                        'fecha_entrega',
-                        'prestamo',
-                        'deuda_total',
-                        'saldo',
-                        ]
-        
-        list_filter = [ComboBoxFilter('barrio'),
-                       ]
-        list_action = None
-        list_actions = [reports.ReporteCreditosFinalizadosSinSaldar()]
-        field_attributes = dict(fecha_finalizacion = dict(delegate = DateDelegate,
-                                                          name = u'Fecha finalización',
-                                                          minimal_column_width = 15),
-                                fecha_entrega = dict(delegate = DateDelegate),
-                                prestamo = dict(delegate = CurrencyDelegate,
-                                                prefix = '$',
-                                                name = u'Préstamo'),
-                                deuda_total = dict(delegate = CurrencyDelegate,
-                                                   prefix = '$'),
-                                saldo = dict(delegate = CurrencyDelegate,
-                                             prefix = '$'),
-                                comentarios = dict(name = 'CDI',
-                                                   minimal_column_width = 20),
-                                beneficiaria = dict(minimal_column_width = 25),
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
@@ -492,7 +320,6 @@ def setup_cheques_entregados():
                from_obj = tbl_credito.join(tbl_cartera).join(tbl_benef).join(tbl_barrio),
                group_by = tbl_credito.c.id
                )
-                            
     s = s.alias('cheques_entregados')
     mapper(ChequesEntregados, s, always_refresh=True)
 
@@ -568,6 +395,42 @@ def total_pagos_x_credito():
     s = s.alias('total_pagos_x_credito')
     return s
 
+class CreditosFinalizadosSinSaldar(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Créditos finalizados sin saldar'
+        verbose_name_plural = u'Créditos finalizados sin saldar'
+        list_display = ['comentarios',
+                        'beneficiaria',
+                        'barrio',
+                        'nro_credito',
+                        'fecha_finalizacion',
+                        'fecha_entrega',
+                        'prestamo',
+                        'deuda_total',
+                        'saldo',
+                        ]
+        
+        list_filter = [ComboBoxFilter('barrio'),
+                       ]
+        list_action = None
+        list_actions = [reports.ReporteCreditosFinalizadosSinSaldar()]
+        field_attributes = dict(fecha_finalizacion = dict(delegate = DateDelegate,
+                                                          name = u'Fecha finalización',
+                                                          minimal_column_width = 15),
+                                fecha_entrega = dict(delegate = DateDelegate),
+                                prestamo = dict(delegate = CurrencyDelegate,
+                                                prefix = '$',
+                                                name = u'Préstamo'),
+                                deuda_total = dict(delegate = CurrencyDelegate,
+                                                   prefix = '$'),
+                                saldo = dict(delegate = CurrencyDelegate,
+                                             prefix = '$'),
+                                comentarios = dict(name = 'CDI',
+                                                   minimal_column_width = 20),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                )
+    # Admin = notEditableAdmin(Admin, actions=True)
+
 def setup_creditos_finalizados_sin_saldar():
     tpc = total_pagos_x_credito()
 
@@ -592,9 +455,58 @@ def setup_creditos_finalizados_sin_saldar():
                                   tpc.c.credito_id == tbl_credito.c.id,
                                   ),
                )
-                            
     s = s.alias('creditos_finalizados_sin_saldar')
     mapper(CreditosFinalizadosSinSaldar, s, always_refresh=True)
+
+class PerdidaPorIncobrable(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Pérdida por Incobrable'
+        verbose_name_plural = u'Pérdida por Incobrable'
+        list_display = ['comentarios',
+                        'beneficiaria',
+                        'fecha_baja',
+                        'barrio',
+                        'nro_credito',
+                        'fecha_finalizacion',
+                        'comentarios_baja',
+                        'fecha_entrega',
+                        'prestamo',
+                        'deuda_total',
+                        'saldo',
+                        ]
+        list_filter = [ComboBoxFilter('barrio'),
+                       ]
+        expanded_list_search = ['comentarios',
+                        'beneficiaria',
+                        'fecha_baja',
+                        'barrio',
+                        'nro_credito',
+                        'fecha_finalizacion',
+                        'fecha_entrega',
+                        'prestamo',
+                        'deuda_total',
+                        'saldo',
+                        ]
+        list_actions = [reports.ReportePerdidaPorIncobrable()]
+        list_action = None
+        field_attributes = dict(fecha_baja = dict(delegate = DateDelegate),
+                                fecha_finalizacion = dict(delegate = DateDelegate,
+                                                          name = u'Fecha finalización',
+                                                          minimal_column_width = 15),
+                                fecha_entrega = dict(delegate = DateDelegate),
+                                prestamo = dict(delegate = CurrencyDelegate,
+                                                prefix = '$',
+                                                name = u'Préstamo'),
+                                deuda_total = dict(delegate = CurrencyDelegate,
+                                                   prefix = '$'),
+                                saldo = dict(delegate = CurrencyDelegate,
+                                             prefix = '$'),
+                                comentarios = dict(minimal_column_width = 20,
+                                                   name = 'CDI'),
+                                comentarios_baja = dict(minimal_column_width = 15),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                )
+    # Admin = notEditableAdmin(Admin, actions=True)
 
 def setup_perdida_x_incobrable():
     tpc = total_pagos_x_credito()
@@ -622,15 +534,211 @@ def setup_perdida_x_incobrable():
                                   tpc.c.credito_id == tbl_credito.c.id,
                                   ),
                )
-                            
     s = s.alias('perdida_x_incobrable')
     mapper(PerdidaPorIncobrable, s, always_refresh=True)
 
+class RecaudacionMensual(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Recaudación Mensual'
+        verbose_name_plural = u'Mensual'
+        list_display = ['barrio',
+                        'cartera',
+                        'tasa_interes',
+                        'recaudacion',
+                        ]
+        list_filter = [ComboBoxFilter('barrio'),
+                       ComboBoxFilter('cartera'),
+                       ]
+        list_action = None
+        field_attributes = dict(tasa_interes = dict(name = u'Tasa Interés',
+                                                    minimal_column_width = 15,
+                                                    delegate = FloatDelegate),
+                                recaudacion = dict(name = u'Recaudación',
+                                                   delegate = CurrencyDelegate,
+                                                   prefix = '$'))
+        list_actions = [reports.ReporteRecaudacionMensual()]
+
+    # Admin = notEditableAdmin(Admin, actions=True)
+
+def setup_recaudacion_x_cartera():
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_pago = Pago.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    tbl_cartera = Cartera.mapper.mapped_table
+    tbl_fecha = Fecha.mapper.mapped_table
+    
+    s = select([tbl_cartera.c.nombre.label('cartera'),
+                tbl_credito.c.tasa_interes,
+                func.sum(tbl_pago.c.monto).label('recaudacion'),
+                tbl_barrio.c.nombre.label('barrio'),
+                tbl_cartera.c.id.label('cartera_id'),
+                tbl_barrio.c.id.label('barrio_id'),
+                ],
+               from_obj = [tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio).join(tbl_cartera),
+                           tbl_fecha,
+                           ],
+               whereclause = and_(tbl_pago.c.fecha >= min_fecha(),
+                                  tbl_pago.c.fecha <= max_fecha(),
+                                  ),
+               group_by = [tbl_cartera.c.id,
+                           tbl_credito.c.tasa_interes,
+                           tbl_barrio.c.id,
+                           ],
+               )
+    s = s.alias('recaudacion_x_cartera')
+    mapper(RecaudacionMensual, s, always_refresh=True)
+
+def recaudacion_x_barrio():
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_pago = Pago.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    tbl_fecha = Fecha.mapper.mapped_table
+
+    s = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
+                tbl_barrio.c.id.label('barrio_id'),
+                tbl_barrio.c.nombre.label('barrio_nombre'),
+                func.sum(tbl_pago.c.monto).label('recaudacion'),
+                ],
+               from_obj = [tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio),
+                           tbl_fecha,
+                           ],
+               whereclause = and_(tbl_pago.c.fecha >= min_fecha(),
+                                  tbl_pago.c.fecha <= max_fecha(),
+                                  ),
+               group_by = [func.yearweek(tbl_pago.c.fecha, 1),
+                           tbl_barrio.c.id,
+                           ],
+               )
+    s = s.alias('recaudacion_x_barrio')
+    return s
+
+def min_fecha():
+    return model.Fecha.query.order_by(model.Fecha.fecha.asc()).first().fecha
+
+def max_fecha():
+    return model.Fecha.query.order_by(model.Fecha.fecha.desc()).first().fecha
+
+def recaudacion():
+    tbl_pago = Pago.mapper.mapped_table
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_cartera = Cartera.mapper.mapped_table
+    tbl_fecha = Fecha.mapper.mapped_table
+
+    s = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
+                tbl_cartera.c.id.label('cartera_id'),
+                tbl_credito.c.tasa_interes,
+                func.sum(tbl_pago.c.monto).label('recaudacion'),
+                ],
+               from_obj = [tbl_credito.join(tbl_pago).join(tbl_cartera),
+                           tbl_fecha,
+                           ],
+               whereclause = and_(tbl_pago.c.fecha >= min_fecha(),
+                                  tbl_pago.c.fecha <= max_fecha(),
+                                  ),
+               group_by = [func.yearweek(tbl_pago.c.fecha, 1),
+                           tbl_cartera.c.id,
+                           tbl_credito.c.tasa_interes],
+               )
+    s = s.alias('recaudacion')
+    return s
+
+class RecaudacionRealTotal(object):
+    # using_options(tablename='recaudacion_real_total', autoload=True, allowcoloverride=True)
+    # fecha = Field(Date, primary_key=True)
+    # cartera = Field(Unicode(200), primary_key=True)
+    # tasa_interes = Field(Float, primary_key=True)
+    class Admin(EntityAdmin):
+        verbose_name = u'Recaudación Real Total'
+        verbose_name_plural = u'Real Total'
+        list_display = ['fecha',
+                        'cartera',
+                        'tasa_interes',
+                        'recaudacion',
+                        ]
+        list_actions = [reports.ReporteRecaudacionRealTotal()]
+        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
+                       ComboBoxFilter('cartera'),
+                       ]
+        list_action = None
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
+                                                   delegate = CurrencyDelegate,
+                                                   prefix = '$'),
+                                fecha = dict(delegate = DateDelegate),
+                                tasa_interes = dict(name = u'Tasa Interés',
+                                                    delegate = FloatDelegate)
+                                )
+    # Admin = notEditableAdmin(Admin, actions=True)
+
+def setup_recaudacion_real_total():
+    rec = recaudacion()
+    tbl_cartera = Cartera.mapper.mapped_table
+    
+    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
+                tbl_cartera.c.nombre.label('cartera'),
+                rec.c.tasa_interes,
+                rec.c.recaudacion,
+                tbl_cartera.c.id,
+                ],
+               from_obj = [tbl_cartera,
+                           rec,
+                           ],
+               whereclause = tbl_cartera.c.id == rec.c.cartera_id,
+               )
+    s = s.alias('recaudacion_real_total')
+    mapper(RecaudacionRealTotal, s, always_refresh=True)
+
+class RecaudacionRealTotalPorBarrio(object):
+    # using_options(tablename='recaudacion_real_x_barrio', autoload=True, allowcoloverride=True)
+    # fecha = Field(Date, primary_key=True)
+    # barrio = Field(Unicode(200), primary_key=True)
+    # recaudacion = Field(Float)
+    class Admin(EntityAdmin):
+        verbose_name = u'Recaudación Real Total por Barrio'
+        verbose_name_plural = u'Real Total por Barrio'
+        list_display = ['fecha',
+                        'barrio',
+                        'recaudacion',
+                        ]
+        
+        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
+                       ComboBoxFilter('barrio'),
+                       ]
+        list_action = None
+        list_actions = [reports.ReporteRecaudacionRealTotalPorBarrio()]
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
+                                                   delegate = CurrencyDelegate,
+                                                   prefix = '$'),
+                                fecha = dict(delegate = DateDelegate),
+                                )
+    # Admin = notEditableAdmin(Admin, actions=True)
+
+def setup_recaudacion_real_x_barrio():
+    rec = recaudacion_x_barrio()
+    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
+                rec.c.barrio_nombre.label('barrio'),
+                rec.c.recaudacion,
+                rec.c.barrio_id,
+                ],
+               from_obj = rec,
+               )
+    s = s.alias('recaudacion_real_x_barrio')
+    mapper(RecaudacionRealTotalPorBarrio, s, always_refresh=True)
+                
 def setup_views_cartera():
     setup_cheques_entregados()
     setup_creditos_activos()
     setup_perdida_x_incobrable()
     setup_creditos_finalizados_sin_saldar()
 
+def setup_views_recaudacion():
+    setup_recaudacion_x_cartera()
+    # setup_recaudacion_potencial_total()
+    setup_recaudacion_real_total()
+    # setup_recaudacion_potencial_x_barrio()
+    setup_recaudacion_real_x_barrio()
+    
 def setup_views():
     setup_views_cartera()
+    setup_views_recaudacion()
