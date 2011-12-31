@@ -36,7 +36,7 @@ from camelot.view.filters import ComboBoxFilter, ValidDateFilter
 from elixir import Entity, Field, using_options
 from sqlalchemy import Unicode, Date, Integer, Float
 from sqlalchemy.orm import mapper
-from sqlalchemy.sql import select, func, and_
+from sqlalchemy.sql import select, func, and_, or_
 
 from camelot.model import metadata
 __metadata__ = metadata
@@ -134,73 +134,6 @@ class Indicadores(Entity):
 
     # Admin = notEditableAdmin(Admin, actions=True)
     
-# esta clase corresponde a un VIEW
-class RecaudacionPotencialTotalPorBarrio(Entity):
-    using_options(tablename='702_recaudacion_potencial_x_barrio', autoload=True, allowcoloverride=True)
-    fecha = Field(Date, primary_key=True)
-    barrio = Field(Unicode(200), primary_key=True)
-    recaudacion = Field(Float)
-    recaudacion_potencial = Field(Float)
-    porcentaje = Field(Float)
-    
-    class Admin(EntityAdmin):
-        verbose_name = u'Recaudación Potencial Total por Barrio'
-        verbose_name_plural = u'Potencial Total por Barrio'
-        list_display = ['fecha',
-                        'barrio',
-                        'recaudacion',
-                        'recaudacion_potencial',
-                        'porcentaje',
-                        ]
-        
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ComboBoxFilter('barrio'),
-                       ]
-        list_action = None
-        list_actions = [reports.ReporteRecaudacionPotencialTotalPorBarrio()]
-        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
-                                                   delegate = CurrencyDelegate,
-                                                   prefix = '$'),
-                                recaudacion_potencial = dict(name = 'Rec. Potencial',
-                                                             delegate = CurrencyDelegate,
-                                                             prefix = '$'),
-                                porcentaje = dict(name = '%',
-                                                  delegate = FloatDelegate),
-                                )
-    # Admin = notEditableAdmin(Admin, actions=True)
-
-# esta clase corresponde a un VIEW
-class RecaudacionPotencialTotal(Entity):
-    using_options(tablename='702_recaudacion_potencial', autoload=True, allowcoloverride=True)
-    fecha = Field(Date, primary_key=True)
-    recaudacion = Field(Float, primary_key=True)
-    recaudacion_potencial = Field(Float, primary_key=True)
-    porcentaje = Field(Float, primary_key=True)
-    
-    class Admin(EntityAdmin):
-        verbose_name = u'Recaudación Potencial Total'
-        verbose_name_plural = u'Potencial Total'
-        list_display = ['fecha',
-                        'recaudacion',
-                        'recaudacion_potencial',
-                        'porcentaje',
-                        ]
-        
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ]
-        list_actions = [reports.ReporteRecaudacionPotencialTotal()]
-        list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
-                                                   delegate = CurrencyDelegate,
-                                                   prefix = '$'),
-                                recaudacion_potencial = dict(name = 'Rec. Potencial',
-                                                             delegate = CurrencyDelegate,
-                                                             prefix = '$'),
-                                porcentaje = dict(name = '%',
-                                                  delegate = FloatDelegate),
-                                )
-    # Admin = notEditableAdmin(Admin, actions=True)
-
 class DatesValidator(ObjectValidator):
     def objectValidity(self, entity_instance):
         messages = super(DatesValidator, self).objectValidity(entity_instance)
@@ -302,7 +235,7 @@ class ChequesEntregados(object):
                                 beneficiaria = dict(minimal_column_width = 25),
                                 )
 
-def setup_cheques_entregados():
+def cheques_entregados():
     tbl_credito = Credito.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
@@ -320,8 +253,7 @@ def setup_cheques_entregados():
                from_obj = tbl_credito.join(tbl_cartera).join(tbl_benef).join(tbl_barrio),
                group_by = tbl_credito.c.id
                )
-    s = s.alias('cheques_entregados')
-    mapper(ChequesEntregados, s, always_refresh=True)
+    return s.alias('cheques_entregados')
 
 class CreditosActivos(object):
     class Admin(EntityAdmin):
@@ -346,7 +278,7 @@ class CreditosActivos(object):
                                 comentarios = dict(name = 'CDI'))
     # Admin = notEditableAdmin(Admin, actions=True)
 
-def setup_creditos_activos():
+def creditos_activos():
     tpc = total_pagos_x_credito()
 
     tbl_credito = Credito.mapper.mapped_table
@@ -367,11 +299,12 @@ def setup_creditos_activos():
                                   tpc.c.credito_id == tbl_credito.c.id,
                                   ),
                )
-                            
-    s = s.alias('creditos_activos')
-    mapper(CreditosActivos, s, always_refresh=True)
+    return s.alias('creditos_activos')
         
 def credito_pagos():
+    # Todos los pagos para cada credito.
+    # Aquellos creditos que no tienen pago, muestran la fecha de entrega como fecha de pago y el monto en 0
+
     tbl_credito = Credito.mapper.mapped_table
     tbl_pago = Pago.mapper.mapped_table
     
@@ -382,8 +315,7 @@ def credito_pagos():
                 ],
                from_obj = tbl_credito.outerjoin(tbl_pago),
                )
-    s = s.alias('credito_pagos')
-    return s
+    return s.alias('credito_pagos')
 
 def total_pagos_x_credito():
     cp = credito_pagos()
@@ -392,8 +324,7 @@ def total_pagos_x_credito():
                 ],
                group_by = cp.c.credito_id,
                )
-    s = s.alias('total_pagos_x_credito')
-    return s
+    return s.alias('total_pagos_x_credito')
 
 class CreditosFinalizadosSinSaldar(object):
     class Admin(EntityAdmin):
@@ -431,7 +362,7 @@ class CreditosFinalizadosSinSaldar(object):
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
-def setup_creditos_finalizados_sin_saldar():
+def creditos_finalizados_sin_saldar():
     tpc = total_pagos_x_credito()
 
     tbl_credito = Credito.mapper.mapped_table
@@ -455,8 +386,7 @@ def setup_creditos_finalizados_sin_saldar():
                                   tpc.c.credito_id == tbl_credito.c.id,
                                   ),
                )
-    s = s.alias('creditos_finalizados_sin_saldar')
-    mapper(CreditosFinalizadosSinSaldar, s, always_refresh=True)
+    return s.alias('creditos_finalizados_sin_saldar')
 
 class PerdidaPorIncobrable(object):
     class Admin(EntityAdmin):
@@ -508,7 +438,7 @@ class PerdidaPorIncobrable(object):
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
-def setup_perdida_x_incobrable():
+def perdida_x_incobrable():
     tpc = total_pagos_x_credito()
 
     tbl_credito = Credito.mapper.mapped_table
@@ -534,8 +464,7 @@ def setup_perdida_x_incobrable():
                                   tpc.c.credito_id == tbl_credito.c.id,
                                   ),
                )
-    s = s.alias('perdida_x_incobrable')
-    mapper(PerdidaPorIncobrable, s, always_refresh=True)
+    return s.alias('perdida_x_incobrable')
 
 class RecaudacionMensual(object):
     class Admin(EntityAdmin):
@@ -560,7 +489,8 @@ class RecaudacionMensual(object):
 
     # Admin = notEditableAdmin(Admin, actions=True)
 
-def setup_recaudacion_x_cartera():
+def recaudacion_x_cartera():
+    # Para cada cartera, el total de pagos entre fechas, agrupados por barrio y tasa de interes
     tbl_credito = Credito.mapper.mapped_table
     tbl_pago = Pago.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
@@ -586,10 +516,19 @@ def setup_recaudacion_x_cartera():
                            tbl_barrio.c.id,
                            ],
                )
-    s = s.alias('recaudacion_x_cartera')
-    mapper(RecaudacionMensual, s, always_refresh=True)
+    return s.alias('recaudacion_x_cartera')
+
+def setup_recaudacion_mensual():
+    sel = recaudacion_x_cartera()
+    mapper(RecaudacionMensual, sel, always_refresh=True,
+           primary_key=[sel.c.cartera_id,
+                        sel.c.tasa_interes,
+                        sel.c.recaudacion,
+                        sel.c.barrio_id,
+                        ])
 
 def recaudacion_x_barrio():
+    # Total de pagos por semana y barrio, entre fechas.
     tbl_credito = Credito.mapper.mapped_table
     tbl_pago = Pago.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
@@ -611,8 +550,7 @@ def recaudacion_x_barrio():
                            tbl_barrio.c.id,
                            ],
                )
-    s = s.alias('recaudacion_x_barrio')
-    return s
+    return s.alias('recaudacion_x_barrio')
 
 def min_fecha():
     return model.Fecha.query.order_by(model.Fecha.fecha.asc()).first().fecha
@@ -641,14 +579,9 @@ def recaudacion():
                            tbl_cartera.c.id,
                            tbl_credito.c.tasa_interes],
                )
-    s = s.alias('recaudacion')
-    return s
+    return s.alias('recaudacion')
 
 class RecaudacionRealTotal(object):
-    # using_options(tablename='recaudacion_real_total', autoload=True, allowcoloverride=True)
-    # fecha = Field(Date, primary_key=True)
-    # cartera = Field(Unicode(200), primary_key=True)
-    # tasa_interes = Field(Float, primary_key=True)
     class Admin(EntityAdmin):
         verbose_name = u'Recaudación Real Total'
         verbose_name_plural = u'Real Total'
@@ -671,7 +604,7 @@ class RecaudacionRealTotal(object):
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
-def setup_recaudacion_real_total():
+def recaudacion_real_total():
     rec = recaudacion()
     tbl_cartera = Cartera.mapper.mapped_table
     
@@ -686,14 +619,17 @@ def setup_recaudacion_real_total():
                            ],
                whereclause = tbl_cartera.c.id == rec.c.cartera_id,
                )
-    s = s.alias('recaudacion_real_total')
-    mapper(RecaudacionRealTotal, s, always_refresh=True)
+    return s.alias('recaudacion_real_total')
+
+def setup_recaudacion_real_total():
+    sel = recaudacion_real_total()
+    mapper(RecaudacionRealTotal, sel, always_refresh=True,
+           primary_key=[sel.c.fecha,
+                        sel.c.cartera,
+                        sel.c.tasa_interes,
+                        ])
 
 class RecaudacionRealTotalPorBarrio(object):
-    # using_options(tablename='recaudacion_real_x_barrio', autoload=True, allowcoloverride=True)
-    # fecha = Field(Date, primary_key=True)
-    # barrio = Field(Unicode(200), primary_key=True)
-    # recaudacion = Field(Float)
     class Admin(EntityAdmin):
         verbose_name = u'Recaudación Real Total por Barrio'
         verbose_name_plural = u'Real Total por Barrio'
@@ -701,7 +637,6 @@ class RecaudacionRealTotalPorBarrio(object):
                         'barrio',
                         'recaudacion',
                         ]
-        
         list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
                        ComboBoxFilter('barrio'),
                        ]
@@ -714,7 +649,7 @@ class RecaudacionRealTotalPorBarrio(object):
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
-def setup_recaudacion_real_x_barrio():
+def recaudacion_real_x_barrio():
     rec = recaudacion_x_barrio()
     s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
                 rec.c.barrio_nombre.label('barrio'),
@@ -723,22 +658,178 @@ def setup_recaudacion_real_x_barrio():
                 ],
                from_obj = rec,
                )
-    s = s.alias('recaudacion_real_x_barrio')
-    mapper(RecaudacionRealTotalPorBarrio, s, always_refresh=True)
-                
-def setup_views_cartera():
-    setup_cheques_entregados()
-    setup_creditos_activos()
-    setup_perdida_x_incobrable()
-    setup_creditos_finalizados_sin_saldar()
+    return s.alias('recaudacion_real_x_barrio')
+
+def setup_recaudacion_real_total_x_barrio():
+    sel = recaudacion_real_x_barrio()
+    mapper(RecaudacionRealTotalPorBarrio, sel, always_refresh=True,
+           primary_key=[sel.c.fecha,
+                        sel.c.barrio_id,
+                        sel.c.recaudacion,
+                        ])
+
+class RecaudacionPotencialTotal(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Recaudación Potencial Total'
+        verbose_name_plural = u'Potencial Total'
+        list_display = ['fecha',
+                        'recaudacion',
+                        'recaudacion_potencial',
+                        'porcentaje',
+                        ]
+        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
+                       ]
+        list_actions = [reports.ReporteRecaudacionPotencialTotal()]
+        list_action = None
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
+                                                   delegate = CurrencyDelegate,
+                                                   prefix = '$'),
+                                recaudacion_potencial = dict(name = 'Rec. Potencial',
+                                                             delegate = CurrencyDelegate,
+                                                             prefix = '$'),
+                                porcentaje = dict(name = '%',
+                                                  delegate = FloatDelegate),
+                                )
+    # Admin = notEditableAdmin(Admin, actions=True)
+
+def recaudacion_potencial_total():
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_fecha = Fecha.mapper.mapped_table
+    
+    rec_pot = select([func.yearweek(tbl_fecha.c.fecha, 1).label('semana'),
+                 func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
+                 ],
+                from_obj = [tbl_credito,
+                            tbl_fecha,
+                            ],
+                whereclause = and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
+                                   or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
+                                       tbl_credito.c.fecha_finalizacion == None)),
+                group_by = func.yearweek(tbl_fecha.c.fecha, 1),
+                ).alias('rec_pot')
+
+    rec = recaudacion()
+    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
+                rec.c.recaudacion,
+                rec_pot.c.recaudacion_potencial,
+                (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
+                ],
+               from_obj = [rec_pot, rec],
+               whereclause = rec.c.semana == rec_pot.c.semana,
+               )
+    return s.alias('recaudacion_potencial')
+
+def setup_recaudacion_potencial_total():
+    sel = recaudacion_potencial_total()
+    mapper(RecaudacionPotencialTotal, sel, always_refresh=True,
+           primary_key=[sel.c.fecha,
+                        sel.c.recaudacion,
+                        sel.c.recaudacion_potencial,
+                        sel.c.porcentaje,
+                        ])
+
+class RecaudacionPotencialTotalPorBarrio(object):
+    # using_options(tablename='702_recaudacion_potencial_x_barrio', autoload=True, allowcoloverride=True)
+    # fecha = Field(Date, primary_key=True)
+    # barrio = Field(Unicode(200), primary_key=True)
+    # recaudacion = Field(Float)
+    # recaudacion_potencial = Field(Float)
+    # porcentaje = Field(Float)
+    class Admin(EntityAdmin):
+        verbose_name = u'Recaudación Potencial Total por Barrio'
+        verbose_name_plural = u'Potencial Total por Barrio'
+        list_display = ['fecha',
+                        'barrio',
+                        'recaudacion',
+                        'recaudacion_potencial',
+                        'porcentaje',
+                        ]
+        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
+                       ComboBoxFilter('barrio'),
+                       ]
+        list_action = None
+        list_actions = [reports.ReporteRecaudacionPotencialTotalPorBarrio()]
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
+                                                   delegate = CurrencyDelegate,
+                                                   prefix = '$'),
+                                recaudacion_potencial = dict(name = 'Rec. Potencial',
+                                                             delegate = CurrencyDelegate,
+                                                             prefix = '$'),
+                                porcentaje = dict(name = '%',
+                                                  delegate = FloatDelegate),
+                                )
+    # Admin = notEditableAdmin(Admin, actions=True)
+
+def recaudacion_potencial_total_x_barrio():
+    tbl_barrio = Barrio.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_fecha = Fecha.mapper.mapped_table
+    rec = recaudacion_x_barrio()
+    rec_pot = select([func.yearweek(tbl_fecha.c.fecha, 1).label('semana'),
+                      tbl_barrio.c.id.label('barrio_id'),
+                      func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
+                      ],
+                from_obj = [tbl_barrio.join(tbl_benef).join(tbl_credito),
+                            tbl_fecha,
+                            ],
+                whereclause = and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
+                                   or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
+                                       tbl_credito.c.fecha_finalizacion == None)),
+                group_by = [func.yearweek(tbl_fecha.c.fecha, 1),
+                            tbl_barrio.c.id,
+                            ]
+                ).alias('rec_pot')
+
+    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
+                tbl_barrio.c.nombre.label('barrio'),
+                rec.c.recaudacion,
+                rec_pot.c.recaudacion_potencial,
+                (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
+                ],
+               from_obj = [tbl_barrio,
+                           rec_pot,
+                           rec],
+               whereclause = and_(rec.c.semana == rec_pot.c.semana,
+                                  rec.c.barrio_id == rec_pot.c.barrio_id,
+                                  tbl_barrio.c.id == rec.c.barrio_id),
+               )
+    return s.alias('recaudacion_potencial_total_x_barrio')
+
+def setup_recaudacion_potencial_total_x_barrio():
+    sel = recaudacion_potencial_total_x_barrio()
+    mapper(RecaudacionPotencialTotalPorBarrio, sel, always_refresh=True,
+           primary_key=[sel.c.fecha,
+                        sel.c.barrio,
+                        sel.c.recaudacion,
+                        sel.c.recaudacion_potencial,
+                        sel.c.porcentaje,
+                        ])
+
+def setup_views_indicadores():
+    # TODO
+    pass
 
 def setup_views_recaudacion():
-    setup_recaudacion_x_cartera()
-    # setup_recaudacion_potencial_total()
+    setup_recaudacion_mensual()
     setup_recaudacion_real_total()
-    # setup_recaudacion_potencial_x_barrio()
-    setup_recaudacion_real_x_barrio()
-    
+    setup_recaudacion_real_total_x_barrio()
+    setup_recaudacion_potencial_total()
+    setup_recaudacion_potencial_total_x_barrio()
+
+def setup_views_cartera():
+    mappings = {
+        ChequesEntregados: cheques_entregados(),
+        CreditosActivos: creditos_activos(),
+        PerdidaPorIncobrable: perdida_x_incobrable(),
+        CreditosFinalizadosSinSaldar: creditos_finalizados_sin_saldar(),
+        }
+
+    for cl, v in mappings.items():
+        mapper(cl, v, always_refresh=True)
+
 def setup_views():
-    setup_views_cartera()
+    setup_views_indicadores()
     setup_views_recaudacion()
+    setup_views_cartera()
+    
