@@ -22,10 +22,11 @@
 # SOFTWARE.
 #-------------------------------------------------------------------------------
 
-from camelot.view.art import Icon
 from camelot.admin import action
 from camelot.admin.application_admin import ApplicationAdmin
 from camelot.admin.section import Section
+from camelot.model.memento import Memento
+from camelot.view.art import Icon
 import PyQt4
 import os
 
@@ -52,9 +53,6 @@ class MyApplicationAdmin(ApplicationAdmin):
         return PyQt4.QtGui.QPixmap('media/splashscreen.png')
         
     def get_sections(self):
-        # from camelot.model.memento import Memento
-        # from camelot.model.i18n import Translation
-        
         return [
                 Section(u'Día a Día',
                         self,
@@ -95,6 +93,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                         self,
                         Icon('tango/22x22/categories/preferences-system.png'),
                         items = [
+                                 Memento,
                                  model.Actividad,
                                  model.Amortizacion,
                                  model.Asistencia,
@@ -106,9 +105,6 @@ class MyApplicationAdmin(ApplicationAdmin):
                                  model.Provincia,
                                  model.Rubro,
                             ]),
-                # Section('configuration',
-                #         Icon('tango/22x22/categories/preferences-system.png'),
-                #         items = [Memento, Translation]),
                 ]
 
     def get_help_url(self):
@@ -119,10 +115,6 @@ class MyApplicationAdmin(ApplicationAdmin):
         new_pago_action.icon = Icon('tango/32x32/actions/list-add.png')
         return [new_pago_action]
     
-    # override this method to get my own main window instead of camelot's
-    # def get_main_window():
-    #     pass
-
     def get_translator(self):
         camelot_translator = self._load_translator_from_file( 'camelot', 
                                                               'camelot',
@@ -150,3 +142,8 @@ class MyApplicationAdmin(ApplicationAdmin):
     # def get_stylesheet(self):
     #     from camelot.view import art
     #     return art.read(os.path.join('stylesheet', 'office2007_blue.qss'))
+
+    # override this method to get my own main window instead of camelot's
+    # def get_main_window():
+    #     pass
+
