@@ -44,17 +44,11 @@ import reports
     
 def min_fecha():
     tbl_fecha = Fecha.mapper.mapped_table
-    stmt = select([func.min(tbl_fecha.c.fecha)],
-                  from_obj=tbl_fecha,
-                  )
-    return stmt.alias('min_fecha')
+    return select([func.min(tbl_fecha.c.fecha)], from_obj=tbl_fecha).alias('min_fecha')
 
 def max_fecha():
     tbl_fecha = Fecha.mapper.mapped_table
-    stmt = select([func.max(tbl_fecha.c.fecha)],
-                  from_obj=tbl_fecha,
-                  )
-    return stmt.alias('max_fecha')
+    return select([func.max(tbl_fecha.c.fecha)], from_obj=tbl_fecha).alias('max_fecha')
 
 class ChequesEntregados(object):
     class Admin(EntityAdmin):
@@ -221,6 +215,15 @@ class Indicadores(object):
             'monto_pagado',
             'monto_teorico',
             'diferencia_monto',
+            'estado',
+            ]
+        expanded_list_search = [
+            'comentarios',
+            'barrio',
+            'beneficiaria',
+            'nro_credito',
+            'fecha_entrega',
+            'cartera',
             'estado',
             ]
         list_filter = [ComboBoxFilter('barrio')]
