@@ -43,10 +43,18 @@ from model import Beneficiaria, Cartera, Credito, Barrio, Pago, EstadoCredito, F
 import reports
     
 def min_fecha():
-    return Fecha.query.order_by(Fecha.fecha.asc()).first().fecha
+    tbl_fecha = Fecha.mapper.mapped_table
+    stmt = select([func.min(tbl_fecha.c.fecha)],
+                  from_obj=tbl_fecha,
+                  )
+    return stmt.alias('min_fecha')
 
 def max_fecha():
-    return Fecha.query.order_by(Fecha.fecha.desc()).first().fecha
+    tbl_fecha = Fecha.mapper.mapped_table
+    stmt = select([func.max(tbl_fecha.c.fecha)],
+                  from_obj=tbl_fecha,
+                  )
+    return stmt.alias('max_fecha')
 
 class ChequesEntregados(object):
     class Admin(EntityAdmin):
@@ -550,12 +558,12 @@ def recaudacion_x_cartera():
     return stmt.alias('recaudacion_x_cartera')
 
 def setup_recaudacion_mensual():
-    sel = recaudacion_x_cartera()
-    mapper(RecaudacionMensual, sel, always_refresh=True,
-           primary_key=[sel.c.cartera_id,
-                        sel.c.tasa_interes,
-                        sel.c.recaudacion,
-                        sel.c.barrio_id,
+    stmt = recaudacion_x_cartera()
+    mapper(RecaudacionMensual, stmt, always_refresh=True,
+           primary_key=[stmt.c.cartera_id,
+                        stmt.c.tasa_interes,
+                        stmt.c.recaudacion,
+                        stmt.c.barrio_id,
                         ])
 
 def recaudacion_x_barrio():
@@ -647,11 +655,11 @@ def recaudacion_real_total():
     return stmt.alias('recaudacion_real_total')
 
 def setup_recaudacion_real_total():
-    sel = recaudacion_real_total()
-    mapper(RecaudacionRealTotal, sel, always_refresh=True,
-           primary_key=[sel.c.fecha,
-                        sel.c.cartera,
-                        sel.c.tasa_interes,
+    stmt = recaudacion_real_total()
+    mapper(RecaudacionRealTotal, stmt, always_refresh=True,
+           primary_key=[stmt.c.fecha,
+                        stmt.c.cartera,
+                        stmt.c.tasa_interes,
                         ])
 
 class RecaudacionRealTotalPorBarrio(object):
@@ -686,11 +694,11 @@ def recaudacion_real_x_barrio():
     return stmt.alias('recaudacion_real_x_barrio')
 
 def setup_recaudacion_real_total_x_barrio():
-    sel = recaudacion_real_x_barrio()
-    mapper(RecaudacionRealTotalPorBarrio, sel, always_refresh=True,
-           primary_key=[sel.c.fecha,
-                        sel.c.barrio_id,
-                        sel.c.recaudacion,
+    stmt = recaudacion_real_x_barrio()
+    mapper(RecaudacionRealTotalPorBarrio, stmt, always_refresh=True,
+           primary_key=[stmt.c.fecha,
+                        stmt.c.barrio_id,
+                        stmt.c.recaudacion,
                         ])
 
 class RecaudacionPotencialTotal(object):
@@ -745,12 +753,12 @@ def recaudacion_potencial_total():
     return stmt.alias('recaudacion_potencial')
 
 def setup_recaudacion_potencial_total():
-    sel = recaudacion_potencial_total()
-    mapper(RecaudacionPotencialTotal, sel, always_refresh=True,
-           primary_key=[sel.c.fecha,
-                        sel.c.recaudacion,
-                        sel.c.recaudacion_potencial,
-                        sel.c.porcentaje,
+    stmt = recaudacion_potencial_total()
+    mapper(RecaudacionPotencialTotal, stmt, always_refresh=True,
+           primary_key=[stmt.c.fecha,
+                        stmt.c.recaudacion,
+                        stmt.c.recaudacion_potencial,
+                        stmt.c.porcentaje,
                         ])
 
 class RecaudacionPotencialTotalPorBarrio(object):
@@ -816,13 +824,13 @@ def recaudacion_potencial_total_x_barrio():
     return stmt.alias('recaudacion_potencial_total_x_barrio')
 
 def setup_recaudacion_potencial_total_x_barrio():
-    sel = recaudacion_potencial_total_x_barrio()
-    mapper(RecaudacionPotencialTotalPorBarrio, sel, always_refresh=True,
-           primary_key=[sel.c.fecha,
-                        sel.c.barrio,
-                        sel.c.recaudacion,
-                        sel.c.recaudacion_potencial,
-                        sel.c.porcentaje,
+    stmt = recaudacion_potencial_total_x_barrio()
+    mapper(RecaudacionPotencialTotalPorBarrio, stmt, always_refresh=True,
+           primary_key=[stmt.c.fecha,
+                        stmt.c.barrio,
+                        stmt.c.recaudacion,
+                        stmt.c.recaudacion_potencial,
+                        stmt.c.porcentaje,
                         ])
 
 def setup_views_indicadores():

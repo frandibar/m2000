@@ -59,11 +59,9 @@ def setup_model():
     import m2000.model
     import m2000.view
     
-    # TODO: when there is no need for views in the db, remove
-    # the setup_db call, and use elixir.setup_all(create_tables=True)
     conf = config.Config()
     if conf.get('create_db') == 'yes':
-        db_setup.setup_db()
+        db_setup.create_db()
         conf.set('create_db', 'no')
     
     # tables only get created in mysql if the db exists

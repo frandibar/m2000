@@ -29,7 +29,6 @@ def execute_mysql_script(filename):
     fd.close()
     return ret
 
-def setup_db():
-    execute_mysql_script('m2000/tables.sql')
-    execute_mysql_script('m2000/views.sql')
+def create_db():
+    execute_mysql_script('m2000/create-db.sql')
 

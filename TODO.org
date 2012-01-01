@@ -1,30 +1,13 @@
 * COMO SIGO:
-** TODO convertir views de cartera a sqlalchemy
 ** TODO procurar que se pueda filtrar por nombre y apellido en creditos y beneficiarias
 ** TODO en carga de pagos agregar boton "nuevo pago"
 ** REPORTES:
-*** probar obtener min, max fecha como query sqlalchemy
 *** probar sumas en reportes como querys sqlalchemy en vez de iterar
-*** DONE creditos terminados con saldo pendiente
-*** DONE 901 Perdida por Incobrable
-*** DONE recaudacion potencial
-*** DONE Indicadores / Indicadores
-*** DONE Recaudación / Recaudación Mensual
-*** DONE Cartera / Cheques entregados
-*** DONE recaudacion potencial por barrio
-*** DONE "402 creditos activos","Creditos activos" ?
-*** DONE "700 Recaudacion F","Real Total" ?
-*** DONE "700 Recaudacion por barrio F","Real por Barrio" ?
-*** "qCarteraAFecha por barrio F","Por Barrio" ?
-*** "501 saldo F","Por Beneficiaria" ?
-*** "800 Monto promedio de pago F","Monto promedio pagado en la vida del credito" ?
-*** "900 pagos CONAMI","Recaudaci�n Conami por beneficiaria" ?
 ** PAGOS:
 *** TODO imitar la consulta de pagos por fecha y barrio (agregar barrio a la tabla de pagos, crear vista)
 ** ALL:
 *** TODO cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
 IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
-
 * DEPLOYMENT
 python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
 mysql installer 
@@ -82,6 +65,7 @@ se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabad
 ** eliminar views de la db, reemplazarlos por sqlalchemy (sobre todo para evitar el uso de tablas parameter y fecha)
 ** agregar tests
 * ENHANCEMENTS:
+** los reportes de recaudacion son muy lentos, mejorarlos.
 ** en contrato mutuo colocar tasa de interes en letras
 ** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
 ** reemplazar header jpg por svg
