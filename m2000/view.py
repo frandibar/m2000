@@ -26,32 +26,165 @@ import datetime
 
 from camelot.admin.action.base import Action
 from camelot.admin.entity_admin import EntityAdmin
-from camelot.admin.not_editable_admin import notEditableAdmin
+# from camelot.admin.not_editable_admin import notEditableAdmin
 from camelot.admin.object_admin import ObjectAdmin
 from camelot.admin.validator.object_validator import ObjectValidator
 from camelot.view.action_steps import ChangeObject, FlushSession, UpdateProgress, Refresh
 from camelot.view.art import ColorScheme, Icon
 from camelot.view.controls.delegates import DateDelegate, FloatDelegate, CurrencyDelegate, IntegerDelegate
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter
-from elixir import Entity, Field, using_options
-from sqlalchemy import Unicode, Date, Integer, Float
 from sqlalchemy.orm import mapper
 from sqlalchemy.sql import select, func, and_, or_
 
 from camelot.model import metadata
 __metadata__ = metadata
 
-from model import Beneficiaria, Cartera, Credito, Barrio, Pago, Fecha
-import model
+from model import Beneficiaria, Cartera, Credito, Barrio, Pago, EstadoCredito, Fecha, Parametro
 import reports
+    
+def min_fecha():
+    return Fecha.query.order_by(Fecha.fecha.asc()).first().fecha
 
-# esta clase corresponde a un VIEW
-class Indicadores(Entity):
-    using_options(tablename='102_indicadores', autoload=True, allowcoloverride=True)
-    # override columns since a primary must be defined
-    beneficiaria_id = Field(Integer, primary_key=True)
-    nro_credito = Field(Integer, primary_key=True)                         
+def max_fecha():
+    return Fecha.query.order_by(Fecha.fecha.desc()).first().fecha
 
+class ChequesEntregados(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Cartera - Préstamos / Cheques Entregados'
+        verbose_name_plural = u'Préstamos / Cheques Entregados'
+        list_display = ['beneficiaria',
+                        'barrio',
+                        'cartera',
+                        'nro_credito',
+                        'fecha_entrega',
+                        'monto_prestamo',
+                        'monto_cheque',
+                        ]
+        list_actions = [reports.ReporteChequesEntregados()]
+        list_action = None
+        list_filter = [ComboBoxFilter('barrio'),
+                       ComboBoxFilter('cartera'),
+                       ]
+        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
+                                monto_prestamo = dict(delegate = CurrencyDelegate,
+                                                      prefix = '$'),
+                                monto_cheque = dict(delegate = CurrencyDelegate,
+                                                    prefix = '$'),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                )
+
+def cheques_entregados():
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    tbl_cartera = Cartera.mapper.mapped_table
+
+    stmt = select([tbl_credito.c.id.label('credito_id'),
+                   func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                   tbl_barrio.c.nombre.label('barrio'),
+                   tbl_cartera.c.nombre.label('cartera'),
+                   tbl_credito.c.nro_credito,
+                   tbl_credito.c.fecha_entrega,
+                   func.sum(tbl_credito.c.prestamo).label('monto_prestamo'),
+                   func.sum(tbl_credito.c.monto_cheque).label('monto_cheque'),
+                   ],
+                  from_obj=tbl_credito.join(tbl_cartera).join(tbl_benef).join(tbl_barrio),
+                  group_by=tbl_credito.c.id
+                  )
+    return stmt.alias('cheques_entregados')
+
+class CreditosActivos(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Cartera - Créditos Activos'
+        verbose_name_plural = u'Créditos Activos'
+        list_display = ['comentarios',
+                        'beneficiaria',
+                        'barrio',
+                        'nro_credito',
+                        'fecha_entrega',
+                        'prestamo',
+                        'saldo']
+        list_actions = [reports.ReporteCreditosActivos()]
+        list_action = None
+        list_filter = [ComboBoxFilter('barrio')]
+        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
+                                prestamo = dict(delegate = CurrencyDelegate,
+                                                prefix = '$'),
+                                saldo = dict(delegate = CurrencyDelegate,
+                                             prefix = '$'),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                comentarios = dict(name = 'CDI'))
+    # Admin = notEditableAdmin(Admin, actions=True)
+
+def creditos_activos():
+    tpc = total_pagos_x_credito()
+
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    
+    stmt = select([tbl_credito.c.id.label('credito_id'),
+                   func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                   tbl_benef.c.comentarios,
+                   tbl_barrio.c.nombre.label('barrio'),
+                   tbl_credito.c.nro_credito,
+                   tbl_credito.c.prestamo,
+                   tbl_credito.c.fecha_entrega,
+                   (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
+                   ],
+                  from_obj=tbl_credito.join(tbl_benef).join(tbl_barrio),
+                  whereclause=and_(tbl_credito.c.fecha_finalizacion == None,
+                                   tpc.c.credito_id == tbl_credito.c.id,
+                                   ),
+                  )
+    return stmt.alias('creditos_activos')
+        
+def credito_pagos():
+    # Todos los pagos para cada credito.
+    # Aquellos creditos que no tienen pago, muestran la fecha de entrega como fecha de pago y el monto en 0
+
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_pago = Pago.mapper.mapped_table
+    
+    stmt = select([tbl_credito.c.id.label('credito_id'),
+                   func.ifnull(tbl_pago.c.fecha, tbl_credito.c.fecha_entrega).label('fecha_pago_o_entrega'),
+                   func.ifnull(tbl_pago.c.monto, 0).label('monto'),
+                   tbl_credito.c.fecha_finalizacion,
+                   ],
+                  from_obj=tbl_credito.outerjoin(tbl_pago),
+                  )
+    return stmt.alias('credito_pagos')
+
+def total_pagos_x_credito():
+    cp = credito_pagos()
+    stmt = select([cp.c.credito_id,
+                   func.sum(cp.c.monto).label('monto'),
+                   ],
+                  group_by=cp.c.credito_id,
+                  )
+    return stmt.alias('total_pagos_x_credito')
+
+def total_pagos_x_credito_activo_a_fecha():
+    tbl_parametro = Parametro.mapper.mapped_table
+    cp = credito_pagos()
+    stmt = select([tbl_parametro.c.fecha,
+                   cp.c.credito_id,
+                   func.sum(cp.c.monto).label('total_pagos'),
+                   ],
+                  from_obj=[tbl_parametro,
+                            cp,
+                            ],
+                  whereclause=and_(cp.c.fecha_pago_o_entrega <= tbl_parametro.c.fecha,
+                                   or_(cp.c.fecha_finalizacion > tbl_parametro.c.fecha,
+                                       cp.c.fecha_finalizacion == None)),
+                  group_by=[cp.c.credito_id,
+                            tbl_parametro.c.fecha,
+                            ],
+                  correlate=False,
+                  )
+    return stmt.alias('total_pagos_x_credito_activo_a_fecha')
+
+class Indicadores(object):
     class Admin(EntityAdmin):
         verbose_name = 'Indicadores'
         verbose_name_plural = 'Indicadores'
@@ -82,7 +215,6 @@ class Indicadores(Entity):
             'diferencia_monto',
             'estado',
             ]
-
         list_filter = [ComboBoxFilter('barrio')]
         list_columns_frozen = 1
         list_action = None
@@ -131,200 +263,99 @@ class Indicadores(Entity):
                                                         prefix = '$'),
                                 beneficiaria = dict(minimal_column_width = 25),
                                 )
-
     # Admin = notEditableAdmin(Admin, actions=True)
-    
-class DatesValidator(ObjectValidator):
-    def objectValidity(self, entity_instance):
-        messages = super(DatesValidator, self).objectValidity(entity_instance)
-        if entity_instance.hasta < entity_instance.desde:
-            messages.append("'Fecha hasta' debe ser igual o posterior a a 'Fecha desde'")
-        return messages
 
-class IntervaloFechasDialog(object):
-    def __init__(self):
-        self.desde = datetime.date.today()
-        self.hasta = datetime.date.today()
-
-    def _get_desde(self):
-        return self.desde
-
-    def _set_desde(self, value):
-        self.desde = value
-        if self.hasta < value:
-            self.hasta = value
-
-    _desde = property(_get_desde, _set_desde)
-
-    class Admin(ObjectAdmin):
-        verbose_name = 'Intervalo de fechas'
-        form_display = ['_desde', 'hasta']
-        validator = DatesValidator
-        form_size = (100, 100)
-        field_attributes = dict(_desde = dict(name = 'Fecha desde',
-                                              delegate = DateDelegate,
-                                              editable = True),
-                                hasta = dict(name = 'Fecha hasta',
-                                             delegate = DateDelegate,
-                                             editable = True,
-                                             tooltip = 'Debe ser mayor o igual que fecha desde',
-                                             background_color = lambda o: ColorScheme.orange_1 if o.hasta < o.desde else None))
-        
-class IntervaloFechas(Action):
-    verbose_name = 'Definir Intervalo de fechas'
-    icon = Icon('tango/16x16/apps/office-calendar.png')
-
-    def find_friday(self, date, inc):
-        day = datetime.timedelta(days=inc)
-        while date.weekday() != 4:      # friday is weekday 4
-            date += day
-        return date
-
-    def model_run(self, model_context):
-        # ask for date intervals
-        fechas = IntervaloFechasDialog()
-        yield ChangeObject(fechas)
-
-        # truncate tables (after ChangeObject since user may cancel)
-        model.Parametro.query.delete()
-        model.Fecha.query.delete()
-
-        desde = self.find_friday(fechas.desde, 1)
-        hasta = self.find_friday(fechas.hasta, -1)
-        if hasta < desde:
-            hasta = desde
-
-        # add to parametro
-        p = model.Parametro()
-        p.fecha = desde
-        model.Parametro.query.session.flush()
-
-        # add dates
-        week = datetime.timedelta(weeks=1)
-        while desde <= hasta:
-            f = model.Fecha()
-            f.fecha = desde
-            desde += week
-            yield UpdateProgress()
-
-        model.Fecha.query.session.flush()
-        yield Refresh()
-
-class ChequesEntregados(object):
-    class Admin(EntityAdmin):
-        verbose_name = u'Cartera - Préstamos / Cheques Entregados'
-        verbose_name_plural = u'Préstamos / Cheques Entregados'
-        list_display = ['beneficiaria',
-                        'barrio',
-                        'cartera',
-                        'nro_credito',
-                        'fecha_entrega',
-                        'monto_prestamo',
-                        'monto_cheque',
-                        ]
-        list_actions = [reports.ReporteChequesEntregados()]
-        list_action = None
-        list_filter = [ComboBoxFilter('barrio'),
-                       ComboBoxFilter('cartera'),
-                       ]
-        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
-                                monto_prestamo = dict(delegate = CurrencyDelegate,
-                                                      prefix = '$'),
-                                monto_cheque = dict(delegate = CurrencyDelegate,
-                                                    prefix = '$'),
-                                beneficiaria = dict(minimal_column_width = 25),
-                                )
-
-def cheques_entregados():
+def indicadores():
     tbl_credito = Credito.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
     tbl_cartera = Cartera.mapper.mapped_table
+    tbl_estado_credito = EstadoCredito.mapper.mapped_table
+    tbl_parametro = Parametro.mapper.mapped_table
 
-    s = select([tbl_credito.c.id.label('credito_id'),
-                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
-                tbl_barrio.c.nombre.label('barrio'),
-                tbl_cartera.c.nombre.label('cartera'),
-                tbl_credito.c.nro_credito,
-                tbl_credito.c.fecha_entrega,
-                func.sum(tbl_credito.c.prestamo).label('monto_prestamo'),
-                func.sum(tbl_credito.c.monto_cheque).label('monto_cheque'),
-                ],
-               from_obj = tbl_credito.join(tbl_cartera).join(tbl_benef).join(tbl_barrio),
-               group_by = tbl_credito.c.id
-               )
-    return s.alias('cheques_entregados')
+    tp = total_pagos_x_credito_activo_a_fecha()
 
-class CreditosActivos(object):
-    class Admin(EntityAdmin):
-        verbose_name = u'Cartera - Créditos Activos'
-        verbose_name_plural = u'Créditos Activos'
-        list_display = ['comentarios',
-                        'beneficiaria',
-                        'barrio',
-                        'nro_credito',
-                        'fecha_entrega',
-                        'prestamo',
-                        'saldo']
-        list_actions = [reports.ReporteCreditosActivos()]
-        list_action = None
-        list_filter = [ComboBoxFilter('barrio')]
-        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
-                                prestamo = dict(delegate = CurrencyDelegate,
-                                                prefix = '$'),
-                                saldo = dict(delegate = CurrencyDelegate,
-                                             prefix = '$'),
-                                beneficiaria = dict(minimal_column_width = 25),
-                                comentarios = dict(name = 'CDI'))
-    # Admin = notEditableAdmin(Admin, actions=True)
+    pre = select([tbl_benef.c.id.label('beneficiaria_id'),
+                  tbl_benef.c.comentarios,
+                  tbl_barrio.c.nombre.label('barrio'),
+                  func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                  tbl_credito.c.nro_credito,
+                  tbl_credito.c.fecha_entrega,
+                  func.adddate(tbl_credito.c.fecha_entrega, 14).label('fecha_inicio'),
+                  func.adddate(tbl_credito.c.fecha_entrega, tbl_credito.c.cuotas * 7).label('fecha_cancelacion'),
+                  tbl_credito.c.saldo_anterior,
+                  (tbl_credito.c.deuda_total / (1 + tbl_credito.c.tasa_interes)).label('capital'),
+                  tbl_credito.c.tasa_interes,
+                  tbl_cartera.c.nombre.label('cartera'),
+                  (tbl_credito.c.deuda_total * tbl_credito.c.tasa_interes / (1 + tbl_credito.c.tasa_interes)).label('monto_aporte'),
+                  tbl_credito.c.deuda_total,
+                  tbl_credito.c.cuotas,
+                  (tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('cuota_calculada'),
+                  (tp.c.total_pagos * tbl_credito.c.cuotas / tbl_credito.c.deuda_total).label('cuotas_pagadas'),
+                  (tp.c.total_pagos / tbl_credito.c.deuda_total).label('cuotas_pagadas_porcent'),
+                  func.if_(func.datediff(tbl_parametro.c.fecha,
+                                        func.adddate(tbl_credito.c.fecha_entrega, 14)) / 7 > tbl_credito.c.cuotas,
+                          tbl_credito.c.cuotas,
+                          func.datediff(tbl_parametro.c.fecha,
+                                        func.adddate(tbl_credito.c.fecha_entrega, 14)) / 7).label('cuotas_teorico'),
+                  (tbl_credito.c.deuda_total - tp.c.total_pagos).label('saldo'),
+                  tp.c.total_pagos.label('monto_pagado'),
+                  ],
+                 from_obj=[tbl_credito.join(tbl_benef).join(tbl_barrio).join(tbl_cartera),
+                           tp,
+                           tbl_parametro,
+                           ],
+                 whereclause=and_(tp.c.credito_id == tbl_credito.c.id,
+                                  tbl_benef.c.activa == True,
+                                  tbl_credito.c.deuda_total != 0,
+                                  tbl_credito.c.fecha_entrega <= tbl_parametro.c.fecha,
+                                  or_(tbl_credito.c.fecha_finalizacion > tbl_parametro.c.fecha,
+                                      tbl_credito.c.fecha_finalizacion == None)),
+                 ).alias('pre')
 
-def creditos_activos():
-    tpc = total_pagos_x_credito()
+    # Para cada beneficiaria activa, el estado de sus creditos.
+    stmt = select([pre.c.beneficiaria_id,
+                   pre.c.comentarios,
+                   pre.c.barrio,
+                   pre.c.beneficiaria,
+                   pre.c.nro_credito,
+                   pre.c.fecha_entrega,
+                   pre.c.fecha_inicio,
+                   pre.c.fecha_cancelacion,
+                   pre.c.saldo_anterior,
+                   pre.c.capital,
+                   pre.c.tasa_interes,
+                   pre.c.cartera,
+                   pre.c.monto_aporte,
+                   pre.c.deuda_total,
+                   pre.c.cuotas,
+                   pre.c.cuota_calculada,
+                   pre.c.cuotas_pagadas,
+                   pre.c.cuotas_pagadas_porcent,
+                   pre.c.cuotas_teorico,       
+                   (pre.c.cuotas_teorico / pre.c.cuotas).label('cuotas_teorico_porcent'),
+                   (pre.c.cuotas_teorico - pre.c.cuotas_pagadas).label('diferencia_cuotas'),
+                   pre.c.saldo,
+                   pre.c.monto_pagado,
+                   (pre.c.deuda_total * pre.c.cuotas_teorico / pre.c.cuotas).label('monto_teorico'),
+                   (pre.c.deuda_total * pre.c.cuotas_teorico / pre.c.cuotas - pre.c.monto_pagado).label('diferencia_monto'),
+                   tbl_estado_credito.c.descripcion.label('estado'),
+                   ],
+                  from_obj=[pre,
+                            tbl_estado_credito,
+                            ],
+                  whereclause=and_(pre.c.cuotas_teorico - pre.c.cuotas_pagadas > tbl_estado_credito.c.cuotas_adeudadas_min,
+                                   pre.c.cuotas_teorico - pre.c.cuotas_pagadas <= tbl_estado_credito.c.cuotas_adeudadas_max,
+                                   ),
+                  )
+    return stmt.alias('indicadores')
 
-    tbl_credito = Credito.mapper.mapped_table
-    tbl_benef = Beneficiaria.mapper.mapped_table
-    tbl_barrio = Barrio.mapper.mapped_table
-    
-    s = select([tbl_credito.c.id.label('credito_id'),
-                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
-                tbl_benef.c.comentarios,
-                tbl_barrio.c.nombre.label('barrio'),
-                tbl_credito.c.nro_credito,
-                tbl_credito.c.prestamo,
-                tbl_credito.c.fecha_entrega,
-                (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
-                ],
-               from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
-               whereclause = and_(tbl_credito.c.fecha_finalizacion == None,
-                                  tpc.c.credito_id == tbl_credito.c.id,
-                                  ),
-               )
-    return s.alias('creditos_activos')
-        
-def credito_pagos():
-    # Todos los pagos para cada credito.
-    # Aquellos creditos que no tienen pago, muestran la fecha de entrega como fecha de pago y el monto en 0
-
-    tbl_credito = Credito.mapper.mapped_table
-    tbl_pago = Pago.mapper.mapped_table
-    
-    s = select([tbl_credito.c.id.label('credito_id'),
-                func.ifnull(tbl_pago.c.fecha, tbl_credito.c.fecha_entrega).label('fecha_pago_o_entrega'),
-                func.ifnull(tbl_pago.c.monto, 0).label('monto'),
-                tbl_credito.c.fecha_finalizacion,
-                ],
-               from_obj = tbl_credito.outerjoin(tbl_pago),
-               )
-    return s.alias('credito_pagos')
-
-def total_pagos_x_credito():
-    cp = credito_pagos()
-    s = select([cp.c.credito_id,
-                func.sum(cp.c.monto).label('monto'),
-                ],
-               group_by = cp.c.credito_id,
-               )
-    return s.alias('total_pagos_x_credito')
+def setup_indicadores():
+    stmt = indicadores()
+    mapper(Indicadores, stmt, always_refresh=True,
+           primary_key=[stmt.c.beneficiaria_id,
+                        stmt.c.nro_credito,
+                        ])
 
 class CreditosFinalizadosSinSaldar(object):
     class Admin(EntityAdmin):
@@ -363,30 +394,30 @@ class CreditosFinalizadosSinSaldar(object):
     # Admin = notEditableAdmin(Admin, actions=True)
 
 def creditos_finalizados_sin_saldar():
-    tpc = total_pagos_x_credito()
-
     tbl_credito = Credito.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
+
+    tpc = total_pagos_x_credito()
     
-    s = select([tbl_credito.c.id.label('credito_id'),
-                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
-                tbl_benef.c.comentarios,
-                tbl_barrio.c.nombre.label('barrio'),
-                tbl_credito.c.nro_credito,
-                tbl_credito.c.fecha_finalizacion,
-                tbl_credito.c.fecha_entrega,
-                tbl_credito.c.prestamo,
-                tbl_credito.c.deuda_total,
-                (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
-                ],
-               from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
-               whereclause = and_(tbl_credito.c.fecha_finalizacion == None,
-                                  tbl_credito.c.deuda_total - tpc.c.monto > 1, # 1 y no 0 x redondeo
-                                  tpc.c.credito_id == tbl_credito.c.id,
-                                  ),
-               )
-    return s.alias('creditos_finalizados_sin_saldar')
+    stmt = select([tbl_credito.c.id.label('credito_id'),
+                   func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                   tbl_benef.c.comentarios,
+                   tbl_barrio.c.nombre.label('barrio'),
+                   tbl_credito.c.nro_credito,
+                   tbl_credito.c.fecha_finalizacion,
+                   tbl_credito.c.fecha_entrega,
+                   tbl_credito.c.prestamo,
+                   tbl_credito.c.deuda_total,
+                   (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
+                   ],
+                  from_obj=tbl_credito.join(tbl_benef).join(tbl_barrio),
+                  whereclause=and_(tbl_credito.c.fecha_finalizacion == None,
+                                   tbl_credito.c.deuda_total - tpc.c.monto > 1, # 1 y no 0 x redondeo
+                                   tpc.c.credito_id == tbl_credito.c.id,
+                                   ),
+                  )
+    return stmt.alias('creditos_finalizados_sin_saldar')
 
 class PerdidaPorIncobrable(object):
     class Admin(EntityAdmin):
@@ -445,26 +476,26 @@ def perdida_x_incobrable():
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
     
-    s = select([tbl_credito.c.id.label('credito_id'),
-                tbl_benef.c.comentarios,
-                func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
-                tbl_benef.c.fecha_baja,
-                tbl_barrio.c.nombre.label('barrio'),
-                tbl_credito.c.nro_credito,
-                tbl_credito.c.fecha_finalizacion,
-                tbl_credito.c.comentarios.label('comentarios_baja'),
-                tbl_credito.c.fecha_entrega,
-                tbl_credito.c.prestamo,
-                tbl_credito.c.deuda_total,
-                (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
-                ],
-               from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
-               whereclause = and_(tbl_credito.c.fecha_finalizacion != None,
-                                  tbl_credito.c.comentarios != None,
-                                  tpc.c.credito_id == tbl_credito.c.id,
-                                  ),
-               )
-    return s.alias('perdida_x_incobrable')
+    stmt = select([tbl_credito.c.id.label('credito_id'),
+                   tbl_benef.c.comentarios,
+                   func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
+                   tbl_benef.c.fecha_baja,
+                   tbl_barrio.c.nombre.label('barrio'),
+                   tbl_credito.c.nro_credito,
+                   tbl_credito.c.fecha_finalizacion,
+                   tbl_credito.c.comentarios.label('comentarios_baja'),
+                   tbl_credito.c.fecha_entrega,
+                   tbl_credito.c.prestamo,
+                   tbl_credito.c.deuda_total,
+                   (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
+                   ],
+                  from_obj=tbl_credito.join(tbl_benef).join(tbl_barrio),
+                  whereclause=and_(tbl_credito.c.fecha_finalizacion != None,
+                                   tbl_credito.c.comentarios != None,
+                                   tpc.c.credito_id == tbl_credito.c.id,
+                                   ),
+                  )
+    return stmt.alias('perdida_x_incobrable')
 
 class RecaudacionMensual(object):
     class Admin(EntityAdmin):
@@ -498,25 +529,25 @@ def recaudacion_x_cartera():
     tbl_cartera = Cartera.mapper.mapped_table
     tbl_fecha = Fecha.mapper.mapped_table
     
-    s = select([tbl_cartera.c.nombre.label('cartera'),
-                tbl_credito.c.tasa_interes,
-                func.sum(tbl_pago.c.monto).label('recaudacion'),
-                tbl_barrio.c.nombre.label('barrio'),
-                tbl_cartera.c.id.label('cartera_id'),
-                tbl_barrio.c.id.label('barrio_id'),
-                ],
-               from_obj = [tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio).join(tbl_cartera),
-                           tbl_fecha,
-                           ],
-               whereclause = and_(tbl_pago.c.fecha >= min_fecha(),
-                                  tbl_pago.c.fecha <= max_fecha(),
-                                  ),
-               group_by = [tbl_cartera.c.id,
-                           tbl_credito.c.tasa_interes,
-                           tbl_barrio.c.id,
-                           ],
-               )
-    return s.alias('recaudacion_x_cartera')
+    stmt = select([tbl_cartera.c.nombre.label('cartera'),
+                   tbl_credito.c.tasa_interes,
+                   func.sum(tbl_pago.c.monto).label('recaudacion'),
+                   tbl_barrio.c.nombre.label('barrio'),
+                   tbl_cartera.c.id.label('cartera_id'),
+                   tbl_barrio.c.id.label('barrio_id'),
+                   ],
+                  from_obj=[tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio).join(tbl_cartera),
+                            tbl_fecha,
+                            ],
+                  whereclause=and_(tbl_pago.c.fecha >= min_fecha(),
+                                   tbl_pago.c.fecha <= max_fecha(),
+                                   ),
+                  group_by=[tbl_cartera.c.id,
+                            tbl_credito.c.tasa_interes,
+                            tbl_barrio.c.id,
+                            ],
+                  )
+    return stmt.alias('recaudacion_x_cartera')
 
 def setup_recaudacion_mensual():
     sel = recaudacion_x_cartera()
@@ -535,28 +566,22 @@ def recaudacion_x_barrio():
     tbl_barrio = Barrio.mapper.mapped_table
     tbl_fecha = Fecha.mapper.mapped_table
 
-    s = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
-                tbl_barrio.c.id.label('barrio_id'),
-                tbl_barrio.c.nombre.label('barrio_nombre'),
-                func.sum(tbl_pago.c.monto).label('recaudacion'),
-                ],
-               from_obj = [tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio),
-                           tbl_fecha,
-                           ],
-               whereclause = and_(tbl_pago.c.fecha >= min_fecha(),
-                                  tbl_pago.c.fecha <= max_fecha(),
-                                  ),
-               group_by = [func.yearweek(tbl_pago.c.fecha, 1),
-                           tbl_barrio.c.id,
-                           ],
-               )
-    return s.alias('recaudacion_x_barrio')
-
-def min_fecha():
-    return model.Fecha.query.order_by(model.Fecha.fecha.asc()).first().fecha
-
-def max_fecha():
-    return model.Fecha.query.order_by(model.Fecha.fecha.desc()).first().fecha
+    stmt = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
+                   tbl_barrio.c.id.label('barrio_id'),
+                   tbl_barrio.c.nombre.label('barrio_nombre'),
+                   func.sum(tbl_pago.c.monto).label('recaudacion'),
+                   ],
+                  from_obj=[tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio),
+                            tbl_fecha,
+                            ],
+                  whereclause=and_(tbl_pago.c.fecha >= min_fecha(),
+                                   tbl_pago.c.fecha <= max_fecha(),
+                                   ),
+                  group_by=[func.yearweek(tbl_pago.c.fecha, 1),
+                            tbl_barrio.c.id,
+                            ],
+                  )
+    return stmt.alias('recaudacion_x_barrio')
 
 def recaudacion():
     tbl_pago = Pago.mapper.mapped_table
@@ -564,22 +589,22 @@ def recaudacion():
     tbl_cartera = Cartera.mapper.mapped_table
     tbl_fecha = Fecha.mapper.mapped_table
 
-    s = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
-                tbl_cartera.c.id.label('cartera_id'),
-                tbl_credito.c.tasa_interes,
-                func.sum(tbl_pago.c.monto).label('recaudacion'),
-                ],
-               from_obj = [tbl_credito.join(tbl_pago).join(tbl_cartera),
-                           tbl_fecha,
-                           ],
-               whereclause = and_(tbl_pago.c.fecha >= min_fecha(),
-                                  tbl_pago.c.fecha <= max_fecha(),
-                                  ),
-               group_by = [func.yearweek(tbl_pago.c.fecha, 1),
-                           tbl_cartera.c.id,
-                           tbl_credito.c.tasa_interes],
-               )
-    return s.alias('recaudacion')
+    stmt = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
+                   tbl_cartera.c.id.label('cartera_id'),
+                   tbl_credito.c.tasa_interes,
+                   func.sum(tbl_pago.c.monto).label('recaudacion'),
+                   ],
+                  from_obj=[tbl_credito.join(tbl_pago).join(tbl_cartera),
+                            tbl_fecha,
+                            ],
+                  whereclause=and_(tbl_pago.c.fecha >= min_fecha(),
+                                   tbl_pago.c.fecha <= max_fecha(),
+                                   ),
+                  group_by=[func.yearweek(tbl_pago.c.fecha, 1),
+                            tbl_cartera.c.id,
+                            tbl_credito.c.tasa_interes],
+                  )
+    return stmt.alias('recaudacion')
 
 class RecaudacionRealTotal(object):
     class Admin(EntityAdmin):
@@ -608,18 +633,18 @@ def recaudacion_real_total():
     rec = recaudacion()
     tbl_cartera = Cartera.mapper.mapped_table
     
-    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
-                tbl_cartera.c.nombre.label('cartera'),
-                rec.c.tasa_interes,
-                rec.c.recaudacion,
-                tbl_cartera.c.id,
-                ],
-               from_obj = [tbl_cartera,
-                           rec,
-                           ],
-               whereclause = tbl_cartera.c.id == rec.c.cartera_id,
-               )
-    return s.alias('recaudacion_real_total')
+    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
+                   tbl_cartera.c.nombre.label('cartera'),
+                   rec.c.tasa_interes,
+                   rec.c.recaudacion,
+                   tbl_cartera.c.id,
+                   ],
+                  from_obj=[tbl_cartera,
+                            rec,
+                            ],
+                  whereclause=tbl_cartera.c.id == rec.c.cartera_id,
+                  )
+    return stmt.alias('recaudacion_real_total')
 
 def setup_recaudacion_real_total():
     sel = recaudacion_real_total()
@@ -651,14 +676,14 @@ class RecaudacionRealTotalPorBarrio(object):
 
 def recaudacion_real_x_barrio():
     rec = recaudacion_x_barrio()
-    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
-                rec.c.barrio_nombre.label('barrio'),
-                rec.c.recaudacion,
-                rec.c.barrio_id,
-                ],
-               from_obj = rec,
-               )
-    return s.alias('recaudacion_real_x_barrio')
+    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
+                   rec.c.barrio_nombre.label('barrio'),
+                   rec.c.recaudacion,
+                   rec.c.barrio_id,
+                   ],
+                  from_obj=rec,
+                  )
+    return stmt.alias('recaudacion_real_x_barrio')
 
 def setup_recaudacion_real_total_x_barrio():
     sel = recaudacion_real_x_barrio()
@@ -697,27 +722,27 @@ def recaudacion_potencial_total():
     tbl_fecha = Fecha.mapper.mapped_table
     
     rec_pot = select([func.yearweek(tbl_fecha.c.fecha, 1).label('semana'),
-                 func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
-                 ],
-                from_obj = [tbl_credito,
-                            tbl_fecha,
-                            ],
-                whereclause = and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
-                                   or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
-                                       tbl_credito.c.fecha_finalizacion == None)),
-                group_by = func.yearweek(tbl_fecha.c.fecha, 1),
-                ).alias('rec_pot')
-
+                      func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
+                      ],
+                     from_obj = [tbl_credito,
+                                 tbl_fecha,
+                                 ],
+                     whereclause=and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
+                                      or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
+                                          tbl_credito.c.fecha_finalizacion == None)),
+                     group_by=func.yearweek(tbl_fecha.c.fecha, 1),
+                     ).alias('rec_pot')
+    
     rec = recaudacion()
-    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
-                rec.c.recaudacion,
-                rec_pot.c.recaudacion_potencial,
-                (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
-                ],
-               from_obj = [rec_pot, rec],
-               whereclause = rec.c.semana == rec_pot.c.semana,
-               )
-    return s.alias('recaudacion_potencial')
+    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
+                   rec.c.recaudacion,
+                   rec_pot.c.recaudacion_potencial,
+                   (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
+                   ],
+                  from_obj=[rec_pot, rec],
+                  whereclause=rec.c.semana == rec_pot.c.semana,
+                  )
+    return stmt.alias('recaudacion_potencial')
 
 def setup_recaudacion_potencial_total():
     sel = recaudacion_potencial_total()
@@ -729,12 +754,6 @@ def setup_recaudacion_potencial_total():
                         ])
 
 class RecaudacionPotencialTotalPorBarrio(object):
-    # using_options(tablename='702_recaudacion_potencial_x_barrio', autoload=True, allowcoloverride=True)
-    # fecha = Field(Date, primary_key=True)
-    # barrio = Field(Unicode(200), primary_key=True)
-    # recaudacion = Field(Float)
-    # recaudacion_potencial = Field(Float)
-    # porcentaje = Field(Float)
     class Admin(EntityAdmin):
         verbose_name = u'Recaudación Potencial Total por Barrio'
         verbose_name_plural = u'Potencial Total por Barrio'
@@ -770,31 +789,31 @@ def recaudacion_potencial_total_x_barrio():
                       tbl_barrio.c.id.label('barrio_id'),
                       func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
                       ],
-                from_obj = [tbl_barrio.join(tbl_benef).join(tbl_credito),
-                            tbl_fecha,
-                            ],
-                whereclause = and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
-                                   or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
-                                       tbl_credito.c.fecha_finalizacion == None)),
-                group_by = [func.yearweek(tbl_fecha.c.fecha, 1),
-                            tbl_barrio.c.id,
-                            ]
+                from_obj=[tbl_barrio.join(tbl_benef).join(tbl_credito),
+                          tbl_fecha,
+                          ],
+                whereclause=and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
+                                 or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
+                                     tbl_credito.c.fecha_finalizacion == None)),
+                group_by=[func.yearweek(tbl_fecha.c.fecha, 1),
+                          tbl_barrio.c.id,
+                          ]
                 ).alias('rec_pot')
 
-    s = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
-                tbl_barrio.c.nombre.label('barrio'),
-                rec.c.recaudacion,
-                rec_pot.c.recaudacion_potencial,
-                (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
-                ],
-               from_obj = [tbl_barrio,
-                           rec_pot,
-                           rec],
-               whereclause = and_(rec.c.semana == rec_pot.c.semana,
-                                  rec.c.barrio_id == rec_pot.c.barrio_id,
-                                  tbl_barrio.c.id == rec.c.barrio_id),
-               )
-    return s.alias('recaudacion_potencial_total_x_barrio')
+    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
+                   tbl_barrio.c.nombre.label('barrio'),
+                   rec.c.recaudacion,
+                   rec_pot.c.recaudacion_potencial,
+                   (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
+                   ],
+                  from_obj = [tbl_barrio,
+                              rec_pot,
+                              rec],
+                  whereclause = and_(rec.c.semana == rec_pot.c.semana,
+                                     rec.c.barrio_id == rec_pot.c.barrio_id,
+                                     tbl_barrio.c.id == rec.c.barrio_id),
+                  )
+    return stmt.alias('recaudacion_potencial_total_x_barrio')
 
 def setup_recaudacion_potencial_total_x_barrio():
     sel = recaudacion_potencial_total_x_barrio()
@@ -807,8 +826,7 @@ def setup_recaudacion_potencial_total_x_barrio():
                         ])
 
 def setup_views_indicadores():
-    # TODO
-    pass
+    setup_indicadores()
 
 def setup_views_recaudacion():
     setup_recaudacion_mensual()
@@ -833,3 +851,85 @@ def setup_views():
     setup_views_recaudacion()
     setup_views_cartera()
     
+class DatesValidator(ObjectValidator):
+    def objectValidity(self, entity_instance):
+        messages = super(DatesValidator, self).objectValidity(entity_instance)
+        if entity_instance.hasta < entity_instance.desde:
+            messages.append("'Fecha hasta' debe ser igual o posterior a a 'Fecha desde'")
+        return messages
+
+def open_table_view():
+    from camelot.admin.action import application_action
+    application_action.OpenTableView(Indicadores.Admin())()
+
+class IntervaloFechasDialog(object):
+    def __init__(self):
+        self.desde = datetime.date.today()
+        self.hasta = datetime.date.today()
+
+    def _get_desde(self):
+        return self.desde
+
+    def _set_desde(self, value):
+        self.desde = value
+        if self.hasta < value:
+            self.hasta = value
+
+    _desde = property(_get_desde, _set_desde)
+
+    class Admin(ObjectAdmin):
+        verbose_name = 'Intervalo de fechas'
+        form_display = ['_desde', 'hasta']
+        # from camelot.admin.action import application_action
+        # form_close_action = application_action.OpenTableView(main.appadmin.get_related_admin(Indicadores))
+        validator = DatesValidator
+        form_size = (100, 100)
+        field_attributes = dict(_desde = dict(name = 'Fecha desde',
+                                              delegate = DateDelegate,
+                                              editable = True),
+                                hasta = dict(name = 'Fecha hasta',
+                                             delegate = DateDelegate,
+                                             editable = True,
+                                             tooltip = 'Debe ser mayor o igual que fecha desde',
+                                             background_color = lambda o: ColorScheme.orange_1 if o.hasta < o.desde else None))
+            
+class IntervaloFechas(Action):
+    verbose_name = 'Definir Intervalo de fechas'
+    icon = Icon('tango/16x16/apps/office-calendar.png')
+
+    def find_friday(self, date, inc):
+        day = datetime.timedelta(days=inc)
+        while date.weekday() != 4:      # friday is weekday 4
+            date += day
+        return date
+
+    def model_run(self, model_context):
+        # ask for date intervals
+        fechas = IntervaloFechasDialog()
+        yield ChangeObject(fechas)
+
+        # truncate tables (after ChangeObject since user may cancel)
+        Parametro.query.delete()
+        Fecha.query.delete()
+
+        desde = self.find_friday(fechas.desde, 1)
+        hasta = self.find_friday(fechas.hasta, -1)
+        if hasta < desde:
+            hasta = desde
+
+        # add to parametro
+        p = Parametro()
+        p.fecha = desde
+        Parametro.query.session.flush()
+
+        # add dates
+        week = datetime.timedelta(weeks=1)
+        while desde <= hasta:
+            f = Fecha()
+            f.fecha = desde
+            desde += week
+            yield UpdateProgress()
+
+        Fecha.query.session.flush()
+        yield Refresh()
+
