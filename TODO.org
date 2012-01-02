@@ -23,17 +23,13 @@ pdf printer para windows
 http://www.bullzip.com/products/pdf/info.php
 * PREGUNTAS:
 ** FUNCIONALES
+*** TODO como puedo mostrar campos referenciados en expanded_list_search? ver creditoadminbase
 *** como obtengo el filtro para mostrar en un reporte?
 *** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
 *** preguntar como workaroundear el hecho de que no puedo ordenar columnas por properties, dado que deja cliquear y da al usuario la idea de que hace algo.
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
 *** como visualizar un form desde otro (model_run)
         camelot.admin.action.application_action.OpenTableView(self.app_admin.get_entity_admin(Beneficiaria))
-*** TODO How can I set a default value for a filter?
-        list_filter = [ComboBoxFilter('activa', default=True)]
-esto esta roto ahora pero fixed en trunk
-Cuando salga el nuevo release, usar este feature.
-*** se pueden hacer filtros por property en vez de columnproperty?
 *** como puedo buscar por beneficiarias en pagos
 *** como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
   http://dev.mysql.com/doc/refman/5.1/en/storage-engine-setting.html
@@ -41,8 +37,8 @@ Cuando salga el nuevo release, usar este feature.
     __table_args__ = {'mysql_engine':'InnoDB'}
   pero no funciono
 *** como hacer el table view read only y el form editable.
-*** si tengo un mapeo a un view que existe en la db, lo trato como tabla? si es asi, como evito que la cree.
-creo que con el parametro autoload=True en using_options
+*** DONE como filtrar por @property (al parecer no se puede)
+  http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
 ** MISC
 *** bug cuando hay muchos campos y doy clic en la lupa, la ventana se ensancha demasiado
 *** como hacer andar las teclas de flecha en camelot_manage console
@@ -51,14 +47,10 @@ creo que con el parametro autoload=True en using_options
 *** como modificar la ubicacion de las actions
 *** como setear el ancho de los campos en table view
 *** como evito mostrar el id en el titulo del form?
-** DONE como filtrar por @property (al parecer no se puede)
-  http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
-
 ** PARA M2000
-*** que se supone que va en la columna estado de planilla de pagos?
 *** el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
-*** estado de credito para que se usa?
-*** las fechas de pago corresponden a viernes o sabado?
+se usa como id mnemotecnico, podria generarse automaticamente.
+*** DONE las fechas de pago corresponden a viernes o sabado?
 se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
 * FUTURE
 ** enforzar primary key compuesto en rubro.
@@ -138,6 +130,13 @@ modifique los fuentes en view/controls/tableview.py
 https://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f/88b71699cd831a87?hl=es&ie=UTF-8&q=tableview+order+by+property+camelot&pli=1#88b71699cd831a87
 ** en windows, al lanzar desde un shortcut se abre una ventana de dos, esta sirve para ver los mensajes de error asi que no quitarla.
 * BUGS
+** TODO error al eliminar una beneficiaria
+IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`credito`, CONSTRAINT `credito_beneficiaria_id_fk` FOREIGN KEY (`beneficiaria_id`) REFERENCES `beneficiaria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE credito SET beneficiaria_id=%s WHERE credito.id = %s' (None, 83L)
+** TODO error al eliminar un credito
+AssertionError: Dependency rule tried to blank-out primary key column 'pago.credito_id' on instance '<Pago at 0x7fa5e51a47d0>'
+** TODO error al eliminar actividad
+IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`rubro`, CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE rubro SET actividad_id=%s WHERE rubro.id = %s' (None, 1L)
+
 ** las columnas property no pueden usarse para ordenar, ver como workaroundearlo
 ** pies de pagina en jinja no se pueden setear, como workaround tener un template externo con los mismos, y eliminarlos de los documentos.
 ** CAMELOT

@@ -1,9 +1,12 @@
-* master
-** Reportes de cartera son vistas sqlalchemy. Se arreglaron los filtros de busqueda
+Listado de cambios entre versiones
+
+* v12.1.1
+** Se agrego el historial de cambios
+** La db ya no se crea a partir de un script .sql sino automaticamente.
+** Reportes son vistas sqlalchemy. Se arreglaron los filtros de busqueda
 ** Se actualizó la version de Camelot a 11.12.30 (y sqlalchemy a 0.7.4)
 ** Nueva barra de herramientas personalizada
 ** Valores de filtros predeterminados (ej. en creditos y beneficiarias)
-** Se modificó la vista del reporte de cheques entregados como un select de sqlalchemy
 
 * v11.12.26
 ** Se agregó la columna tasa_interes_anual a la tabla cartera.
