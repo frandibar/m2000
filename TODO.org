@@ -1,26 +1,6 @@
 * COMO SIGO:
-** TODO procurar que se pueda filtrar por nombre y apellido en creditos y beneficiarias
 ** TODO en carga de pagos agregar boton "nuevo pago"
-** REPORTES:
-*** probar sumas en reportes como querys sqlalchemy en vez de iterar
-** PAGOS:
-*** TODO imitar la consulta de pagos por fecha y barrio (agregar barrio a la tabla de pagos, crear vista)
-** ALL:
-*** TODO cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
-IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
-* DEPLOYMENT
-python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
-mysql installer 
-full http://linorg.usp.br/mysqlDownloads/MySQLInstaller/mysql-installer-5.5.19.0.msi
-en windows el mysql installer requiere .NET framework 4.0 http://go.microsoft.com/fwlink/?LinkId=181012
-only engine http://mysql.cce.usp.br/Downloads/MySQL-5.5/mysql-5.5.19-win32.msi
-pyqt http://www.riverbankcomputing.co.uk/static/Downloads/PyQt4/PyQt-Py2.7-x86-gpl-4.8.6-1.exe
-camelot egg (instala sqlalchemy y elixir)
-sqlalchemy source http://ufpr.dl.sourceforge.net/project/sqlalchemy/sqlalchemy/0.7.3/SQLAlchemy-0.7.3.tar.gz
-windows mysql-python
-cuando instalo un egg, primero desinstala si ya fue instalado
-pdf printer para windows
-http://www.bullzip.com/products/pdf/info.php
+** TODO imitar la consulta de pagos por fecha y barrio (agregar barrio a la tabla de pagos, crear vista)
 * PREGUNTAS:
 ** FUNCIONALES
 *** TODO como puedo mostrar campos referenciados en expanded_list_search? ver creditoadminbase
@@ -52,24 +32,40 @@ http://www.bullzip.com/products/pdf/info.php
 se usa como id mnemotecnico, podria generarse automaticamente.
 *** DONE las fechas de pago corresponden a viernes o sabado?
 se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
+* BUGS
+** cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
+IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
+** error al eliminar una beneficiaria
+IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`credito`, CONSTRAINT `credito_beneficiaria_id_fk` FOREIGN KEY (`beneficiaria_id`) REFERENCES `beneficiaria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE credito SET beneficiaria_id=%s WHERE credito.id = %s' (None, 83L)
+** error al eliminar un credito
+AssertionError: Dependency rule tried to blank-out primary key column 'pago.credito_id' on instance '<Pago at 0x7fa5e51a47d0>'
+** error al eliminar actividad
+IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`rubro`, CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE rubro SET actividad_id=%s WHERE rubro.id = %s' (None, 1L)
+
+** las columnas property no pueden usarse para ordenar, ver como workaroundearlo
+** pies de pagina en jinja no se pueden setear, como workaround tener un template externo con los mismos, y eliminarlos de los documentos.
+** CAMELOT
+*** default values en forms no me los toma
+*** list_action = None es ignorado en embedded admins (ver rubro en actividad, pago en credito)
+*** en expanded_list_search no me incluye los campos de foreign key (ej creditos x beneficiarias.nombre)
+http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_admin.html
+*** cuando se escribe un valor en un filtro de table view y se empiezan a filtrar, al llegar a 0 resultados, si se vuelve atras con backspace, no aparece la 1ra columna con la carpetita. Es necesario clic en la escoba.
 * FUTURE
 ** enforzar primary key compuesto en rubro.
-** eliminar views de la db, reemplazarlos por sqlalchemy (sobre todo para evitar el uso de tablas parameter y fecha)
 ** agregar tests
 * ENHANCEMENTS:
+** procurar que se pueda filtrar por nombre y apellido en creditos y beneficiarias
+** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
+** en fechas de reportes, guardar la ultima usada y usar como default
+** probar sumas en reportes como querys sqlalchemy en vez de iterar, mmm no se, 1ro tengo que saber cual es el filtro aplicado, ver get_collection. Por ahora no.
 ** los reportes de recaudacion son muy lentos, mejorarlos.
 ** en contrato mutuo colocar tasa de interes en letras
 ** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
 ** reemplazar header jpg por svg
-** validadores de forms
-** en fechas de reportes, guardar la ultima usada y usar como default
 ** agregar diccionario (ayuda) con definiciones de formulas y comportamiento. (documentacion con sphinx?)
 ** keyboard navigation (depende de camelot?)
-** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
 ** en reportes, inhabilitar boton new
 ** poder inhabilitar boton de crear nuevo credito en pago
-** agregar historial de cambios? (provisto por camelot)
-** al eliminar una actividad con rubros asociados, muestra un mensaje muy feo. mejorarlo
 * COSAS A MOSTRAR
 ** como abrir en nueva pestaña
 ** como filtrar (incluyendo busqueda con lupa), aclarar que se pueden especificar por cuales campos buscar por defecto
@@ -86,6 +82,19 @@ se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabad
 ** aclarar que la busqueda es por nombre o apellido beneficiaria, pero no los dos
 ** documentacion a completar
 ** en alta de pago, al seleccionar un credito se puede escribir el barrio y funciona el filtro.
+* DEPLOYMENT
+python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
+mysql installer 
+full http://linorg.usp.br/mysqlDownloads/MySQLInstaller/mysql-installer-5.5.19.0.msi
+en windows el mysql installer requiere .NET framework 4.0 http://go.microsoft.com/fwlink/?LinkId=181012
+only engine http://mysql.cce.usp.br/Downloads/MySQL-5.5/mysql-5.5.19-win32.msi
+pyqt http://www.riverbankcomputing.co.uk/static/Downloads/PyQt4/PyQt-Py2.7-x86-gpl-4.8.6-1.exe
+camelot egg (instala sqlalchemy y elixir)
+sqlalchemy source http://ufpr.dl.sourceforge.net/project/sqlalchemy/sqlalchemy/0.7.3/SQLAlchemy-0.7.3.tar.gz
+windows mysql-python
+cuando instalo un egg, primero desinstala si ya fue instalado
+pdf printer para windows
+http://www.bullzip.com/products/pdf/info.php
 * TIPS
 ** puedo usar @property en vez de @ColumnProperty, salvo que quiera incluir el campo en un filtro
 ** para que el form sea no editable
@@ -129,22 +138,6 @@ modifique los fuentes en view/controls/tableview.py
 ** ordenamiento por properties en tableview no funciona. es asi por diseno
 https://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f/88b71699cd831a87?hl=es&ie=UTF-8&q=tableview+order+by+property+camelot&pli=1#88b71699cd831a87
 ** en windows, al lanzar desde un shortcut se abre una ventana de dos, esta sirve para ver los mensajes de error asi que no quitarla.
-* BUGS
-** TODO error al eliminar una beneficiaria
-IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`credito`, CONSTRAINT `credito_beneficiaria_id_fk` FOREIGN KEY (`beneficiaria_id`) REFERENCES `beneficiaria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE credito SET beneficiaria_id=%s WHERE credito.id = %s' (None, 83L)
-** TODO error al eliminar un credito
-AssertionError: Dependency rule tried to blank-out primary key column 'pago.credito_id' on instance '<Pago at 0x7fa5e51a47d0>'
-** TODO error al eliminar actividad
-IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`rubro`, CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE rubro SET actividad_id=%s WHERE rubro.id = %s' (None, 1L)
-
-** las columnas property no pueden usarse para ordenar, ver como workaroundearlo
-** pies de pagina en jinja no se pueden setear, como workaround tener un template externo con los mismos, y eliminarlos de los documentos.
-** CAMELOT
-*** default values en forms no me los toma
-*** list_action = None es ignorado en embedded admins (ver rubro en actividad, pago en credito)
-*** en expanded_list_search no me incluye los campos de foreign key (ej creditos x beneficiarias.nombre)
-http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_admin.html
-*** cuando se escribe un valor en un filtro de table view y se empiezan a filtrar, al llegar a 0 resultados, si se vuelve atras con backspace, no aparece la 1ra columna con la carpetita. Es necesario clic en la escoba.
 * NOTAS SOBRE LOS DATOS:
 mar dic 27, 2011
 elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)

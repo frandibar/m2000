@@ -1,4 +1,5 @@
 Listado de cambios entre versiones
+* master
 
 * v12.1.1
 ** Se agrego el historial de cambios
