@@ -22,27 +22,9 @@
 # SOFTWARE.
 #-------------------------------------------------------------------------------
 
-# Working without the default model
-# http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/under_the_hood.html
-# copied from /usr/lib/python2.7/dist-packages/camelot/model/__init__.py
-# begin session setup
-# import elixir
-# from sqlalchemy import MetaData
-# from sqlalchemy.orm import scoped_session, create_session
-# elixir.session = scoped_session( create_session )
-# import settings
-
-# metadata = MetaData()
-# __metadata__ = metadata
-# __metadata__.bind = settings.ENGINE()
-# __metadata__.autoflush = False
-# __metadata__.transactional = False
-# end session setup
-
-# begin meta data setup
+# meta data setup
 from camelot.model import metadata
 __metadata__ = metadata
-# end meta data setup
 
 import datetime
 
