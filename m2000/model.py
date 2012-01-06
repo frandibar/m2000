@@ -79,8 +79,7 @@ class Actividad(Entity):
         verbose_name_plural = 'Actividades'
         list_display = ['nombre', 'amortizacion', 'rubros']
         field_attributes = dict(amortizacion = dict(name = u'Amortización'),
-                                rubros = dict(embedded = True,
-                                              admin = RubroAdminEmbedded))
+                                rubros = dict(admin = RubroAdminEmbedded))
         list_search = ['nombre', 'amortizacion.nombre', 'rubros.nombre']
         delete_mode = 'on_confirm'
 
