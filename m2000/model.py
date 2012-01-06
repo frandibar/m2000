@@ -395,7 +395,7 @@ class Beneficiaria(Entity):
         verbose_name = 'Beneficiaria'
         delete_mode = 'on_confirm'
         list_columns_frozen = 1
-        lines_per_row = 1
+        lines_per_row = 1               # lo especifico por la foto
         delete_mode = 'on_confirm'
         list_display = ['nombre',
                         'apellido',
@@ -453,20 +453,20 @@ class Beneficiaria(Entity):
                                 'fecha_nac',
                                 'barrio.nombre',
                                 ]
-        field_attributes = dict(fecha_baja = dict(name = 'Fecha Baja',
+        field_attributes = dict(fecha_alta = dict(name = 'Fecha Alta'),
+                                _activa = dict(name = 'Activa',
+                                               delegate = BoolDelegate,
+                                               # to_string = lambda x:{True:'Si', False:'No'}[x], # TODO no lo toma
+                                               editable = True,
+                                               tooltip = u'No se puede dar de baja una beneficiaria si tiene créditos activos.'),
+                                fecha_baja = dict(name = 'Fecha Baja',
                                                   tooltip = u'Al desactivar la beneficiaria, este campo toma la última fecha de pago'),
                                 dni = dict(name = 'DNI'),
-                                fecha_alta = dict(name = 'Fecha Alta'),
                                 fecha_nac = dict(name = 'Fecha Nac.'),
                                 estado_civil = dict(name = 'Estado Civil'),
                                 telefono = dict(name = u'Teléfono'),
                                 email = dict(address_type = 'email'),
                                 creditos = dict(admin = CreditoAdminEmbedded),
-                                _activa = dict(name = 'Activa',
-                                               delegate = BoolDelegate,
-                                               # to_string = lambda x:{True:'Si', False:'No'}[x],
-                                               editable = True,
-                                               tooltip = u'No se puede dar de baja una beneficiaria si tiene créditos activos.'),
                                 creditos_activos = dict(name = u'Créditos activos',
                                                         editable = False),
                                )
