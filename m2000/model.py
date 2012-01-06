@@ -377,6 +377,20 @@ class Beneficiaria(Entity):
 
     _activa = property(_get_activa, _set_activa)
 
+    @ColumnProperty
+    def creditos_activos(self):
+        return sql.select([sql.func.count(Credito.id)],
+                          and_(Credito.beneficiaria_id == Beneficiaria.id,
+                               sql.column('fecha_finalizacion') == sql.null()))
+    @ColumnProperty
+    def nombre_completo(self):
+        return self.nombre + ' ' + self.apellido
+    
+    def __unicode__(self):
+        if self.nombre and self.apellido:
+            return '%s %s' % (self.nombre, self.apellido)
+        return UNDEFINED
+    
     class Admin(EntityAdmin):
         verbose_name = 'Beneficiaria'
         delete_mode = 'on_confirm'
@@ -398,33 +412,29 @@ class Beneficiaria(Entity):
                         'email',
                         'barrio',
                         ]
-
-        form_display = TabForm([
-          ('Beneficiaria', Form([
-                HBoxForm([['nombre', 
-                           'apellido', 
-                           'barrio', 
-                           'grupo', 
-                           '_activa',
-                           'fecha_alta',
-                           'fecha_baja',
-                           'comentarios',
-                           'dni',
-                           'fecha_nac',
-                           ], 
-                          [WidgetOnlyForm('foto'),
-                           'estado_civil',
-                           'domicilio',
-                           'telefono',
-                           'email',
-                           'creditos_activos'
-                           ]])])),
-          (u'Créditos', WidgetOnlyForm('creditos')),
-        ])
-
+        form_display = TabForm([('Beneficiaria', Form([HBoxForm([['nombre', 
+                                                                  'apellido', 
+                                                                  'barrio', 
+                                                                  'grupo', 
+                                                                  '_activa',
+                                                                  'fecha_alta',
+                                                                  'fecha_baja',
+                                                                  'comentarios',
+                                                                  'dni',
+                                                                  'fecha_nac',
+                                                                  ], 
+                                                                 [WidgetOnlyForm('foto'),
+                                                                  'estado_civil',
+                                                                  'domicilio',
+                                                                  'telefono',
+                                                                  'email',
+                                                                  'creditos_activos'
+                                                                  ]])])),
+                                (u'Créditos', WidgetOnlyForm('creditos')),
+                                ])
         list_filter = [GroupBoxFilter('activa', default=True),
                        ComboBoxFilter('barrio.nombre'),
-                       ComboBoxFilter('grupo')]
+                       ]
         search_all_fields = False
         list_search = ['id',
                        'nombre_completo',
@@ -433,9 +443,9 @@ class Beneficiaria(Entity):
                        'grupo',
                        'barrio.nombre',
                        ]
-                       
         expanded_list_search = ['apellido',
                                 'nombre',
+                                'grupo',
                                 'fecha_alta',
                                 'fecha_baja',
                                 'comentarios',
@@ -443,7 +453,6 @@ class Beneficiaria(Entity):
                                 'fecha_nac',
                                 'barrio.nombre',
                                 ]
-
         field_attributes = dict(fecha_baja = dict(name = 'Fecha Baja',
                                                   tooltip = u'Al desactivar la beneficiaria, este campo toma la última fecha de pago'),
                                 dni = dict(name = 'DNI'),
@@ -461,32 +470,8 @@ class Beneficiaria(Entity):
                                 creditos_activos = dict(name = u'Créditos activos',
                                                         editable = False),
                                )
-
         form_size = (850,400)
-        # TODO: comentado porque rompe los filtros y pierdo los delegates
-        # def get_field_attributes(self, field_name):
-        #     field_attributes = super(EntityAdmin, self).get_field_attributes(field_name)
-        #     if field_name == 'fecha_baja':
-        #         field_attributes['editable'] = lambda x: not x.activa
-        #     else:
-        #         field_attributes['editable'] = True
-        #     return field_attributes
 
-    @ColumnProperty
-    def creditos_activos(self):
-        return sql.select([sql.func.count(Credito.id)],
-                          and_(Credito.beneficiaria_id == Beneficiaria.id,
-                               sql.column('fecha_finalizacion') == sql.null()))
-
-    @ColumnProperty
-    def nombre_completo(self):
-        return self.nombre + ' ' + self.apellido
-    
-    def __unicode__(self):
-        if self.nombre and self.apellido:
-            return '%s %s' % (self.nombre, self.apellido)
-        return UNDEFINED
-    
 class Cartera(Entity):
     using_options(tablename='cartera')
     nombre = Field(Unicode(200), unique=True, required=True)
