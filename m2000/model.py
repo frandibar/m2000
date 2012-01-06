@@ -76,8 +76,8 @@ class Rubro(Entity):
     class Admin(EntityAdmin):
         verbose_name = 'Rubro'
         list_display = ['nombre', 'actividad']
-        list_action = None
         list_search = ['nombre', 'actividad.nombre']
+        list_action = None
         delete_mode = 'on_confirm'
         form_size = (450,150)
 
@@ -163,27 +163,32 @@ class Barrio(Entity):
     def __unicode__(self):
         return self.nombre or UNDEFINED
 
-
 class PagoAdminBase(EntityAdmin):
     verbose_name = 'Pago'
-    list_display = ['credito',
-                    'fecha',
-                    'monto',
-                    'asistencia']
+    list_search = ['id']
     field_attributes = dict(credito = dict(name = u'Crédito'),
-                            monto = dict(prefix = '$'))
+                            monto = dict(prefix = '$'),
+                            nro_credito = dict(name = u'Nro. crédito',
+                                               editable = False),
+                            beneficiaria = dict(editable = False),
+                            barrio = dict(editable = False),
+                            )
     search_all_fields = False
-    list_search = ['credito_id',
-                   'credito.beneficiaria.nombre',
-                   'credito.beneficiaria.apellido',
-                   ]
+    expanded_list_search = ['beneficiaria',
+                            'nro_credito',
+                            'fecha',
+                            'monto',
+                            'asistencia', # TODO no lo toma
+                            'barrio',
+                            ]
     list_action = None
     list_actions = [reports.ReportePagos()]
     delete_mode = 'on_confirm'
 
 class PagoAdminEmbedded(PagoAdminBase):
-    list_display = filter(lambda x: x not in ['credito'], PagoAdminBase.list_display)
-
+    list_display = ['fecha',
+                    'monto',
+                    'asistencia']
 
 class CreditoValidator(EntityValidator):
     def objectValidity(self, entity_instance):
@@ -202,7 +207,7 @@ class CreditoAdminBase(EntityAdmin):
     list_display = ['beneficiaria',
                     'nro_credito',
                     'rubro',
-                    '_fecha_entrega',
+                    'fecha_entrega',    # en vez de _fecha_entrega para poder ordenar
                     'fecha_cobro',
                     '_prestamo',
                     '_saldo_anterior',
@@ -213,20 +218,19 @@ class CreditoAdminBase(EntityAdmin):
                     'cuotas',
                     'fecha_finalizacion',
                     'comentarios',
-                    'gastos_arq',
+                    'barrio',
+                    # 'gastos_arq',
                     ]
     delete_mode = 'on_confirm'
     list_search = ['id',
-                   'beneficiaria.nombre',
-                   'beneficiaria.apellido',
+                   'beneficiaria',
                    'beneficiaria.barrio.nombre',
                    'rubro.nombre',
                    'cartera.nombre',
                    ]
     search_all_fields = False
     # TODO no me toma los campos referenciados
-    expanded_list_search = ['beneficiaria.nombre', 
-                            'beneficiaria.apellido', 
+    expanded_list_search = ['beneficiaria', 
                             'rubro.nombre', 
                             'nro_credito', 
                             'fecha_entrega',
@@ -236,6 +240,7 @@ class CreditoAdminBase(EntityAdmin):
                             'cartera.nombre']
     list_filter = [GroupBoxFilter('activo', default=True),
                    ComboBoxFilter('cartera.nombre'),
+                   ComboBoxFilter('barrio'),
                    ValidDateFilter('_fecha_entrega', 'fecha_finalizacion', u'Período e/entrega-fin', default=lambda:'')]
 
     # ArgumentError: Can't find any foreign key relationships between 'barrio' and '_FromGrouping object'.
@@ -285,6 +290,9 @@ class CreditoAdminBase(EntityAdmin):
                                                   name = 'Fecha entrega',
                                                   minimal_column_width = 17,
                                                   editable = True),
+                            fecha_entrega = dict(name = 'Fecha entrega',
+                                                 minimal_column_width = 17,
+                                                 editable = False),
                             fecha_cobro = dict(minimal_column_width = 17,
                                                tooltip = u'Se incializa en: Fecha entrega + 2 días.'),
                             # TODO por el momento el name es estatico, no se puede cambiar en funcion de otros valores
@@ -375,8 +383,8 @@ class Beneficiaria(Entity):
         list_columns_frozen = 1
         lines_per_row = 1
         delete_mode = 'on_confirm'
-        list_display = ['apellido',
-                        'nombre',
+        list_display = ['nombre',
+                        'apellido',
                         'grupo',
                         'fecha_alta',
                         '_activa',
@@ -419,8 +427,7 @@ class Beneficiaria(Entity):
                        ComboBoxFilter('grupo')]
         search_all_fields = False
         list_search = ['id',
-                       'apellido',
-                       'nombre',
+                       'nombre_completo',
                        'comentarios',
                        'dni',
                        'grupo',
@@ -453,7 +460,6 @@ class Beneficiaria(Entity):
                                                tooltip = u'No se puede dar de baja una beneficiaria si tiene créditos activos.'),
                                 creditos_activos = dict(name = u'Créditos activos',
                                                         editable = False),
-                                #nombre_completo = dict(name = 'Nombre y Apellido'),
                                )
 
         form_size = (850,400)
@@ -472,11 +478,9 @@ class Beneficiaria(Entity):
                           and_(Credito.beneficiaria_id == Beneficiaria.id,
                                sql.column('fecha_finalizacion') == sql.null()))
 
-    # TODO comentado porque rompe la busqueda
-    # # use columnproperty instead of property to allow sorting and searching
-    # @ColumnProperty
-    # def nombre_completo(self):
-    #     return sql.select([sql.func.concat(sql.column('nombre'), ' ', sql.column('apellido'))])
+    @ColumnProperty
+    def nombre_completo(self):
+        return self.nombre + ' ' + self.apellido
     
     def __unicode__(self):
         if self.nombre and self.apellido:
@@ -585,6 +589,18 @@ class Credito(Entity):
         #     return field_attributes
     
     @ColumnProperty
+    def barrio(self):
+        return sql.select([Barrio.nombre],
+                          and_(Credito.beneficiaria_id == Beneficiaria.id,
+                               Beneficiaria.barrio_id == Barrio.id))
+        # tbl_credito = Credito.mapper.mapped_table
+        # tbl_barrio = Barrio.mapper.mapped_table
+        # tbl_benef = Beneficiaria.mapper.mapped_table
+        # return sql.select([tbl_barrio.c.nombre],
+        #                   from_obj = tbl_credito.join(tbl_benef).join(tbl_barrio),
+        #                   whereclause = tbl_credito.c.id == self.id)
+
+    @ColumnProperty
     def activo(self):
         return sql.select([sql.column('fecha_finalizacion') == sql.null()])
 
@@ -611,6 +627,57 @@ class Credito(Entity):
             return '%s %s (cred. #%s)' % (self.beneficiaria.nombre, self.beneficiaria.apellido, self.nro_credito)
         return UNDEFINED
 
+class Pago(Entity):
+    using_options(tablename='pago')
+    credito = ManyToOne('Credito', primary_key=True, ondelete='cascade', onupdate='cascade')
+    monto = Field(Float)
+    fecha = Field(Date, primary_key=True)
+    asistencia = ManyToOne('Asistencia', ondelete='cascade', onupdate='cascade')
+
+    @ColumnProperty
+    def barrio(self):
+        return sql.select([Barrio.nombre],
+                          and_(Pago.credito_id == Credito.id,
+                               Credito.beneficiaria_id == Beneficiaria.id,
+                               Beneficiaria.barrio_id == Barrio.id))
+
+    @ColumnProperty
+    def beneficiaria(self):
+        return sql.select([sql.func.concat(Beneficiaria.nombre, ' ', Beneficiaria.apellido)],
+                          and_(Pago.credito_id == Credito.id,
+                               Credito.beneficiaria_id == Beneficiaria.id))
+
+    @ColumnProperty
+    def nro_credito(self):
+        return sql.select([Credito.nro_credito],
+                          Pago.credito_id == Credito.id)
+
+    class Admin(PagoAdminBase):
+        verbose_name = 'Pago'
+        list_display = ['beneficiaria',
+                        'nro_credito',
+                        'fecha',
+                        'monto',
+                        'asistencia',
+                        'barrio',
+                        ]
+        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
+                       ComboBoxFilter('barrio'),
+                       ]
+        form_size = (600,200)
+        form_display = Form([HBoxForm([['credito',
+                                        'fecha',
+                                        'monto',
+                                        'asistencia',
+                                        ]])])
+        
+    def __unicode__(self):
+        if self.credito:
+            return '%s %s (cred. #%s)' % (self.credito.beneficiaria.nombre,
+                                          self.credito.beneficiaria.apellido,
+                                          self.credito.nro_credito)
+        return INDEFINIDO
+
 class EstadoCredito(Entity):
     using_options(tablename='estado_credito')
     descripcion = Field(Unicode(200), unique=True, required=True)
@@ -630,43 +697,6 @@ class EstadoCredito(Entity):
     def __unicode__(self):
         return self.descripcion or UNDEFINED
 
-class Fecha(Entity):
-    using_options(tablename='fecha')
-    fecha = Field(Date, primary_key=True)
-
-    def __unicode__(self):
-        return self.fecha
-
-class Pago(Entity):
-    using_options(tablename='pago')
-    credito = ManyToOne('Credito', primary_key=True, ondelete='cascade', onupdate='cascade')
-    monto = Field(Float)
-    fecha = Field(Date, primary_key=True)
-    asistencia = ManyToOne('Asistencia', ondelete='cascade', onupdate='cascade')
-
-    class Admin(PagoAdminBase):
-        verbose_name = 'Pago'
-        list_display = ['credito',
-                        'fecha',
-                        'monto',
-                        'asistencia']
-        field_attributes = dict(credito = dict(name = u'Crédito'),
-                                monto = dict(prefix = '$'))
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:'')]
-        delete_mode = 'on_confirm'
-        form_size = (600,200)
-        
-    def __unicode__(self):
-        if self.credito:
-            return '%s %s (cred. #%s)' % (self.credito.beneficiaria.nombre,
-                                          self.credito.beneficiaria.apellido,
-                                          self.credito.nro_credito)
-        return INDEFINIDO
-
-class Parametro(Entity):
-    using_options(tablename='parametro')
-    fecha = Field(Date, primary_key=True)
-
 class Amortizacion(Entity):
     using_options(tablename='amortizacion')
     nombre = Field(Unicode(25), unique=True, required=True)
@@ -682,3 +712,13 @@ class Amortizacion(Entity):
     def __unicode__(self):
         return self.nombre or UNDEFINED
 
+class Fecha(Entity):
+    using_options(tablename='fecha')
+    fecha = Field(Date, primary_key=True)
+
+    def __unicode__(self):
+        return self.fecha
+
+class Parametro(Entity):
+    using_options(tablename='parametro')
+    fecha = Field(Date, primary_key=True)
