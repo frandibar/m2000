@@ -1,8 +1,13 @@
 Listado de cambios entre versiones
 * master
+** Columna y filtro por barrio en creditos y pagos.
+** Columna y filtro por beneficiaria y nro credito en pagos.
+** Busqueda de beneficiaria por nombre completo.
+** Fix: bug al cerrar formulario de Actividades.
+** Fix: ordenamiento por columnas arreglado.
 
 * v12.1.1
-** Se agrego el historial de cambios
+** Se agregó el historial de cambios
 ** La db ya no se crea a partir de un script .sql sino automaticamente.
 ** Reportes son vistas sqlalchemy. Se arreglaron los filtros de busqueda
 ** Se actualizó la version de Camelot a 11.12.30 (y sqlalchemy a 0.7.4)

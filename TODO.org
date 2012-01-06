@@ -1,16 +1,12 @@
 * COMO SIGO:
-** TODO en carga de pagos agregar boton "nuevo pago"
-** TODO imitar la consulta de pagos por fecha y barrio (agregar barrio a la tabla de pagos, crear vista)
+** TODO validar creditos
+** ordenamiento: beneficiarias.nombre no anda
+** en carga de pagos agregar boton "nuevo pago"?
 * PREGUNTAS:
 ** FUNCIONALES
-*** TODO como puedo mostrar campos referenciados en expanded_list_search? ver creditoadminbase
 *** como obtengo el filtro para mostrar en un reporte?
 *** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
-*** preguntar como workaroundear el hecho de que no puedo ordenar columnas por properties, dado que deja cliquear y da al usuario la idea de que hace algo.
 *** como guardar preferencias de impresion (me parece que se setea con la impresora)
-*** como visualizar un form desde otro (model_run)
-        camelot.admin.action.application_action.OpenTableView(self.app_admin.get_entity_admin(Beneficiaria))
-*** como puedo buscar por beneficiarias en pagos
 *** como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
   http://dev.mysql.com/doc/refman/5.1/en/storage-engine-setting.html
   probe declarar en la clase del entity
@@ -33,6 +29,7 @@ se usa como id mnemotecnico, podria generarse automaticamente.
 *** DONE las fechas de pago corresponden a viernes o sabado?
 se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
 * BUGS
+** busqueda en pagos y creditos esta rota, salvo busqueda expandida.
 ** cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
 IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
 ** error al eliminar una beneficiaria
@@ -43,7 +40,6 @@ AssertionError: Dependency rule tried to blank-out primary key column 'pago.cred
 IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`rubro`, CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE rubro SET actividad_id=%s WHERE rubro.id = %s' (None, 1L)
 
 ** las columnas property no pueden usarse para ordenar, ver como workaroundearlo
-** pies de pagina en jinja no se pueden setear, como workaround tener un template externo con los mismos, y eliminarlos de los documentos.
 ** CAMELOT
 *** default values en forms no me los toma
 *** list_action = None es ignorado en embedded admins (ver rubro en actividad, pago en credito)
@@ -53,8 +49,8 @@ http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_adm
 * FUTURE
 ** enforzar primary key compuesto en rubro.
 ** agregar tests
+** reportes pdf con reportlab?
 * ENHANCEMENTS:
-** procurar que se pueda filtrar por nombre y apellido en creditos y beneficiarias
 ** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
 ** en fechas de reportes, guardar la ultima usada y usar como default
 ** probar sumas en reportes como querys sqlalchemy en vez de iterar, mmm no se, 1ro tengo que saber cual es el filtro aplicado, ver get_collection. Por ahora no.
@@ -196,6 +192,8 @@ http://matthewjamestaylor.com/blog/keeping-footers-at-the-bottom-of-the-page
 http://www.digital-pic.com/icon/
 ** shortcut generator en windows
 http://www.xxcopy.com/xxcopy38.htm
+** git
+http://ariejan.net/2009/10/26/how-to-create-and-apply-a-patch-with-git
 * SNIPPETS
     # set all fields as non editable
     def get_field_attributes(self, field_name):

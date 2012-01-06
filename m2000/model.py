@@ -204,9 +204,9 @@ class CreditoValidator(EntityValidator):
 class CreditoAdminBase(EntityAdmin):
     verbose_name = u'Crédito'
     list_columns_frozen = 1
-    list_display = ['beneficiaria',
+    list_display = ['beneficiaria_prop',
                     'nro_credito',
-                    'rubro',
+                    'rubro_prop',
                     'fecha_entrega',    # en vez de _fecha_entrega para poder ordenar
                     'fecha_cobro',
                     'prestamo',        # en vez de _prestamo para poder ordenar
@@ -226,14 +226,14 @@ class CreditoAdminBase(EntityAdmin):
     list_search = ['id',
                    'beneficiaria',
                    'beneficiaria.barrio.nombre',
-                   'rubro.nombre',
+                   'rubro_prop',
                    'cartera.nombre',
                    ]
     search_all_fields = False
     # TODO no me toma los campos beneficiaria, rubro, cartera
-    expanded_list_search = ['beneficiaria', 
+    expanded_list_search = ['beneficiaria_prop', 
                             'nro_credito', 
-                            'rubro.nombre', 
+                            'rubro_prop', 
                             'fecha_entrega',
                             'fecha_cobro', 
                             'prestamo',
@@ -252,9 +252,13 @@ class CreditoAdminBase(EntityAdmin):
             pass
         return True
 
-    field_attributes = dict(beneficiaria = dict(minimal_column_width = 25),
+    field_attributes = dict(beneficiaria_prop = dict(name = 'Beneficiaria',
+                                                     minimal_column_width = 25,
+                                                     editable = False),
                             nro_credito = dict(name = u'Nro. Crédito'),
-                            rubro = dict(minimal_column_width = 20),
+                            rubro_prop = dict(name = 'Rubro',
+                                              minimal_column_width = 20,
+                                              editable = False),
                             _fecha_entrega = dict(delegate = DateDelegate,
                                                   name = 'Fecha entrega',
                                                   minimal_column_width = 17,
@@ -565,18 +569,6 @@ class Credito(Entity):
 
     _tasa_interes = property(_get_tasa_interes, _set_tasa_interes)
 
-    class Admin(CreditoAdminBase):
-        pass
-
-        # # # TODO: comentado porque rompe los filtros y pierdo los delegates
-        # def get_field_attributes(self, field_name):
-        #     field_attributes = super(EntityAdmin, self).get_field_attributes(field_name)
-        #     # if field_name == 'gastos_arq':
-        #     #     field_attributes['editable'] = lambda x: x.rubro.actividad == 8   # 8 -> id construccion
-        #     # else:
-        #     #     field_attributes['editable'] = True
-        #     return field_attributes
-    
     @ColumnProperty
     def barrio(self):
         return sql.select([Barrio.nombre],
@@ -598,6 +590,18 @@ class Credito(Entity):
         return sql.select([sql.func.sum(Pago.monto)],
                           and_(Pago.credito_id == self.id))
 
+    # agrego esta property para poder ordenar y filtrar por este campo
+    @ColumnProperty
+    def beneficiaria_prop(self):
+        return sql.select([sql.func.concat(Beneficiaria.nombre, ' ', Beneficiaria.apellido)],
+                          Credito.beneficiaria_id == Beneficiaria.id)
+
+    # agrego esta property para poder ordenar y filtrar por este campo
+    @ColumnProperty
+    def rubro_prop(self):
+        return sql.select([Rubro.nombre],
+                          Credito.rubro_id == Rubro.id)
+    
     @property
     def para_construccion(self):
         if self.rubro:
@@ -616,6 +620,18 @@ class Credito(Entity):
             return '%s %s (cred. #%s)' % (self.beneficiaria.nombre, self.beneficiaria.apellido, self.nro_credito)
         return UNDEFINED
 
+    class Admin(CreditoAdminBase):
+        pass
+
+        # # # TODO: comentado porque rompe los filtros y pierdo los delegates
+        # def get_field_attributes(self, field_name):
+        #     field_attributes = super(EntityAdmin, self).get_field_attributes(field_name)
+        #     # if field_name == 'gastos_arq':
+        #     #     field_attributes['editable'] = lambda x: x.rubro.actividad == 8   # 8 -> id construccion
+        #     # else:
+        #     #     field_attributes['editable'] = True
+        #     return field_attributes
+    
 class Pago(Entity):
     using_options(tablename='pago')
     credito = ManyToOne('Credito', primary_key=True, ondelete='cascade', onupdate='cascade')
