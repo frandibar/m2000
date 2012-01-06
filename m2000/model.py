@@ -209,10 +209,10 @@ class CreditoAdminBase(EntityAdmin):
                     'rubro',
                     'fecha_entrega',    # en vez de _fecha_entrega para poder ordenar
                     'fecha_cobro',
-                    '_prestamo',
-                    '_saldo_anterior',
+                    'prestamo',        # en vez de _prestamo para poder ordenar
+                    'saldo_anterior',  # en vez de _saldo_anterior para poder ordenar
                     'monto_cheque',
-                    '_tasa_interes',
+                    'tasa_interes',     # en vez de _tasa_interes para poder ordenar
                     'deuda_total',
                     'cartera',
                     'cuotas',
@@ -222,6 +222,7 @@ class CreditoAdminBase(EntityAdmin):
                     # 'gastos_arq',
                     ]
     delete_mode = 'on_confirm'
+    # TODO no funciona
     list_search = ['id',
                    'beneficiaria',
                    'beneficiaria.barrio.nombre',
@@ -229,23 +230,19 @@ class CreditoAdminBase(EntityAdmin):
                    'cartera.nombre',
                    ]
     search_all_fields = False
-    # TODO no me toma los campos referenciados
+    # TODO no me toma los campos beneficiaria, rubro, cartera
     expanded_list_search = ['beneficiaria', 
-                            'rubro.nombre', 
                             'nro_credito', 
+                            'rubro.nombre', 
                             'fecha_entrega',
                             'fecha_cobro', 
-                            'fecha_finalizacion', 
                             'prestamo',
+                            'fecha_finalizacion', 
                             'cartera.nombre']
     list_filter = [GroupBoxFilter('activo', default=True),
                    ComboBoxFilter('cartera.nombre'),
                    ComboBoxFilter('barrio'),
-                   ValidDateFilter('_fecha_entrega', 'fecha_finalizacion', u'Período e/entrega-fin', default=lambda:'')]
-
-    # ArgumentError: Can't find any foreign key relationships between 'barrio' and '_FromGrouping object'.
-    # Perhaps you meant to convert the right side to a subquery using alias()?
-    # list_filter = [ComboBoxFilter('beneficiaria.barrio.id')]  # TODO no anda
+                   ValidDateFilter('_fecha_entrega', 'fecha_finalizacion', u'Período e/entrega~fin', default=lambda:'')]
 
     def _use_gastos_arq(obj):
         try:
@@ -256,16 +253,41 @@ class CreditoAdminBase(EntityAdmin):
         return True
 
     field_attributes = dict(beneficiaria = dict(minimal_column_width = 25),
+                            nro_credito = dict(name = u'Nro. Crédito'),
                             rubro = dict(minimal_column_width = 20),
+                            _fecha_entrega = dict(delegate = DateDelegate,
+                                                  name = 'Fecha entrega',
+                                                  minimal_column_width = 17,
+                                                  editable = True),
+                            fecha_entrega = dict(name = 'Fecha entrega',
+                                                 minimal_column_width = 17,
+                                                 editable = False),
+                            fecha_cobro = dict(minimal_column_width = 17,
+                                               tooltip = u'Se incializa en: Fecha entrega + 2 días.'),
                             _prestamo = dict(name = u'Préstamo',
                                              prefix = '$',
                                              delegate = CurrencyDelegate,
                                              editable = True),
+                            prestamo = dict(name = u'Préstamo',
+                                            prefix = '$',),
+                            _saldo_anterior = dict(name = 'Saldo Anterior',
+                                                   prefix = '$',
+                                                   delegate = CurrencyDelegate,
+                                                   editable = True),
+                            saldo_anterior = dict(name = 'Saldo Anterior',
+                                                   prefix = '$',),
+                            monto_cheque = dict(name = 'Monto Cheque/Presup.',
+                                                prefix = '$',
+                                                tooltip = u'Se inicializa en: Préstamo - Saldo anterior'),
                             _tasa_interes = dict(name = u'Tasa de interés',
                                                  delegate = FloatDelegate,
                                                  editable = True,
                                                  precision = 5),
-                            nro_credito = dict(name = u'Nro. Crédito'),
+                            tasa_interes = dict(name = u'Tasa de interés',
+                                                editable = True,
+                                                precision = 5),
+                            deuda_total = dict(prefix = '$',
+                                               tooltip = u'Se inicializa en: Préstamo x (1 + Tasa de interés)'),
                             fecha_finalizacion = dict(minimal_column_width = 20,
                                                       name = u'Fecha finalización'),
                             gastos_arq = dict(name = 'Gastos HAB + Arq.',
@@ -277,29 +299,11 @@ class CreditoAdminBase(EntityAdmin):
                                                editable = False),
                             saldo = dict(delegate = CurrencyDelegate,
                                          prefix = '$'),
-                            _saldo_anterior = dict(name = 'Saldo Anterior',
-                                                   prefix = '$',
-                                                   delegate = CurrencyDelegate,
-                                                   editable = True),
-                            deuda_total = dict(prefix = '$',
-                                               tooltip = u'Se inicializa en: Préstamo . (1 + Tasa de interés)'),
                             activo = dict(delegate = BoolDelegate,
                                           to_string = lambda x:{1:'Si', 0:'No'}[x]),
                             pagos = dict(admin = PagoAdminEmbedded),
-                            _fecha_entrega = dict(delegate = DateDelegate,
-                                                  name = 'Fecha entrega',
-                                                  minimal_column_width = 17,
-                                                  editable = True),
-                            fecha_entrega = dict(name = 'Fecha entrega',
-                                                 minimal_column_width = 17,
-                                                 editable = False),
-                            fecha_cobro = dict(minimal_column_width = 17,
-                                               tooltip = u'Se incializa en: Fecha entrega + 2 días.'),
                             # TODO por el momento el name es estatico, no se puede cambiar en funcion de otros valores
                             # monto_cheque = dict(name = lambda o: 'Monto Presupuesto' if o.rubro.actividad.id == ID_ACTIVIDAD_CONSTRUCCION else 'Monto Cheque'),
-                            monto_cheque = dict(name = 'Monto Cheque/Presup.',
-                                                prefix = '$',
-                                                tooltip = u'Se inicializa en: Préstamo - Saldo anterior'),
                             )
 
     form_display = TabForm([(u'Crédito', Form([HBoxForm([['beneficiaria',
@@ -443,8 +447,8 @@ class Beneficiaria(Entity):
                        'grupo',
                        'barrio.nombre',
                        ]
-        expanded_list_search = ['apellido',
-                                'nombre',
+        expanded_list_search = ['nombre',
+                                'apellido',
                                 'grupo',
                                 'fecha_alta',
                                 'fecha_baja',
