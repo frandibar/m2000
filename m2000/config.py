@@ -36,6 +36,12 @@ class Config:
         config.read(self.config_file)
         return config.get(self.section, key)
 
+    def safe_get(self, key):
+        try:
+            return self.get(key)
+        except ConfigParser.NoOptionError, e:
+            return None
+
     def set(self, key, value):
         config = ConfigParser.ConfigParser()
         config.read(self.config_file)

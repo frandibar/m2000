@@ -5,6 +5,7 @@ Listado de cambios entre versiones
 ** Busqueda de beneficiaria por nombre completo.
 ** Fix: bug al cerrar formulario de Actividades.
 ** Fix: ordenamiento por columnas arreglado.
+** Dialogos de fecha aparecen antes de lanzar reporte
 
 * v12.1.1
 ** Se agregó el historial de cambios

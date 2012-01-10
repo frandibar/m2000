@@ -23,6 +23,7 @@
 #-------------------------------------------------------------------------------
 
 import datetime
+import time
 
 from camelot.admin.action import application_action
 from camelot.admin.action.base import Action
@@ -41,8 +42,9 @@ from camelot.model import metadata
 __metadata__ = metadata
 
 from model import Beneficiaria, Cartera, Credito, Barrio, Pago, EstadoCredito, Fecha, Parametro
+import config
 import reports
-    
+
 def min_fecha():
     tbl_fecha = Fecha.mapper.mapped_table
     return select([func.min(tbl_fecha.c.fecha)], from_obj=tbl_fecha).alias('min_fecha')
@@ -870,9 +872,17 @@ class DatesValidator(ObjectValidator):
             messages.append("'Fecha hasta' debe ser igual o posterior a a 'Fecha desde'")
         return messages
 
+def get_config_date(key, default):
+    conf = config.Config()
+    ff = conf.safe_get(key)
+    if not ff:
+        return default
+    tt = time.strptime(ff, '%Y-%m-%d')
+    return datetime.date(tt.tm_year, tt.tm_mon, tt.tm_mday)
+
 class FechaCorteDialog(object):
     def __init__(self):
-        self.fecha = datetime.date.today()
+        self.fecha = get_config_date('fecha_corte', datetime.date.today())
 
     class Admin(ObjectAdmin):
         verbose_name = 'Fecha de corte'
@@ -905,17 +915,22 @@ class FechaCorte(Action):
 
         corte = find_friday(fecha.fecha, 1)
 
+        # guardar valor para usar por default la proxima vez
+        conf = config.Config()
+        conf.set('fecha_corte', corte.strftime('%Y-%m-%d'))
+
         # add to parametro
         p = Parametro()
         p.fecha = corte
         Parametro.query.session.flush()
 
         yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))
-
+    
 class IntervaloFechasDialog(object):
     def __init__(self):
-        self.desde = datetime.date.today()
-        self.hasta = datetime.date.today()
+        default = datetime.date.today()
+        self.desde = get_config_date('fecha_desde', default)
+        self.hasta = get_config_date('fecha_hasta', default)
 
     def _get_desde(self):
         return self.desde
@@ -961,6 +976,11 @@ class IntervaloFechas(Action):
         if hasta < desde:
             hasta = desde
 
+        # guardar valores para usar por default la proxima vez
+        conf = config.Config()
+        conf.set('fecha_desde', desde.strftime('%Y-%m-%d'))
+        conf.set('fecha_hasta', hasta.strftime('%Y-%m-%d'))
+        
         # add dates
         week = datetime.timedelta(weeks=1)
         while desde <= hasta:
