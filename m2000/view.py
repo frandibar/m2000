@@ -870,6 +870,48 @@ class DatesValidator(ObjectValidator):
             messages.append("'Fecha hasta' debe ser igual o posterior a a 'Fecha desde'")
         return messages
 
+class FechaCorteDialog(object):
+    def __init__(self):
+        self.fecha = datetime.date.today()
+
+    class Admin(ObjectAdmin):
+        verbose_name = 'Fecha de corte'
+        form_display = ['fecha']
+        form_size = (100, 100)
+        field_attributes = dict(fecha = dict(name = 'Fecha de Corte',
+                                             delegate = DateDelegate,
+                                             editable = True))
+            
+def find_friday(date, inc):
+    day = datetime.timedelta(days=inc)
+    while date.weekday() != 4:      # friday is weekday 4
+        date += day
+    return date
+
+class FechaCorte(Action):
+    icon = Icon('tango/16x16/apps/office-calendar.png')
+    
+    def __init__(self, name, cls):
+        self.verbose_name = name
+        self._cls = cls
+        
+    def model_run(self, model_context):
+        # ask for date intervals
+        fecha = FechaCorteDialog()
+        yield ChangeObject(fecha)
+
+        # truncate tables (after ChangeObject since user may cancel)
+        Parametro.query.delete()
+
+        corte = find_friday(fecha.fecha, 1)
+
+        # add to parametro
+        p = Parametro()
+        p.fecha = corte
+        Parametro.query.session.flush()
+
+        yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))
+
 class IntervaloFechasDialog(object):
     def __init__(self):
         self.desde = datetime.date.today()
@@ -898,63 +940,13 @@ class IntervaloFechasDialog(object):
                                              editable = True,
                                              tooltip = 'Debe ser mayor o igual que fecha desde',
                                              background_color = lambda o: ColorScheme.orange_1 if o.hasta < o.desde else None))
-            
-class FechaCorteDialog(object):
-    def __init__(self):
-        self.fecha = datetime.date.today()
 
-    class Admin(ObjectAdmin):
-        verbose_name = 'Fecha de corte'
-        form_display = ['fecha']
-        form_size = (100, 100)
-        field_attributes = dict(fecha = dict(name = 'Fecha de Corte',
-                                             delegate = DateDelegate,
-                                             editable = True))
-            
-class FechaCorte(Action):
-    verbose_name = 'Definir fecha de corte'
-    icon = Icon('tango/16x16/apps/office-calendar.png')
-    
-    def __init__(self, name, cls):
-        self.verbose_name = name
-        self._cls = cls
-        
-    def find_friday(self, date, inc):
-        day = datetime.timedelta(days=inc)
-        while date.weekday() != 4:      # friday is weekday 4
-            date += day
-        return date
-        
-    def model_run(self, model_context):
-        # ask for date intervals
-        fecha = FechaCorteDialog()
-        yield ChangeObject(fecha)
-
-        # truncate tables (after ChangeObject since user may cancel)
-        Parametro.query.delete()
-
-        corte = self.find_friday(fecha.fecha, 1)
-
-        # add to parametro
-        p = Parametro()
-        p.fecha = corte
-        Parametro.query.session.flush()
-
-        yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))
-            
 class IntervaloFechas(Action):
-    # verbose_name = 'Definir Intervalo de fechas'
     icon = Icon('tango/16x16/apps/office-calendar.png')
     
     def __init__(self, name, cls):
         self.verbose_name = name
         self._cls = cls
-        
-    def find_friday(self, date, inc):
-        day = datetime.timedelta(days=inc)
-        while date.weekday() != 4:      # friday is weekday 4
-            date += day
-        return date
         
     def model_run(self, model_context):
         # ask for date intervals
@@ -962,18 +954,12 @@ class IntervaloFechas(Action):
         yield ChangeObject(fechas)
 
         # truncate tables (after ChangeObject since user may cancel)
-        Parametro.query.delete()
         Fecha.query.delete()
 
-        desde = self.find_friday(fechas.desde, 1)
-        hasta = self.find_friday(fechas.hasta, -1)
+        desde = find_friday(fechas.desde, 1)
+        hasta = find_friday(fechas.hasta, -1)
         if hasta < desde:
             hasta = desde
-
-        # add to parametro
-        p = Parametro()
-        p.fecha = desde
-        Parametro.query.session.flush()
 
         # add dates
         week = datetime.timedelta(weeks=1)
