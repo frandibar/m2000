@@ -60,6 +60,9 @@ def float_fmt(value, dec=2):
     ret = ('%.' + '%df' % dec) % value
     return fix_decimal_sep(ret)
 
+def fecha_corte():
+    return model.Parametro.query.first().fecha
+
 def fecha_desde():
     return model.Fecha.query.order_by(model.Fecha.fecha.asc()).first().fecha
 
@@ -265,7 +268,7 @@ class PlanillaPagos(Action):
 class ReporteIndicadores(Action):
     verbose_name = ''
     icon = Icon('tango/16x16/actions/document-print.png')
-
+    
     def _build_context(self, model_context):
         Linea = namedtuple('Linea', ['comentarios',
                                      'barrio',
@@ -324,8 +327,7 @@ class ReporteIndicadores(Action):
 
         context = { 
             'header_image_filename': header_image_filename(),
-            'fecha_desde': fecha_desde(),
-            'fecha_hasta': fecha_hasta(),
+            'fecha_corte': fecha_corte(),
             'detalle': detalle,
             }
         return context
@@ -337,7 +339,6 @@ class ReporteIndicadores(Action):
         env = Environment(loader=fileloader)
         t = env.get_template('indicadores.html')
         yield PrintHtml(t.render(context))
-
 
 class ReporteRecaudacionMensual(Action):
     verbose_name = ''

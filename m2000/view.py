@@ -24,6 +24,7 @@
 
 import datetime
 
+from camelot.admin.action import application_action
 from camelot.admin.action.base import Action
 from camelot.admin.entity_admin import EntityAdmin
 # from camelot.admin.not_editable_admin import notEditableAdmin
@@ -869,10 +870,6 @@ class DatesValidator(ObjectValidator):
             messages.append("'Fecha hasta' debe ser igual o posterior a a 'Fecha desde'")
         return messages
 
-def open_table_view():
-    from camelot.admin.action import application_action
-    application_action.OpenTableView(Indicadores.Admin())()
-
 class IntervaloFechasDialog(object):
     def __init__(self):
         self.desde = datetime.date.today()
@@ -891,8 +888,6 @@ class IntervaloFechasDialog(object):
     class Admin(ObjectAdmin):
         verbose_name = 'Intervalo de fechas'
         form_display = ['_desde', 'hasta']
-        # from camelot.admin.action import application_action
-        # form_close_action = application_action.OpenTableView(main.appadmin.get_related_admin(Indicadores))
         validator = DatesValidator
         form_size = (100, 100)
         field_attributes = dict(_desde = dict(name = 'Fecha desde',
@@ -904,16 +899,63 @@ class IntervaloFechasDialog(object):
                                              tooltip = 'Debe ser mayor o igual que fecha desde',
                                              background_color = lambda o: ColorScheme.orange_1 if o.hasta < o.desde else None))
             
-class IntervaloFechas(Action):
-    verbose_name = 'Definir Intervalo de fechas'
-    icon = Icon('tango/16x16/apps/office-calendar.png')
+class FechaCorteDialog(object):
+    def __init__(self):
+        self.fecha = datetime.date.today()
 
+    class Admin(ObjectAdmin):
+        verbose_name = 'Fecha de corte'
+        form_display = ['fecha']
+        form_size = (100, 100)
+        field_attributes = dict(fecha = dict(name = 'Fecha de Corte',
+                                             delegate = DateDelegate,
+                                             editable = True))
+            
+class FechaCorte(Action):
+    verbose_name = 'Definir fecha de corte'
+    icon = Icon('tango/16x16/apps/office-calendar.png')
+    
+    def __init__(self, name, cls):
+        self.verbose_name = name
+        self._cls = cls
+        
     def find_friday(self, date, inc):
         day = datetime.timedelta(days=inc)
         while date.weekday() != 4:      # friday is weekday 4
             date += day
         return date
+        
+    def model_run(self, model_context):
+        # ask for date intervals
+        fecha = FechaCorteDialog()
+        yield ChangeObject(fecha)
 
+        # truncate tables (after ChangeObject since user may cancel)
+        Parametro.query.delete()
+
+        corte = self.find_friday(fecha.fecha, 1)
+
+        # add to parametro
+        p = Parametro()
+        p.fecha = corte
+        Parametro.query.session.flush()
+
+        yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))
+            
+class IntervaloFechas(Action):
+    # verbose_name = 'Definir Intervalo de fechas'
+    icon = Icon('tango/16x16/apps/office-calendar.png')
+    
+    def __init__(self, name, cls):
+        self.verbose_name = name
+        self._cls = cls
+        
+    def find_friday(self, date, inc):
+        day = datetime.timedelta(days=inc)
+        while date.weekday() != 4:      # friday is weekday 4
+            date += day
+        return date
+        
     def model_run(self, model_context):
         # ask for date intervals
         fechas = IntervaloFechasDialog()
@@ -942,5 +984,4 @@ class IntervaloFechas(Action):
             yield UpdateProgress()
 
         Fecha.query.session.flush()
-        yield Refresh()
-
+        yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))
