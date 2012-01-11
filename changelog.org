@@ -1,11 +1,12 @@
 Listado de cambios entre versiones
 * master
+** Dialogos de fecha aparecen antes de lanzar reporte
 ** Columna y filtro por barrio en creditos y pagos.
 ** Columna y filtro por beneficiaria y nro credito en pagos.
 ** Busqueda de beneficiaria por nombre completo.
 ** Fix: bug al cerrar formulario de Actividades.
 ** Fix: ordenamiento por columnas arreglado.
-** Dialogos de fecha aparecen antes de lanzar reporte
+** Reporte Indicadores en formato apaisado
 
 * v12.1.1
 ** Se agregó el historial de cambios

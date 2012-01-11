@@ -30,6 +30,7 @@ from camelot.admin.action.base import Action
 from camelot.admin.entity_admin import EntityAdmin
 from camelot.view.action_steps import PrintHtml #, WordJinjaTemplate
 from camelot.view.art import Icon
+from PyQt4 import QtGui
 
 from helpers import nro_en_letras, mes_en_letras
 import model
@@ -68,6 +69,11 @@ def fecha_desde():
 
 def fecha_hasta():
     return model.Fecha.query.order_by(model.Fecha.fecha.desc()).first().fecha
+
+class PrintHtmlLandscape(PrintHtml):
+    def __init__(self, html):
+        PrintHtml.__init__(self, html)
+        self.page_orientation = QtGui.QPrinter.Landscape
 
 class ReportePagos(Action):
     verbose_name = ''
@@ -264,7 +270,7 @@ class PlanillaPagos(Action):
         env = Environment(loader=fileloader)
         t = env.get_template(template)
         yield PrintHtml(t.render(context))
-
+        
 class ReporteIndicadores(Action):
     verbose_name = ''
     icon = Icon('tango/16x16/actions/document-print.png')
@@ -338,7 +344,7 @@ class ReporteIndicadores(Action):
         fileloader = PackageLoader('m2000', 'templates')
         env = Environment(loader=fileloader)
         t = env.get_template('indicadores.html')
-        yield PrintHtml(t.render(context))
+        yield PrintHtmlLandscape(t.render(context))
 
 class ReporteRecaudacionMensual(Action):
     verbose_name = ''
