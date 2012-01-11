@@ -953,7 +953,7 @@ class IntervaloFechasDialog(object):
                                 hasta = dict(name = 'Fecha hasta',
                                              delegate = DateDelegate,
                                              editable = True,
-                                             tooltip = 'Debe ser mayor o igual que fecha desde',
+                                             tooltip = 'Debe ser igual o posterior a fecha desde',
                                              background_color = lambda o: ColorScheme.orange_1 if o.hasta < o.desde else None))
 
 class IntervaloFechas(Action):
