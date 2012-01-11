@@ -106,7 +106,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                 ]
 
     def get_help_url(self):
-        return PyQt4.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), os.path.pardir, 'doc', 'index.html'))
+        return PyQt4.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), os.path.pardir, 'doc', '_build', 'html', 'index.html'))
 
     def get_actions(self):
         new_pago_action = action.OpenNewView(self.get_related_admin(model.Pago))

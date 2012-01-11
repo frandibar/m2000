@@ -40,7 +40,7 @@ setup(
     install_requires = ['Camelot>=11.12.30',
                         'MySQL-python>=1.2.1'],
     include_package_data = True,
-    packages = find_packages(),
+    packages = find_packages() + ['doc',],
     py_modules = ['settings', 'main'],
     entry_points = {'gui_scripts':[
             'main = main:start_application',
@@ -56,6 +56,10 @@ setup(
              '*.svg',
              '*.ico',
              ],
+        'doc': ['*.rst', 
+                '*.html', 
+                '*.png',
+                ],
         },
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',

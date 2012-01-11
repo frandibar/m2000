@@ -7,6 +7,7 @@ Listado de cambios entre versiones
 ** Fix: bug al cerrar formulario de Actividades.
 ** Fix: ordenamiento por columnas arreglado.
 ** Reporte Indicadores en formato apaisado
+** Documentación de Indicadores
 
 * v12.1.1
 ** Se agregó el historial de cambios
