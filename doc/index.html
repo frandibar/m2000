@@ -1,7 +1,91 @@
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <style type="text/css">
+    p {
+        font-family: Georgia, Serif;
+    }
+    table {
+        align: center;
+        border-collapse: collapse;
+        border-style: hidden;
+        padding-left: 2px;
+        padding-right: 2px;
+        font-family: Georgia, Serif;
+    }
+    table.detalle {
+        border-collapse: collapse;
+        border: 2px solid black;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+    table td, table th {
+        border: 1px solid black;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+    table th { 
+        background-color: #DDDDDD;
+        font-weight: bold;
+        vertical-align: middle;
+    }
+    tr.odd { 
+        background-color: #FFFFFF; 
+    }
+    tr.even { 
+        background-color: #DDDDDD;
+    }
+  </style>
 </head>
 <body>
     <h3>TODO: Agregar documentaci&oacute;n!</h3>
+
+<h3>Descripci&oacute;n de los reportes:</h3>
+
+<h4>Reporte Indicadores</h4>
+<p>
+Para una determinada fecha de corte, devuelve las siguientes columnas:
+</p>
+<table>
+  <tr><th>Columna</th><th>F&oacute;rmula</th></tr>
+  <tr><td>CDI</td><td>comentarios</td></tr>
+  <tr><td>barrio</td></tr>
+  <tr><td>beneficiaria</td></tr>
+  <tr><td>nro credito</td></tr>
+  <tr><td>fecha entrega</td></tr>
+  <tr><td>fecha inicio</td><td>fecha entrega + 14 d&iacute;as</td></tr>
+  <tr><td>fecha cancelaci&oacute;n</td><td>fecha entrega + cuotas x 7 d&iacute;as</td></tr>
+  <tr><td>saldo anterior</td></tr>
+  <tr><td>capital</td><td>deuda total / (1 + tasa de inter&eacute;s)</td></tr>
+  <tr><td>tasa de inter&eacute;s</td></tr>
+  <tr><td>cartera</td></tr>
+  <tr><td>monto aporte</td><td>deuda total x tasa de inter&eacute;s / (1 + tasa de inter&eacute;s)</td></tr>
+  <tr><td>deuda total</td></tr>
+  <tr><td>cuotas</td></tr>
+  <tr><td>cuota calculada</td><td>deuda total / cuotas</td></tr>
+  <tr><td>cuotas pagadas</td><td>total pagos x cuotas / deuda total</td></tr>
+  <tr><td>cuotas pagadas %</td><td>total pagos / deuda total</td></tr>
+  <tr><td>cuotas te&oacute;rico</td><td>El menor entre:
+<li>fecha corte - (fecha entrega + 14 d&iacute;as) / 7</li>
+                                  <li>cuotas</li></td></tr>
+  <tr><td>cuotas te&oacute;rico %</td><td>cuotas te&oacute;rico / cuotas</td></tr>
+  <tr><td>diferencia cuotas</td><td>cuotas te&oacute;rico - cuotas pagadas</td></tr>
+  <tr><td>saldo</td><td>deuda total - total pagos</td></tr>
+  <tr><td>monto pagado</td></tr>
+  <tr><td>monto te&oacute;rico</td><td>deuda total x cuotas te&oacute;rico / cuotas</td></tr>
+  <tr><td>diferencia monto</td><td>deuda total x cuotas te&oacute;rico / cuotas - monto pagado</td></tr>
+  <tr><td>estado</td><td>Regular: cuotas adeudadas <= 4<br>
+          Mora: 4 < cuotas adeudadas <= 8<br>
+          Riesgo: 8 < cuotas adeudadas <= 12<br>
+          Incobrable: cuotas adeudadas > 12<br>
+  </td></tr>
+</table>
+
+Las filas re&uacute;nen las siguientes condiciones:
+<li>beneficiaria activa</li>
+<li>deuda total distinta de cero</li>
+<li>fecha de pago (entrega si no registra pagos) anterior o igual a la fecha de corte</li>
+<li>credito activo o fecha de finalizaci&oacute;n posterior a la fecha de corte</li>
+
 </body>
 </html>
