@@ -9,3 +9,4 @@ build
 deploy
 dist
 m2000.egg-info
+doc/_build

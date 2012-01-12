@@ -1,8 +1,11 @@
 * COMO SIGO:
-** agregar documentacion sobre los reportes
+** TODO agregar documentacion sobre los reportes (ver instalador)
+** TODO revisar reportes recaudacion
 ** validar creditos?
 * PREGUNTAS:
 ** FUNCIONALES
+*** como hacer que un action en el pane izq de appadmin pueda abrirse en otro tab (el tooltip aparece por no anda el boton derecho)
+workaround: clic en tab principal y abrir desde ahi
 *** como obtengo el filtro para mostrar en un reporte?
 *** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
 *** como guardar preferencias de impresion, ej margenes (me parece que se setea con la impresora)

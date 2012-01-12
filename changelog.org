@@ -5,9 +5,12 @@ Listado de cambios entre versiones
 ** Columna y filtro por beneficiaria y nro credito en pagos.
 ** Busqueda de beneficiaria por nombre completo.
 ** Fix: bug al cerrar formulario de Actividades.
-** Fix: ordenamiento por columnas arreglado.
+** Fix: ordenamiento por columnas.
+** Fix: reporte de Créditos finalizados sin saldar
+** Fix: reporte de Pérdida por incobrable
 ** Reporte Indicadores en formato apaisado
-** Documentación de Indicadores
+** Documentación de Reportes
+** 'Recaudación Mensual' se renombró como 'Recaudación por Cartera'
 
 * v12.1.1
 ** Se agregó el historial de cambios

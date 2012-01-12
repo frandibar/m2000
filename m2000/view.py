@@ -540,13 +540,12 @@ class RecaudacionPorCartera(object):
     # Admin = notEditableAdmin(Admin, actions=True)
 
 def recaudacion_x_cartera():
-    # Para cada cartera, el total de pagos entre fechas, agrupados por barrio y tasa de interes
+    # Para cada cartera, el total de pagos entre fechas, agrupados por cartera, barrio y tasa de interes
     tbl_credito = Credito.mapper.mapped_table
     tbl_pago = Pago.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
     tbl_cartera = Cartera.mapper.mapped_table
-    tbl_fecha = Fecha.mapper.mapped_table
     
     stmt = select([tbl_cartera.c.nombre.label('cartera'),
                    tbl_credito.c.tasa_interes,
@@ -556,7 +555,6 @@ def recaudacion_x_cartera():
                    tbl_barrio.c.id.label('barrio_id'),
                    ],
                   from_obj=[tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio).join(tbl_cartera),
-                            tbl_fecha,
                             ],
                   whereclause=and_(tbl_pago.c.fecha >= min_fecha(),
                                    tbl_pago.c.fecha <= max_fecha(),
@@ -639,12 +637,12 @@ class RecaudacionRealTotal(object):
                        ComboBoxFilter('cartera'),
                        ]
         list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
+        field_attributes = dict(fecha = dict(delegate = DateDelegate),
+                                tasa_interes = dict(name = u'Tasa Interés',
+                                                    delegate = FloatDelegate),
+                                recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
-                                fecha = dict(delegate = DateDelegate),
-                                tasa_interes = dict(name = u'Tasa Interés',
-                                                    delegate = FloatDelegate)
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
@@ -652,7 +650,8 @@ def recaudacion_real_total():
     rec = recaudacion()
     tbl_cartera = Cartera.mapper.mapped_table
     
-    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
+    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4),
+                                 func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
                    tbl_cartera.c.nombre.label('cartera'),
                    rec.c.tasa_interes,
                    rec.c.recaudacion,
@@ -725,7 +724,8 @@ class RecaudacionPotencialTotal(object):
                        ]
         list_actions = [reports.ReporteRecaudacionPotencialTotal()]
         list_action = None
-        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
+        field_attributes = dict(fecha = dict(delegate = DateDelegate),
+                                recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 recaudacion_potencial = dict(name = 'Rec. Potencial',
@@ -787,7 +787,8 @@ class RecaudacionPotencialTotalPorBarrio(object):
                        ]
         list_action = None
         list_actions = [reports.ReporteRecaudacionPotencialTotalPorBarrio()]
-        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
+        field_attributes = dict(fecha = dict(delegate = DateDelegate),
+                                recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 recaudacion_potencial = dict(name = 'Rec. Potencial',
