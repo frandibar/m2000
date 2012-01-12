@@ -1,17 +1,11 @@
+.. _reportes:
+
 Reportes
 ========
 
-Contenidos:
-
 .. toctree::
-   :maxdepth: 2
 
-   indicadores
+   Indicadores <indicadores>
+   Cartera <cartera>
 
-Indices y tablas
-================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 

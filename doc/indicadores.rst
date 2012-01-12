@@ -3,7 +3,7 @@
 Reporte Indicadores
 ===================
 
-Para una determinada fecha de corte, devuelve las siguientes columnas:
+Para una determinada *fecha de corte*, devuelve las siguientes columnas:
              
 +----------------------+--------------------------------------------------------+
 |Columna               |Fórmula                                                 |
@@ -14,13 +14,13 @@ Para una determinada fecha de corte, devuelve las siguientes columnas:
 +----------------------+--------------------------------------------------------+
 |beneficiaria          |                                                        |
 +----------------------+--------------------------------------------------------+
-|nro credito           |                                                        |
+|nro crédito           |                                                        |
 +----------------------+--------------------------------------------------------+
 |fecha entrega         |                                                        |
 +----------------------+--------------------------------------------------------+
 |fecha inicio          |fecha entrega + 14 días                                 |
 +----------------------+--------------------------------------------------------+
-|fecha cancelacion     |fecha entrega + cuotas x 7 días                         |
+|fecha cancelación     |fecha entrega + cuotas x 7 días                         |
 +----------------------+--------------------------------------------------------+
 |saldo anterior        |                                                        |
 +----------------------+--------------------------------------------------------+
@@ -68,6 +68,6 @@ Para una determinada fecha de corte, devuelve las siguientes columnas:
 Las filas reúnen las siguientes condiciones:
  * beneficiaria activa
  * deuda total distinta de cero
- * fecha de pago (entrega si no registra pagos) anterior o igual a la fecha de corte
- * credito activo o fecha de finalizaci&oacute;n posterior a la fecha de corte
+ * fecha de pago (de entrega si no registra pagos) anterior o igual a la fecha de corte
+ * credito activo o fecha de finalización posterior a la fecha de corte
 
