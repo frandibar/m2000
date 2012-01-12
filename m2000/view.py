@@ -391,7 +391,11 @@ class CreditosFinalizadosSinSaldar(object):
                        ]
         list_action = None
         list_actions = [reports.ReporteCreditosFinalizadosSinSaldar()]
-        field_attributes = dict(fecha_finalizacion = dict(delegate = DateDelegate,
+        field_attributes = dict(comentarios = dict(name = 'CDI',
+                                                   minimal_column_width = 20),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                nro_credito = dict(name = u'Nro. Crédito'),
+                                fecha_finalizacion = dict(delegate = DateDelegate,
                                                           name = u'Fecha finalización',
                                                           minimal_column_width = 15),
                                 fecha_entrega = dict(delegate = DateDelegate),
@@ -402,9 +406,6 @@ class CreditosFinalizadosSinSaldar(object):
                                                    prefix = '$'),
                                 saldo = dict(delegate = CurrencyDelegate,
                                              prefix = '$'),
-                                comentarios = dict(name = 'CDI',
-                                                   minimal_column_width = 20),
-                                beneficiaria = dict(minimal_column_width = 25),
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
@@ -427,8 +428,8 @@ def creditos_finalizados_sin_saldar():
                    (tbl_credito.c.deuda_total - tpc.c.monto).label('saldo'),
                    ],
                   from_obj=tbl_credito.join(tbl_benef).join(tbl_barrio),
-                  whereclause=and_(tbl_credito.c.fecha_finalizacion == None,
-                                   tbl_credito.c.deuda_total - tpc.c.monto > 1, # 1 y no 0 x redondeo
+                  whereclause=and_(tbl_credito.c.fecha_finalizacion != None,
+                                   tbl_credito.c.deuda_total - tpc.c.monto >= 1, # 1 y no 0 x redondeo
                                    tpc.c.credito_id == tbl_credito.c.id,
                                    ),
                   )
@@ -465,10 +466,15 @@ class PerdidaPorIncobrable(object):
                         ]
         list_actions = [reports.ReportePerdidaPorIncobrable()]
         list_action = None
-        field_attributes = dict(fecha_baja = dict(delegate = DateDelegate),
+        field_attributes = dict(comentarios = dict(minimal_column_width = 20,
+                                                   name = 'CDI'),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                fecha_baja = dict(delegate = DateDelegate),
+                                nro_credito = dict(name = u'Nro. Crédito'),
                                 fecha_finalizacion = dict(delegate = DateDelegate,
                                                           name = u'Fecha finalización',
                                                           minimal_column_width = 15),
+                                comentarios_baja = dict(minimal_column_width = 15),
                                 fecha_entrega = dict(delegate = DateDelegate),
                                 prestamo = dict(delegate = CurrencyDelegate,
                                                 prefix = '$',
@@ -477,10 +483,6 @@ class PerdidaPorIncobrable(object):
                                                    prefix = '$'),
                                 saldo = dict(delegate = CurrencyDelegate,
                                              prefix = '$'),
-                                comentarios = dict(minimal_column_width = 20,
-                                                   name = 'CDI'),
-                                comentarios_baja = dict(minimal_column_width = 15),
-                                beneficiaria = dict(minimal_column_width = 25),
                                 )
     # Admin = notEditableAdmin(Admin, actions=True)
 
@@ -507,6 +509,8 @@ def perdida_x_incobrable():
                   from_obj=tbl_credito.join(tbl_benef).join(tbl_barrio),
                   whereclause=and_(tbl_credito.c.fecha_finalizacion != None,
                                    tbl_credito.c.comentarios != None,
+                                   tbl_benef.c.activa == False,
+                                   tbl_credito.c.deuda_total - tpc.c.monto > 0,
                                    tpc.c.credito_id == tbl_credito.c.id,
                                    ),
                   )
