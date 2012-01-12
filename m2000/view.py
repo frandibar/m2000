@@ -62,7 +62,7 @@ class ChequesEntregados(object):
                         'cartera',
                         'nro_credito',
                         'fecha_entrega',
-                        'monto_prestamo',
+                        'prestamo',
                         'monto_cheque',
                         ]
         list_actions = [reports.ReporteChequesEntregados()]
@@ -70,12 +70,14 @@ class ChequesEntregados(object):
         list_filter = [ComboBoxFilter('barrio'),
                        ComboBoxFilter('cartera'),
                        ]
-        field_attributes = dict(fecha_entrega = dict(delegate = DateDelegate),
-                                monto_prestamo = dict(delegate = CurrencyDelegate,
-                                                      prefix = '$'),
+        field_attributes = dict(beneficiaria = dict(minimal_column_width = 25),
+                                nro_credito = dict(name = u'Nro. Crédito'),
+                                fecha_entrega = dict(delegate = DateDelegate),
+                                prestamo = dict(name = u'Préstamo',
+                                                delegate = CurrencyDelegate,
+                                                prefix = '$'),
                                 monto_cheque = dict(delegate = CurrencyDelegate,
                                                     prefix = '$'),
-                                beneficiaria = dict(minimal_column_width = 25),
                                 )
 
 def cheques_entregados():
@@ -90,11 +92,10 @@ def cheques_entregados():
                    tbl_cartera.c.nombre.label('cartera'),
                    tbl_credito.c.nro_credito,
                    tbl_credito.c.fecha_entrega,
-                   func.sum(tbl_credito.c.prestamo).label('monto_prestamo'),
-                   func.sum(tbl_credito.c.monto_cheque).label('monto_cheque'),
+                   tbl_credito.c.prestamo,
+                   tbl_credito.c.monto_cheque,
                    ],
                   from_obj=tbl_credito.join(tbl_cartera).join(tbl_benef).join(tbl_barrio),
-                  group_by=tbl_credito.c.id
                   )
     return stmt.alias('cheques_entregados')
 

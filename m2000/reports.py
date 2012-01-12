@@ -556,7 +556,7 @@ class ReporteChequesEntregados(Action):
                                      'cartera',
                                      'nro_credito',
                                      'fecha_entrega',
-                                     'monto_prestamo',
+                                     'prestamo',
                                      'monto_cheque',
                                      ])
         iterator = model_context.get_collection()
@@ -569,10 +569,10 @@ class ReporteChequesEntregados(Action):
                           row.cartera,
                           row.nro_credito,
                           row.fecha_entrega,
-                          money_fmt(row.monto_prestamo),
+                          money_fmt(row.prestamo),
                           money_fmt(row.monto_cheque),
                           )
-            total_prestamo += row.monto_prestamo
+            total_prestamo += row.prestamo
             total_cheque += row.monto_cheque
             detalle.append(linea)
 
