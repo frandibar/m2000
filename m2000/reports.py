@@ -346,7 +346,7 @@ class ReporteIndicadores(Action):
         t = env.get_template('indicadores.html')
         yield PrintHtmlLandscape(t.render(context))
 
-class ReporteRecaudacionMensual(Action):
+class ReporteRecaudacionPorCartera(Action):
     verbose_name = ''
     icon = Icon('tango/16x16/actions/document-print.png')
 
@@ -381,7 +381,7 @@ class ReporteRecaudacionMensual(Action):
         # mostrar el reporte
         fileloader = PackageLoader('m2000', 'templates')
         env = Environment(loader=fileloader)
-        t = env.get_template('recaudacion_mensual.html')
+        t = env.get_template('recaudacion_x_cartera.html')
         yield PrintHtml(t.render(context))
 
 class ReporteRecaudacionRealTotal(Action):

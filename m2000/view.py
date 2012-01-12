@@ -516,10 +516,10 @@ def perdida_x_incobrable():
                   )
     return stmt.alias('perdida_x_incobrable')
 
-class RecaudacionMensual(object):
+class RecaudacionPorCartera(object):
     class Admin(EntityAdmin):
-        verbose_name = u'Recaudación Mensual'
-        verbose_name_plural = u'Mensual'
+        verbose_name = u'Recaudación por Cartera'
+        verbose_name_plural = u'Recaudación por Cartera'
         list_display = ['barrio',
                         'cartera',
                         'tasa_interes',
@@ -535,7 +535,7 @@ class RecaudacionMensual(object):
                                 recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'))
-        list_actions = [reports.ReporteRecaudacionMensual()]
+        list_actions = [reports.ReporteRecaudacionPorCartera()]
 
     # Admin = notEditableAdmin(Admin, actions=True)
 
@@ -568,9 +568,9 @@ def recaudacion_x_cartera():
                   )
     return stmt.alias('recaudacion_x_cartera')
 
-def setup_recaudacion_mensual():
+def setup_recaudacion_x_cartera():
     stmt = recaudacion_x_cartera()
-    mapper(RecaudacionMensual, stmt, always_refresh=True,
+    mapper(RecaudacionPorCartera, stmt, always_refresh=True,
            primary_key=[stmt.c.cartera_id,
                         stmt.c.tasa_interes,
                         stmt.c.recaudacion,
@@ -848,7 +848,7 @@ def setup_views_indicadores():
     setup_indicadores()
 
 def setup_views_recaudacion():
-    setup_recaudacion_mensual()
+    setup_recaudacion_x_cartera()
     setup_recaudacion_real_total()
     setup_recaudacion_real_total_x_barrio()
     setup_recaudacion_potencial_total()

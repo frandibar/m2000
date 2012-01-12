@@ -72,7 +72,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                         self,
                         Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
                         items = [
-                                 view.IntervaloFechas(u'Mensual', view.RecaudacionMensual),
+                                 view.IntervaloFechas(u'Por Cartera', view.RecaudacionPorCartera),
                                  view.IntervaloFechas(u'Real Total', view.RecaudacionRealTotal),
                                  view.IntervaloFechas(u'Potencial Total', view.RecaudacionPotencialTotal),
                                  view.IntervaloFechas(u'Real Total por Barrio', view.RecaudacionRealTotalPorBarrio),
