@@ -1,7 +1,7 @@
 .. _por_cartera:
 
-Reporte Mensual de Recaudación
-==============================
+Reporte de Recaudación por Cartera
+==================================
 
 Es un listado con el total de pagos agrupados por cartera, barrio y tasa de interés, efectuados en un intervalo de tiempo especificado: *fecha desde* y *fecha hasta*.
 

@@ -3,14 +3,14 @@
 Reporte de Recaudación Real Total
 =================================
 
-Es un listado con el total de pagos agrupados por cartera, tasa de interés y semana, efectuados en un intervalo de tiempo especificado: *fecha desde* y *fecha hasta*.
+Es un listado con el total de pagos agrupados por semana, cartera y tasa de interés, efectuados en un intervalo de tiempo especificado: *fecha desde* y *fecha hasta*.
 
 Devuelve las siguientes columnas:
 
 +----------------------+--------------------------------------------------------+
 |Columna               |Fórmula                                                 |
 +======================+========================================================+
-|fecha                 |TODO                                                    |
+|semana                |'AAAA.SS' siendo AAAA el año y SS la semana             |
 +----------------------+--------------------------------------------------------+
 |cartera               |                                                        |
 +----------------------+--------------------------------------------------------+

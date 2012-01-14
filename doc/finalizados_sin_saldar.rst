@@ -30,5 +30,5 @@ Devuelve las siguientes columnas:
 +----------------------+--------------------------------------------------------+
 
 Las filas reúnen las siguientes condiciones:
- * fecha de finalización del crédito no vacía
+ * campo fecha de finalización del crédito no vacío
  * saldo >= 1 (1 en vez de 0 por cuestiones de redondeo)

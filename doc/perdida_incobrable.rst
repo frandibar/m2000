@@ -35,6 +35,6 @@ Devuelve las siguientes columnas:
 
 Las filas reúnen las siguientes condiciones:
  * beneficaria no activa
- * fecha de finalización del crédito no vacía
+ * campo fecha de finalización del crédito no vacío
  * campo comentario del credito no vacío
  * saldo > 0

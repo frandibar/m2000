@@ -3,14 +3,14 @@
 Reporte de Recaudación Real Total por Barrio
 ============================================
 
-Es un listado con el total de pagos agrupados por barrio y semana, efectuados en un intervalo de tiempo especificado: *fecha desde* y *fecha hasta*.
+Es un listado con el total de pagos agrupados por semana y barrio, efectuados en un intervalo de tiempo especificado: *fecha desde* y *fecha hasta*.
 
 Devuelve las siguientes columnas:
 
 +----------------------+--------------------------------------------------------+
 |Columna               |Fórmula                                                 |
 +======================+========================================================+
-|fecha                 |TODO                                                    |
+|semana                |'AAAA.SS' siendo AAAA el año y SS la semana             |
 +----------------------+--------------------------------------------------------+
 |barrio                |                                                        |
 +----------------------+--------------------------------------------------------+

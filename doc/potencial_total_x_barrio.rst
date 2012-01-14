@@ -10,16 +10,21 @@ Devuelve las siguientes columnas:
 +----------------------+--------------------------------------------------------+
 |Columna               |Fórmula                                                 |
 +======================+========================================================+
-|fecha                 |TODO                                                    |
+|semana                |'AAAA.SS' siendo AAAA el año y SS la semana             |
 +----------------------+--------------------------------------------------------+
 |barrio                |                                                        |
 +----------------------+--------------------------------------------------------+
-|recaudación           |TODO                                                    |
+|recaudación           |suma de pagos                                           |
 +----------------------+--------------------------------------------------------+
-|recaudación potencial |TODO                                                    |
+|recaudación potencial |suma de (deuda total / cuotas)                          |
 +----------------------+--------------------------------------------------------+
-|porcentaje            |TODO                                                    |
+|porcentaje            |recaudación / recaudación potencial                     |
 +----------------------+--------------------------------------------------------+
 
 Las filas reúnen las siguientes condiciones:
  * fecha de pago comprendida entre *fecha desde* y *fecha hasta*
+ * credito activo para la semana en cuestión. 
+   Esto implica que:
+
+   * semana en cuestion >= fecha de entrega + 2 semanas
+   * semana de fecha de finalización >= semana en cuestion ó fecha de finalización en blanco.
