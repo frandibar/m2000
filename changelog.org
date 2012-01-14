@@ -11,6 +11,8 @@ Listado de cambios entre versiones
 ** Reporte Indicadores en formato apaisado
 ** Documentación de Reportes
 ** 'Recaudación Mensual' se renombró como 'Recaudación por Cartera'
+** Campo 'fecha' en 'Recaudacion Real Total' ahora es 'semana'
+** TODO Reportes ya no dependen de tabla fecha, con lo cual se eliminó.
 
 * v12.1.1
 ** Se agregó el historial de cambios

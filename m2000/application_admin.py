@@ -132,8 +132,8 @@ class MyApplicationAdmin(ApplicationAdmin):
                 action.application_action.Backup(),
                 action.application_action.Restore(),
                 # action.application_action.Refresh(),
-                # action.application_action.ShowHelp(),
                 action.application_action.ShowAbout(),
+                action.application_action.ShowHelp(),
                 ]
             return actions
     

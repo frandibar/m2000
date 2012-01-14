@@ -65,10 +65,10 @@ def fecha_corte():
     return model.Parametro.query.first().fecha
 
 def fecha_desde():
-    return model.Fecha.query.order_by(model.Fecha.fecha.asc()).first().fecha
+    return model.Parametro.query.first().fecha
 
 def fecha_hasta():
-    return model.Fecha.query.order_by(model.Fecha.fecha.desc()).first().fecha
+    return model.Parametro.query.order_by(model.Parametro.fecha.desc()).first().fecha
 
 class PrintHtmlLandscape(PrintHtml):
     def __init__(self, html):
@@ -389,7 +389,7 @@ class ReporteRecaudacionRealTotal(Action):
     icon = Icon('tango/16x16/actions/document-print.png')
 
     def _build_context(self, model_context):
-        Linea = namedtuple('Linea', ['fecha',
+        Linea = namedtuple('Linea', ['semana',
                                      'cartera',
                                      'tasa_interes',
                                      'recaudacion',
@@ -398,7 +398,7 @@ class ReporteRecaudacionRealTotal(Action):
         detalle = []
         total_recaudacion = 0
         for row in iterator:
-            linea = Linea(row.fecha,
+            linea = Linea(row.semana,
                           row.cartera,
                           float_fmt(row.tasa_interes),
                           money_fmt(row.recaudacion))
@@ -470,7 +470,7 @@ class ReporteRecaudacionRealTotalPorBarrio(Action):
     icon = Icon('tango/16x16/actions/document-print.png')
 
     def _build_context(self, model_context):
-        Linea = namedtuple('Linea', ['fecha',
+        Linea = namedtuple('Linea', ['semana',
                                      'barrio',
                                      'recaudacion',
                                      ])
@@ -478,7 +478,7 @@ class ReporteRecaudacionRealTotalPorBarrio(Action):
         detalle = []
         total_recaudacion = 0
         for row in iterator:
-            linea = Linea(row.fecha,
+            linea = Linea(row.semana,
                           row.barrio,
                           money_fmt(row.recaudacion))
             total_recaudacion += row.recaudacion
@@ -506,7 +506,7 @@ class ReporteRecaudacionPotencialTotalPorBarrio(Action):
     icon = Icon('tango/16x16/actions/document-print.png')
 
     def _build_context(self, model_context):
-        Linea = namedtuple('Linea', ['fecha',
+        Linea = namedtuple('Linea', ['semana',
                                      'barrio',
                                      'recaudacion',
                                      'recaudacion_potencial',
@@ -517,7 +517,7 @@ class ReporteRecaudacionPotencialTotalPorBarrio(Action):
         total_recaudacion = 0
         total_recaudacion_potencial = 0
         for row in iterator:
-            linea = Linea(row.fecha,
+            linea = Linea(row.semana,
                           row.barrio,
                           money_fmt(row.recaudacion),
                           money_fmt(row.recaudacion_potencial),

@@ -1,6 +1,8 @@
 * COMO SIGO:
 ** TODO agregar documentacion sobre los reportes (ver instalador)
 ** TODO revisar reportes recaudacion
+*** pot total
+*** pot x barrio
 ** validar creditos?
 * PREGUNTAS:
 ** FUNCIONALES
@@ -98,8 +100,8 @@ http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb99
 ** para que el form sea no editable
 http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/api/admin/not_editable_admin.html
 ** para setupear camelot_manage
-~/projects/m2000/m2000$ export PYTHONPATH=/home/fran/projects/m2000/m2000
-~/projects/m2000/m2000$ camelot_manage console
+~/projects/m2000$ export PYTHONPATH=/home/fran/projects/m2000
+~/projects/m2000$ camelot_manage console
 ** el default location para backups:
   ./home/fran/.local/share/data/Conceptive Engineering/Mujeres 2000 - Gestión de Créditos/backups/-11_19_11_12_07_PM.db
 ** agregar un form_display a la clase admin para definir el form

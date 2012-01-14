@@ -9,7 +9,7 @@
   <caption>Per&iacute;odo: desde {{ fecha_desde }} hasta {{ fecha_hasta }}</caption>
   <thead>
     <tr>
-      <th>Fecha</th>
+      <th>Semana</th>
       <th>Cartera</th>
       <th>Tasa Inter&eacute;s</th>
       <th>Recaudaci&oacute;n</th>
@@ -18,7 +18,7 @@
   <tbody>
     {% for linea in detalle %}
     <tr class="{% cycle('odd','even') %}">
-      <td>{{ linea.fecha }}</td>
+      <td>{{ linea.semana }}</td>
       <td>{{ linea.cartera }}</td>
       <td align="right">{{ linea.tasa_interes }}</td>
       <td align="right">{{ linea.recaudacion }}</td>

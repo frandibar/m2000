@@ -41,17 +41,17 @@ from sqlalchemy.sql import select, func, and_, or_
 from camelot.model import metadata
 __metadata__ = metadata
 
-from model import Beneficiaria, Cartera, Credito, Barrio, Pago, EstadoCredito, Fecha, Parametro
+from model import Beneficiaria, Cartera, Credito, Barrio, Pago, EstadoCredito, Parametro
 import config
 import reports
 
 def min_fecha():
-    tbl_fecha = Fecha.mapper.mapped_table
-    return select([func.min(tbl_fecha.c.fecha)], from_obj=tbl_fecha).alias('min_fecha')
+    tbl_parametro = Parametro.mapper.mapped_table
+    return select([func.min(tbl_parametro.c.fecha)], from_obj=tbl_parametro).alias('min_fecha')
 
 def max_fecha():
-    tbl_fecha = Fecha.mapper.mapped_table
-    return select([func.max(tbl_fecha.c.fecha)], from_obj=tbl_fecha).alias('max_fecha')
+    tbl_parametro = Parametro.mapper.mapped_table
+    return select([func.max(tbl_parametro.c.fecha)], from_obj=tbl_parametro).alias('max_fecha')
 
 class ChequesEntregados(object):
     class Admin(EntityAdmin):
@@ -581,20 +581,18 @@ def recaudacion_x_barrio():
     tbl_pago = Pago.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
-    tbl_fecha = Fecha.mapper.mapped_table
 
-    stmt = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
+    stmt = select([func.yearweek(tbl_pago.c.fecha, 0).label('semana'),
                    tbl_barrio.c.id.label('barrio_id'),
                    tbl_barrio.c.nombre.label('barrio_nombre'),
                    func.sum(tbl_pago.c.monto).label('recaudacion'),
                    ],
                   from_obj=[tbl_credito.join(tbl_pago).join(tbl_benef).join(tbl_barrio),
-                            tbl_fecha,
                             ],
                   whereclause=and_(tbl_pago.c.fecha >= min_fecha(),
                                    tbl_pago.c.fecha <= max_fecha(),
                                    ),
-                  group_by=[func.yearweek(tbl_pago.c.fecha, 1),
+                  group_by=[func.yearweek(tbl_pago.c.fecha, 0),
                             tbl_barrio.c.id,
                             ],
                   )
@@ -604,20 +602,18 @@ def recaudacion():
     tbl_pago = Pago.mapper.mapped_table
     tbl_credito = Credito.mapper.mapped_table
     tbl_cartera = Cartera.mapper.mapped_table
-    tbl_fecha = Fecha.mapper.mapped_table
 
-    stmt = select([func.yearweek(tbl_pago.c.fecha, 1).label('semana'),
+    stmt = select([func.yearweek(tbl_pago.c.fecha, 0).label('semana'),
                    tbl_cartera.c.id.label('cartera_id'),
                    tbl_credito.c.tasa_interes,
                    func.sum(tbl_pago.c.monto).label('recaudacion'),
                    ],
                   from_obj=[tbl_credito.join(tbl_pago).join(tbl_cartera),
-                            tbl_fecha,
                             ],
                   whereclause=and_(tbl_pago.c.fecha >= min_fecha(),
                                    tbl_pago.c.fecha <= max_fecha(),
                                    ),
-                  group_by=[func.yearweek(tbl_pago.c.fecha, 1),
+                  group_by=[func.yearweek(tbl_pago.c.fecha, 0),
                             tbl_cartera.c.id,
                             tbl_credito.c.tasa_interes],
                   )
@@ -627,18 +623,17 @@ class RecaudacionRealTotal(object):
     class Admin(EntityAdmin):
         verbose_name = u'Recaudación Real Total'
         verbose_name_plural = u'Real Total'
-        list_display = ['fecha',
+        list_display = ['semana',
                         'cartera',
                         'tasa_interes',
                         'recaudacion',
                         ]
         list_actions = [reports.ReporteRecaudacionRealTotal()]
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ComboBoxFilter('cartera'),
+        list_filter = [ComboBoxFilter('cartera'),
+                       ComboBoxFilter('semana'),
                        ]
         list_action = None
-        field_attributes = dict(fecha = dict(delegate = DateDelegate),
-                                tasa_interes = dict(name = u'Tasa Interés',
+        field_attributes = dict(tasa_interes = dict(name = u'Tasa Interés',
                                                     delegate = FloatDelegate),
                                 recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
@@ -650,8 +645,7 @@ def recaudacion_real_total():
     rec = recaudacion()
     tbl_cartera = Cartera.mapper.mapped_table
     
-    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4),
-                                 func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
+    stmt = select([func.concat(func.mid(rec.c.semana, 1, 4), '.', func.mid(rec.c.semana, 5, 2)).label('semana'),
                    tbl_cartera.c.nombre.label('cartera'),
                    rec.c.tasa_interes,
                    rec.c.recaudacion,
@@ -667,7 +661,7 @@ def recaudacion_real_total():
 def setup_recaudacion_real_total():
     stmt = recaudacion_real_total()
     mapper(RecaudacionRealTotal, stmt, always_refresh=True,
-           primary_key=[stmt.c.fecha,
+           primary_key=[stmt.c.semana,
                         stmt.c.cartera,
                         stmt.c.tasa_interes,
                         ])
@@ -676,12 +670,12 @@ class RecaudacionRealTotalPorBarrio(object):
     class Admin(EntityAdmin):
         verbose_name = u'Recaudación Real Total por Barrio'
         verbose_name_plural = u'Real Total por Barrio'
-        list_display = ['fecha',
+        list_display = ['semana',
                         'barrio',
                         'recaudacion',
                         ]
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ComboBoxFilter('barrio'),
+        list_filter = [ComboBoxFilter('barrio'),
+                       ComboBoxFilter('semana'),
                        ]
         list_action = None
         list_actions = [reports.ReporteRecaudacionRealTotalPorBarrio()]
@@ -694,7 +688,7 @@ class RecaudacionRealTotalPorBarrio(object):
 
 def recaudacion_real_x_barrio():
     rec = recaudacion_x_barrio()
-    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'), # makedate(year, day of year)
+    stmt = select([func.concat(func.mid(rec.c.semana, 1, 4), '.', func.mid(rec.c.semana, 5, 2)).label('semana'),
                    rec.c.barrio_nombre.label('barrio'),
                    rec.c.recaudacion,
                    rec.c.barrio_id,
@@ -706,7 +700,7 @@ def recaudacion_real_x_barrio():
 def setup_recaudacion_real_total_x_barrio():
     stmt = recaudacion_real_x_barrio()
     mapper(RecaudacionRealTotalPorBarrio, stmt, always_refresh=True,
-           primary_key=[stmt.c.fecha,
+           primary_key=[stmt.c.semana,
                         stmt.c.barrio_id,
                         stmt.c.recaudacion,
                         ])
@@ -715,17 +709,15 @@ class RecaudacionPotencialTotal(object):
     class Admin(EntityAdmin):
         verbose_name = u'Recaudación Potencial Total'
         verbose_name_plural = u'Potencial Total'
-        list_display = ['fecha',
+        list_display = ['semana',
                         'recaudacion',
                         'recaudacion_potencial',
                         'porcentaje',
                         ]
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ]
+        list_filter = [ComboBoxFilter('semana')]
         list_actions = [reports.ReporteRecaudacionPotencialTotal()]
         list_action = None
-        field_attributes = dict(fecha = dict(delegate = DateDelegate),
-                                recaudacion = dict(name = u'Recaudación',
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 recaudacion_potencial = dict(name = 'Rec. Potencial',
@@ -738,35 +730,41 @@ class RecaudacionPotencialTotal(object):
 
 def recaudacion_potencial_total():
     tbl_credito = Credito.mapper.mapped_table
-    tbl_fecha = Fecha.mapper.mapped_table
+
+    rec_real = recaudacion()
+    rec_total_real = select([rec_real.c.semana,
+                             func.sum(rec_real.c.recaudacion).label('recaudacion'),
+                             ],
+                            from_obj=rec_real,
+                            group_by=rec_real.c.semana,
+                            ).alias('rec_total_real')
     
-    rec_pot = select([func.yearweek(tbl_fecha.c.fecha, 1).label('semana'),
+    rec_pot = select([rec_total_real.c.semana,
+                      rec_total_real.c.recaudacion,
                       func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
                       ],
                      from_obj = [tbl_credito,
-                                 tbl_fecha,
+                                 rec_total_real,
                                  ],
-                     whereclause=and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
-                                      or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
+                     whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) >= rec_total_real.c.semana,
+                                      or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= rec_total_real.c.semana,
                                           tbl_credito.c.fecha_finalizacion == None)),
-                     group_by=func.yearweek(tbl_fecha.c.fecha, 1),
+                     group_by=rec_total_real.c.semana,
                      ).alias('rec_pot')
     
-    rec = recaudacion()
-    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
-                   rec.c.recaudacion,
+    stmt = select([func.concat(func.mid(rec_pot.c.semana, 1, 4), '.', func.mid(rec_pot.c.semana, 5, 2)).label('semana'),
+                   rec_pot.c.recaudacion,
                    rec_pot.c.recaudacion_potencial,
-                   (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
+                   (rec_pot.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
                    ],
-                  from_obj=[rec_pot, rec],
-                  whereclause=rec.c.semana == rec_pot.c.semana,
+                  from_obj=rec_pot,
                   )
     return stmt.alias('recaudacion_potencial')
 
 def setup_recaudacion_potencial_total():
     stmt = recaudacion_potencial_total()
     mapper(RecaudacionPotencialTotal, stmt, always_refresh=True,
-           primary_key=[stmt.c.fecha,
+           primary_key=[stmt.c.semana,
                         stmt.c.recaudacion,
                         stmt.c.recaudacion_potencial,
                         stmt.c.porcentaje,
@@ -776,19 +774,18 @@ class RecaudacionPotencialTotalPorBarrio(object):
     class Admin(EntityAdmin):
         verbose_name = u'Recaudación Potencial Total por Barrio'
         verbose_name_plural = u'Potencial Total por Barrio'
-        list_display = ['fecha',
+        list_display = ['semana',
                         'barrio',
                         'recaudacion',
                         'recaudacion_potencial',
                         'porcentaje',
                         ]
-        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
-                       ComboBoxFilter('barrio'),
+        list_filter = [ComboBoxFilter('barrio'),
+                       ComboBoxFilter('semana'),
                        ]
         list_action = None
         list_actions = [reports.ReporteRecaudacionPotencialTotalPorBarrio()]
-        field_attributes = dict(fecha = dict(delegate = DateDelegate),
-                                recaudacion = dict(name = u'Recaudación',
+        field_attributes = dict(recaudacion = dict(name = u'Recaudación',
                                                    delegate = CurrencyDelegate,
                                                    prefix = '$'),
                                 recaudacion_potencial = dict(name = 'Rec. Potencial',
@@ -803,42 +800,43 @@ def recaudacion_potencial_total_x_barrio():
     tbl_barrio = Barrio.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_credito = Credito.mapper.mapped_table
-    tbl_fecha = Fecha.mapper.mapped_table
-    rec = recaudacion_x_barrio()
-    rec_pot = select([func.yearweek(tbl_fecha.c.fecha, 1).label('semana'),
-                      tbl_barrio.c.id.label('barrio_id'),
+
+    rec_real = recaudacion_x_barrio()
+    
+    rec_pot = select([rec_real.c.semana,
+                      rec_real.c.barrio_id,
+                      rec_real.c.barrio_nombre,
+                      rec_real.c.recaudacion,
                       func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
                       ],
-                from_obj=[tbl_barrio.join(tbl_benef).join(tbl_credito),
-                          tbl_fecha,
-                          ],
-                whereclause=and_(func.adddate(tbl_credito.c.fecha_entrega, 14) <= tbl_fecha.c.fecha,
-                                 or_(tbl_credito.c.fecha_finalizacion > tbl_fecha.c.fecha,
-                                     tbl_credito.c.fecha_finalizacion == None)),
-                group_by=[func.yearweek(tbl_fecha.c.fecha, 1),
-                          tbl_barrio.c.id,
-                          ]
-                ).alias('rec_pot')
-
-    stmt = select([func.makedate(func.mid(rec.c.semana, 1, 4), func.mid(rec.c.semana, 5, 2) * 7).label('fecha'),
-                   tbl_barrio.c.nombre.label('barrio'),
-                   rec.c.recaudacion,
+                     from_obj = [tbl_credito.join(tbl_benef).join(tbl_barrio),
+                                 rec_real,
+                                 ],
+                     whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) >= rec_real.c.semana,
+                                      rec_real.c.barrio_id == tbl_barrio.c.id,
+                                      or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= rec_real.c.semana,
+                                          tbl_credito.c.fecha_finalizacion == None)),
+                     group_by=[rec_real.c.semana,
+                               rec_real.c.barrio_id,
+                               rec_real.c.recaudacion,
+                               ]
+                     ).alias('rec_pot')
+    
+    stmt = select([func.concat(func.mid(rec_pot.c.semana, 1, 4), '.', func.mid(rec_pot.c.semana, 5, 2)).label('semana'),
+                   rec_pot.c.barrio_nombre.label('barrio'),
+                   rec_pot.c.recaudacion,
                    rec_pot.c.recaudacion_potencial,
-                   (rec.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
+                   (rec_pot.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
                    ],
-                  from_obj = [tbl_barrio,
-                              rec_pot,
-                              rec],
-                  whereclause = and_(rec.c.semana == rec_pot.c.semana,
-                                     rec.c.barrio_id == rec_pot.c.barrio_id,
-                                     tbl_barrio.c.id == rec.c.barrio_id),
+                  from_obj=rec_pot,
                   )
+
     return stmt.alias('recaudacion_potencial_total_x_barrio')
 
 def setup_recaudacion_potencial_total_x_barrio():
     stmt = recaudacion_potencial_total_x_barrio()
     mapper(RecaudacionPotencialTotalPorBarrio, stmt, always_refresh=True,
-           primary_key=[stmt.c.fecha,
+           primary_key=[stmt.c.semana,
                         stmt.c.barrio,
                         stmt.c.recaudacion,
                         stmt.c.recaudacion_potencial,
@@ -898,12 +896,6 @@ class FechaCorteDialog(object):
                                              delegate = DateDelegate,
                                              editable = True))
             
-def find_friday(date, inc):
-    day = datetime.timedelta(days=inc)
-    while date.weekday() != 4:      # friday is weekday 4
-        date += day
-    return date
-
 class FechaCorte(Action):
     icon = Icon('tango/16x16/apps/office-calendar.png')
     
@@ -919,7 +911,7 @@ class FechaCorte(Action):
         # truncate tables (after ChangeObject since user may cancel)
         Parametro.query.delete()
 
-        corte = find_friday(fecha.fecha, 1)
+        corte = fecha.fecha
 
         # guardar valor para usar por default la proxima vez
         conf = config.Config()
@@ -974,11 +966,12 @@ class IntervaloFechas(Action):
         fechas = IntervaloFechasDialog()
         yield ChangeObject(fechas)
 
-        # truncate tables (after ChangeObject since user may cancel)
-        Fecha.query.delete()
+        # truncate table (after ChangeObject since user may cancel)
+        Parametro.query.delete()        # holds only start and end date
 
-        desde = find_friday(fechas.desde, 1)
-        hasta = find_friday(fechas.hasta, -1)
+        desde = fechas.desde
+        hasta = fechas.hasta
+            
         if hasta < desde:
             hasta = desde
 
@@ -988,12 +981,10 @@ class IntervaloFechas(Action):
         conf.set('fecha_hasta', hasta.strftime('%Y-%m-%d'))
         
         # add dates
-        week = datetime.timedelta(weeks=1)
-        while desde <= hasta:
-            f = Fecha()
-            f.fecha = desde
-            desde += week
-            yield UpdateProgress()
+        p1 = Parametro()
+        p1.fecha = desde
+        p2 = Parametro()
+        p2.fecha = hasta
+        Parametro.query.session.flush()
 
-        Fecha.query.session.flush()
         yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))

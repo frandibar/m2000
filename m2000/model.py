@@ -717,13 +717,6 @@ class Amortizacion(Entity):
     def __unicode__(self):
         return self.nombre or UNDEFINED
 
-class Fecha(Entity):
-    using_options(tablename='fecha')
-    fecha = Field(Date, primary_key=True)
-
-    def __unicode__(self):
-        return self.fecha
-
 class Parametro(Entity):
     using_options(tablename='parametro')
     fecha = Field(Date, primary_key=True)

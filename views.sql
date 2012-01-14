@@ -79,10 +79,10 @@ WHERE
   AND pre.cuotas_teorico - pre.cuotas_pagadas <= estado_credito.cuotas_adeudadas_max;
 
 -- CREATE VIEW max_fecha AS
-SELECT max(fecha.fecha) AS max_1 FROM fecha;
+SELECT max(parametro.fecha) AS max_1 FROM parametro;
 
 -- CREATE VIEW min_fecha AS
-SELECT min(fecha.fecha) AS min_1 FROM fecha;
+SELECT min(parametro.fecha) AS min_1 FROM parametro;
 
 -- CREATE VIEW cheques_entregados AS
 SELECT 
@@ -216,8 +216,8 @@ FROM
   INNER JOIN barrio ON barrio.id = beneficiaria.barrio_id 
   INNER JOIN cartera ON cartera.id = credito.cartera_id 
 WHERE 
-  pago.fecha >= (SELECT min(fecha.fecha) AS min_1 FROM fecha) 
-  AND pago.fecha <= (SELECT max(fecha.fecha) AS max_1 FROM fecha) 
+  pago.fecha >= (SELECT min(parametro.fecha) AS min_1 FROM parametro) 
+  AND pago.fecha <= (SELECT max(parametro.fecha) AS max_1 FROM parametro) 
 GROUP BY 
   cartera.id, 
   credito.tasa_interes, 
@@ -225,7 +225,7 @@ GROUP BY
 
 -- CREATE VIEW recaudacion_x_barrio AS
 SELECT 
-  yearweek(pago.fecha, 1) AS semana, 
+  yearweek(pago.fecha, 0) AS semana, 
   barrio.id AS barrio_id, 
   barrio.nombre AS barrio_nombre,
   sum(pago.monto) AS recaudacion 
@@ -235,15 +235,15 @@ FROM
   INNER JOIN beneficiaria ON beneficiaria.id = credito.beneficiaria_id 
   INNER JOIN barrio ON barrio.id = beneficiaria.barrio_id, fecha 
 WHERE 
-  pago.fecha >= (SELECT min(fecha.fecha) AS min_1 FROM fecha) 
-  AND pago.fecha <= (SELECT max(fecha.fecha) AS max_1 FROM fecha) 
+  pago.fecha >= (SELECT min(parametro.fecha) AS min_1 FROM parametro) 
+  AND pago.fecha <= (SELECT max(parametro.fecha) AS max_1 FROM parametro) 
 GROUP BY 
-  yearweek(pago.fecha, 1), 
+  yearweek(pago.fecha, 0), 
   barrio.id;
 
 -- CREATE VIEW recaudacion AS
 SELECT 
-  yearweek(pago.fecha, 1) AS semana, 
+  yearweek(pago.fecha, 0) AS semana, 
   cartera.id AS cartera_id, 
   credito.tasa_interes, 
   sum(pago.monto) AS recaudacion 
@@ -252,17 +252,16 @@ FROM
   INNER JOIN pago ON credito.id = pago.credito_id 
   INNER JOIN cartera ON cartera.id = credito.cartera_id 
 WHERE 
-  pago.fecha >= (SELECT min(fecha.fecha) AS min_1 FROM fecha) 
-  AND pago.fecha <= (SELECT max(fecha.fecha) AS max_1 FROM fecha) 
+  pago.fecha >= (SELECT min(parametro.fecha) AS min_1 FROM parametro) 
+  AND pago.fecha <= (SELECT max(parametro.fecha) AS max_1 FROM parametro) 
 GROUP BY 
-  yearweek(pago.fecha, 1), 
+  yearweek(pago.fecha, 0), 
   cartera.id, 
   credito.tasa_interes;
 
 -- CREATE VIEW recaudacion_real_total AS
 SELECT 
-  makedate(mid(recaudacion.semana, 1, 4), 
-           mid(recaudacion.semana, 5, 2) * 7) AS fecha, 
+  concat(mid(recaudacion_x_barrio.semana, 1, 4), ',', mid(recaudacion_x_barrio.semana, 5, 2)) AS semana, 
   cartera.nombre AS cartera, 
   recaudacion.tasa_interes, 
   recaudacion.recaudacion, 
@@ -275,7 +274,7 @@ WHERE
 
 -- CREATE VIEW recaudacion_real_x_barrio AS
 SELECT 
-  makedate(mid(recaudacion_x_barrio.semana, 1, 4), mid(recaudacion_x_barrio.semana, 5, 2) * 7) AS fecha, 
+  concat(mid(recaudacion_x_barrio.semana, 1, 4), ',', mid(recaudacion_x_barrio.semana, 5, 2)) AS semana, 
   recaudacion_x_barrio.barrio_nombre AS barrio, 
   recaudacion_x_barrio.recaudacion, 
   recaudacion_x_barrio.barrio_id 
@@ -284,54 +283,78 @@ FROM
 
 -- CREATE VIEW recaudacion_potencial_total AS
 SELECT 
-  makedate(mid(recaudacion.semana, 1, 4), mid(recaudacion.semana, 5, 2) * 7) AS fecha, 
-  recaudacion.recaudacion, 
+  concat(mid(rec_pot.semana, 1, 4), '.', mid(rec_pot.semana, 5, 2)) AS semana, 
+  rec_pot.recaudacion, 
   rec_pot.recaudacion_potencial, 
-  recaudacion.recaudacion / rec_pot.recaudacion_potencial AS porcentaje 
-FROM 
-  recaudacion, 
-  (SELECT 
-     yearweek(fecha.fecha, 1) AS semana, 
-     sum(credito.deuda_total / credito.cuotas) AS recaudacion_potencial 
-   FROM 
-     fecha, 
-     credito 
-   WHERE 
-     adddate(credito.fecha_entrega, 14) <= fecha.fecha 
-     AND (credito.fecha_finalizacion > fecha.fecha 
-          OR credito.fecha_finalizacion IS NULL) 
-   GROUP BY 
-     yearweek(fecha.fecha, 1)
-  ) AS rec_pot 
-WHERE recaudacion.semana = rec_pot.semana;
+  rec_pot.recaudacion / rec_pot.recaudacion_potencial AS porcentaje 
+FROM (
+  SELECT 
+    rec_total_real.semana AS semana, 
+    rec_total_real.recaudacion AS recaudacion, 
+    sum(credito.deuda_total / credito.cuotas) AS recaudacion_potencial 
+  FROM (
+    SELECT 
+      recaudacion.semana AS semana, 
+      sum(recaudacion.recaudacion) AS recaudacion 
+    FROM 
+      recaudacion 
+    GROUP BY 
+      recaudacion.semana
+    ) AS rec_total_real, 
+    credito 
+  WHERE 
+    yearweek(adddate(credito.fecha_entrega, 14), 0) >= rec_total_real.semana 
+    AND (yearweek(credito.fecha_finalizacion, 0) >= rec_total_real.semana 
+         OR credito.fecha_finalizacion IS NULL) 
+  GROUP BY 
+    rec_total_real.semana
+  ) AS rec_pot;
 
 -- CREATE VIEW recaudacion_potencial_total_x_barrio AS
 SELECT 
-  makedate(mid(recaudacion_x_barrio.semana, 1, 4), mid(recaudacion_x_barrio.semana, 5, 2) * 7) AS fecha, 
-  barrio.nombre AS barrio, 
-  recaudacion_x_barrio.recaudacion, 
+  concat(mid(rec_pot.semana, 1, 4), '.', mid(rec_pot.semana, 5, 2)) AS semana, 
+  rec_pot.barrio_nombre AS barrio, 
+  rec_pot.recaudacion, 
   rec_pot.recaudacion_potencial, 
-  recaudacion_x_barrio.recaudacion / rec_pot.recaudacion_potencial AS porcentaje 
-FROM 
-  recaudacion_x_barrio, 
-  barrio, 
-  (SELECT 
-     yearweek(fecha.fecha, 1) AS semana, 
-     barrio.id AS barrio_id, 
-     sum(credito.deuda_total / credito.cuotas) AS recaudacion_potencial 
-   FROM 
-     fecha, 
-     barrio 
-     INNER JOIN beneficiaria ON barrio.id = beneficiaria.barrio_id 
-     INNER JOIN credito ON beneficiaria.id = credito.beneficiaria_id 
-   WHERE 
-     adddate(credito.fecha_entrega, 1) <= fecha.fecha 
-     AND (credito.fecha_finalizacion > fecha.fecha 
-          OR credito.fecha_finalizacion IS NULL) 
-   GROUP BY 
-     yearweek(fecha.fecha, 1), barrio.id) AS rec_pot 
-WHERE 
-  recaudacion_x_barrio.semana = rec_pot.semana 
-  AND recaudacion_x_barrio.barrio_id = rec_pot.barrio_id 
-  AND barrio.id = recaudacion_x_barrio.barrio_id;
+  rec_pot.recaudacion / rec_pot.recaudacion_potencial AS porcentaje 
+FROM (
+  SELECT 
+    recaudacion_x_barrio.semana AS semana, 
+    recaudacion_x_barrio.barrio_id AS barrio_id, 
+    recaudacion_x_barrio.barrio_nombre AS barrio_nombre, 
+    recaudacion_x_barrio.recaudacion AS recaudacion, 
+    sum(credito.deuda_total / credito.cuotas) AS recaudacion_potencial 
+  FROM (
+    SELECT 
+      yearweek(pago.fecha, 0) AS semana, 
+      barrio.id AS barrio_id, 
+      barrio.nombre AS barrio_nombre, 
+      sum(pago.monto) AS recaudacion 
+    FROM 
+      credito 
+      INNER JOIN pago ON credito.id = pago.credito_id 
+      INNER JOIN beneficiaria ON beneficiaria.id = credito.beneficiaria_id 
+      INNER JOIN barrio ON barrio.id = beneficiaria.barrio_id 
+    WHERE 
+      pago.fecha >= (SELECT min(parametro.fecha) AS min_1 FROM parametro) 
+      AND pago.fecha <= (SELECT max(parametro.fecha) AS max_1 FROM parametro) 
+    GROUP BY 
+      yearweek(pago.fecha, 0), 
+      barrio.id
+    ) AS recaudacion_x_barrio, 
+    credito 
+    INNER JOIN beneficiaria ON beneficiaria.id = credito.beneficiaria_id 
+    INNER JOIN barrio ON barrio.id = beneficiaria.barrio_id 
+  WHERE 
+    yearweek(adddate(credito.fecha_entrega, 14), 0) >= recaudacion_x_barrio.semana 
+    AND recaudacion_x_barrio.barrio_id = barrio.id 
+    AND (yearweek(credito.fecha_finalizacion, %s) >= recaudacion_x_barrio.semana 
+         OR credito.fecha_finalizacion IS NULL) 
+  GROUP BY 
+    recaudacion_x_barrio.semana, 
+    recaudacion_x_barrio.barrio_id, 
+    recaudacion_x_barrio.recaudacion
+  ) AS rec_pot;
+
+
 
