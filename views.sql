@@ -246,7 +246,7 @@ SELECT
   yearweek(pago.fecha, 0) AS semana, 
   cartera.id AS cartera_id, 
   credito.tasa_interes, 
-  sum(pago.monto) AS recaudacion 
+  sum(pago.monto) AS recaudacion
 FROM 
   credito 
   INNER JOIN pago ON credito.id = pago.credito_id 
@@ -303,7 +303,7 @@ FROM (
     ) AS rec_total_real, 
     credito 
   WHERE 
-    yearweek(adddate(credito.fecha_entrega, 14), 0) >= rec_total_real.semana 
+    yearweek(adddate(credito.fecha_entrega, 14), 0) <= rec_total_real.semana 
     AND (yearweek(credito.fecha_finalizacion, 0) >= rec_total_real.semana 
          OR credito.fecha_finalizacion IS NULL) 
   GROUP BY 
@@ -346,15 +346,12 @@ FROM (
     INNER JOIN beneficiaria ON beneficiaria.id = credito.beneficiaria_id 
     INNER JOIN barrio ON barrio.id = beneficiaria.barrio_id 
   WHERE 
-    yearweek(adddate(credito.fecha_entrega, 14), 0) >= recaudacion_x_barrio.semana 
+    yearweek(adddate(credito.fecha_entrega, 14), 0) <= recaudacion_x_barrio.semana 
     AND recaudacion_x_barrio.barrio_id = barrio.id 
-    AND (yearweek(credito.fecha_finalizacion, %s) >= recaudacion_x_barrio.semana 
+    AND (yearweek(credito.fecha_finalizacion, 0) >= recaudacion_x_barrio.semana 
          OR credito.fecha_finalizacion IS NULL) 
   GROUP BY 
     recaudacion_x_barrio.semana, 
     recaudacion_x_barrio.barrio_id, 
     recaudacion_x_barrio.recaudacion
   ) AS rec_pot;
-
-
-

@@ -1,44 +1,48 @@
 Listado de cambios entre versiones
+
 * master
-** Dialogos de fecha aparecen antes de lanzar reporte
-** Columna y filtro por barrio en creditos y pagos.
-** Columna y filtro por beneficiaria y nro credito en pagos.
-** Busqueda de beneficiaria por nombre completo.
-** Fix: bug al cerrar formulario de Actividades.
-** Fix: ordenamiento por columnas.
-** Fix: reporte de Créditos finalizados sin saldar
-** Fix: reporte de Pérdida por incobrable
-** Reporte Indicadores en formato apaisado
-** Documentación de Reportes
-** 'Recaudación Mensual' se renombró como 'Recaudación por Cartera'
-** Campo 'fecha' en 'Recaudacion Real Total' ahora es 'semana'
-** TODO Reportes ya no dependen de tabla fecha, con lo cual se eliminó.
+- Dialogos de fecha aparecen antes de lanzar reporte
+- Columna y filtro por barrio en creditos y pagos.
+- Columna y filtro por beneficiaria y nro credito en pagos.
+- Busqueda de beneficiaria por nombre completo.
+- Fix: bug al cerrar formulario de Actividades.
+- Fix: ordenamiento por columnas.
+- Fix: reporte de Créditos finalizados sin saldar
+- Fix: reporte de Pérdida por incobrable
+- Reporte Indicadores en formato apaisado
+- Documentación de Reportes
+- 'Recaudación Mensual' se renombró como 'Recaudación por Cartera'
+- Campo 'fecha' en reportes de recaudacion ahora es 'semana'
+- Reportes ya no dependen de tabla fecha, con lo cual se eliminó.
+
 
 * v12.1.1
-** Se agregó el historial de cambios
-** La db ya no se crea a partir de un script .sql sino automaticamente.
-** Reportes son vistas sqlalchemy. Se arreglaron los filtros de busqueda
-** Se actualizó la version de Camelot a 11.12.30 (y sqlalchemy a 0.7.4)
-** Nueva barra de herramientas personalizada
-** Valores de filtros predeterminados (ej. en creditos y beneficiarias)
+- Se agregó el historial de cambios
+- La db ya no se crea a partir de un script .sql sino automaticamente.
+- Reportes son vistas sqlalchemy. Se arreglaron los filtros de busqueda
+- Se actualizó la version de Camelot a 11.12.30 (y sqlalchemy a 0.7.4)
+- Nueva barra de herramientas personalizada
+- Valores de filtros predeterminados (ej. en creditos y beneficiarias)
+
 
 * v11.12.26
-** Se agregó la columna tasa_interes_anual a la tabla cartera.
-** La columna nro_credito en credito paso a ser de tipo Integer en vez de Unicode.
-** Planilla de Pagos:
-*** Se ajusto a una hoja por carilla. (Quitando el logo de la cabecera)
-*** Se agregó el total de pagos a la fecha de emisión.
-*** Se quitaron los pagos parciales del detalle.
-** Se ajustó el contrato mutuo a una sola carilla.
-** Se agregó traduccion al castellano.
-** Se agregó el icono de la aplicacion.
-** Se modificó el reporte de indicadores para incluir el estado:
-*** Se agrego la columna cuotas_adeudadas_max a la tabla estado_credito.
-*** Se corrigio la vista, tenian mal la clausula WHERE.
-*** Se corrigió la columna cuota_calculada.
-** Se agregó busqueda por id para beneficiaria y credito, y por credito_id para pago.
-** Se agregó un icono de aplicacion para el shortcut de windows.
-** Se quito el intervalo de fechas para los reportes de cartera.
+- Se agregó la columna tasa_interes_anual a la tabla cartera.
+- La columna nro_credito en credito paso a ser de tipo Integer en vez de Unicode.
+- Planilla de Pagos:
+  + Se ajusto a una hoja por carilla. (Quitando el logo de la cabecera)
+  + Se agregó el total de pagos a la fecha de emisión.
+  + Se quitaron los pagos parciales del detalle.
+- Se ajustó el contrato mutuo a una sola carilla.
+- Se agregó traduccion al castellano.
+- Se agregó el icono de la aplicacion.
+- Se modificó el reporte de indicadores para incluir el estado:
+  + Se agrego la columna cuotas_adeudadas_max a la tabla estado_credito.
+  + Se corrigio la vista, tenian mal la clausula WHERE.
+  + Se corrigió la columna cuota_calculada.
+- Se agregó busqueda por id para beneficiaria y credito, y por credito_id para pago.
+- Se agregó un icono de aplicacion para el shortcut de windows.
+- Se quito el intervalo de fechas para los reportes de cartera.
+
 
 * v11.12.22
-** Primer release
+- Primer release

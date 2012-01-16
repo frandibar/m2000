@@ -9,7 +9,7 @@
   <caption>Per&iacute;odo: desde {{ fecha_desde }} hasta {{ fecha_hasta }}</caption>
   <thead>
     <tr>
-      <th>Fecha</th>
+      <th>Semana</th>
       <th>Recaudaci&oacute;n</th>
       <th>Recaudaci&oacute;n<br>Potencial</th>
       <th>%</th>
@@ -18,7 +18,7 @@
   <tbody>
     {% for linea in detalle %}
     <tr class="{% cycle('odd','even') %}">
-      <td>{{ linea.fecha }}</td>
+      <td>{{ linea.semana }}</td>
       <td align="right">{{ linea.recaudacion }}</td>
       <td align="right">{{ linea.recaudacion_potencial }}</td>
       <td align="right">{{ linea.porcentaje }}</td>

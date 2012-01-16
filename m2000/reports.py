@@ -427,7 +427,7 @@ class ReporteRecaudacionPotencialTotal(Action):
     icon = Icon('tango/16x16/actions/document-print.png')
 
     def _build_context(self, model_context):
-        Linea = namedtuple('Linea', ['fecha',
+        Linea = namedtuple('Linea', ['semana',
                                      'recaudacion',
                                      'recaudacion_potencial',
                                      'porcentaje',
@@ -437,7 +437,7 @@ class ReporteRecaudacionPotencialTotal(Action):
         total_recaudacion = 0
         total_recaudacion_potencial = 0
         for row in iterator:
-            linea = Linea(row.fecha,
+            linea = Linea(row.semana,
                           money_fmt(row.recaudacion),
                           money_fmt(row.recaudacion_potencial),
                           float_fmt(row.porcentaje))

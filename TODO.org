@@ -1,9 +1,8 @@
 * COMO SIGO:
 ** TODO agregar documentacion sobre los reportes (ver instalador)
-** TODO revisar reportes recaudacion
-*** pot total
-*** pot x barrio
 ** validar creditos?
+
+
 * PREGUNTAS:
 ** FUNCIONALES
 *** como hacer que un action en el pane izq de appadmin pueda abrirse en otro tab (el tooltip aparece por no anda el boton derecho)
@@ -29,6 +28,8 @@ workaround: clic en tab principal y abrir desde ahi
 se usa como id mnemotecnico, podria generarse automaticamente.
 *** DONE las fechas de pago corresponden a viernes o sabado?
 se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
+
+
 * BUGS
 ** ordenamiento: beneficiarias.nombre no anda de forma descendente
 ** busqueda en pagos y creditos esta rota, salvo busqueda expandida.
@@ -47,11 +48,16 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 *** cuando se escribe un valor en un filtro de table view y se empiezan a filtrar, al llegar a 0 resultados, si se vuelve atras con backspace, no aparece la 1ra columna con la carpetita. Es necesario clic en la escoba.
 *** en expanded_list_search no me incluye los campos de foreign key (ej creditos x beneficiarias.nombre)
 http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_admin.html
+
+
 * FUTURE
 ** enforzar primary key compuesto en rubro.
 ** agregar tests
 ** reportes pdf con reportlab?
+
+
 * ENHANCEMENTS:
+** permitir ir al credito/beneficiaria a partir de una fila de un reporte.
 ** en carga de pagos agregar boton "nuevo pago"?
 ** reemplazar tabla parametro por una view dinamica?
 ** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
@@ -64,6 +70,8 @@ http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_adm
 ** keyboard navigation (depende de camelot?)
 ** en reportes, inhabilitar boton new
 ** poder inhabilitar boton de crear nuevo credito en pago
+
+
 * COSAS A MOSTRAR
 ** como abrir en nueva pestaña
 ** como filtrar (incluyendo busqueda con lupa), aclarar que se pueden especificar por cuales campos buscar por defecto
@@ -80,6 +88,8 @@ http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/entity_adm
 ** aclarar que la busqueda es por nombre o apellido beneficiaria, pero no los dos
 ** documentacion a completar
 ** en alta de pago, al seleccionar un credito se puede escribir el barrio y funciona el filtro.
+
+
 * DEPLOYMENT
 python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
 mysql installer 
@@ -93,6 +103,8 @@ windows mysql-python
 cuando instalo un egg, primero desinstala si ya fue instalado
 pdf printer para windows
 http://www.bullzip.com/products/pdf/info.php
+
+
 * TIPS
 ** no se puede filtrar por @property
 http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
@@ -136,9 +148,13 @@ modifique los fuentes en view/controls/tableview.py
 ** ordenamiento por properties en tableview no funciona. es asi por diseno
 https://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f/88b71699cd831a87?hl=es&ie=UTF-8&q=tableview+order+by+property+camelot&pli=1#88b71699cd831a87
 ** en windows, al lanzar desde un shortcut se abre una ventana de dos, esta sirve para ver los mensajes de error asi que no quitarla.
+
+
 * NOTAS SOBRE LOS DATOS:
 mar dic 27, 2011
 elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)
+
+
 * CAMBIOS EN DB
 ** vistas renombradas
 100 qTotalPagos ant -> 100_credito_pagos
@@ -159,6 +175,8 @@ elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)
 [210 pagos] era una agrupacion, ahora toma directamente de tabla pagos. ver si esta bien 
 702 recaudacion potencial por barrio hace join con 803 asistencia. no tiene sentido si es potencial, no incluye pagos.
 402 creditos activos ya no depende de la fecha de corte
+
+
 * LINKS DE INTERES
 ** gui refresh
 http://groups.google.com/group/project-camelot/browse_thread/thread/374566244b2aeb91
@@ -188,6 +206,8 @@ http://www.digital-pic.com/icon/
 http://www.xxcopy.com/xxcopy38.htm
 ** git
 http://ariejan.net/2009/10/26/how-to-create-and-apply-a-patch-with-git
+
+
 * SNIPPETS
     # set all fields as non editable
     def get_field_attributes(self, field_name):

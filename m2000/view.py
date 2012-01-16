@@ -746,7 +746,7 @@ def recaudacion_potencial_total():
                      from_obj = [tbl_credito,
                                  rec_total_real,
                                  ],
-                     whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) >= rec_total_real.c.semana,
+                     whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) <= rec_total_real.c.semana,
                                       or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= rec_total_real.c.semana,
                                           tbl_credito.c.fecha_finalizacion == None)),
                      group_by=rec_total_real.c.semana,
@@ -800,8 +800,21 @@ def recaudacion_potencial_total_x_barrio():
     tbl_barrio = Barrio.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_credito = Credito.mapper.mapped_table
+    tbl_pago = Pago.mapper.mapped_table
 
-    rec_real = recaudacion_x_barrio()
+    rec_real = select([func.yearweek(tbl_pago.c.fecha).label('semana'),
+                       tbl_benef.c.barrio_id,
+                       tbl_barrio.c.nombre.label('barrio_nombre'),
+                       func.sum(tbl_pago.c.monto).label('recaudacion'),
+                       ],
+                      from_obj=tbl_pago.join(tbl_credito).join(tbl_benef).join(tbl_barrio),
+                      whereclause=and_(tbl_pago.c.fecha >= min_fecha(),
+                                       tbl_pago.c.fecha <= max_fecha(),
+                                       ),
+                      group_by=[func.yearweek(tbl_pago.c.fecha),
+                                tbl_benef.c.barrio_id,
+                                ],
+                      ).alias('rec_real')
     
     rec_pot = select([rec_real.c.semana,
                       rec_real.c.barrio_id,
@@ -812,7 +825,7 @@ def recaudacion_potencial_total_x_barrio():
                      from_obj = [tbl_credito.join(tbl_benef).join(tbl_barrio),
                                  rec_real,
                                  ],
-                     whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) >= rec_real.c.semana,
+                     whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) <= rec_real.c.semana,
                                       rec_real.c.barrio_id == tbl_barrio.c.id,
                                       or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= rec_real.c.semana,
                                           tbl_credito.c.fecha_finalizacion == None)),
