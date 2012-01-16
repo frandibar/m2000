@@ -181,7 +181,6 @@ class PagoAdminBase(EntityAdmin):
                             'asistencia', # TODO no lo toma
                             'barrio',
                             ]
-    list_action = None
     list_actions = [reports.ReportePagos()]
     delete_mode = 'on_confirm'
 
