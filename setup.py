@@ -23,6 +23,7 @@
 # SOFTWARE.
 #-------------------------------------------------------------------------------
 
+import os
 from setuptools import setup, find_packages
 import m2000
 
@@ -40,7 +41,8 @@ setup(
     install_requires = ['Camelot>=11.12.30',
                         'MySQL-python>=1.2.1'],
     include_package_data = True,
-    packages = find_packages() + ['doc',],
+    packages = find_packages() + [os.path.join('doc', '_build', 'html'), 
+                                  os.path.join('doc', '_build', 'html', '_static')],
     py_modules = ['settings', 'main'],
     entry_points = {'gui_scripts':[
             'main = main:start_application',
@@ -56,7 +58,8 @@ setup(
              '*.svg',
              '*.ico',
              ],
-        'doc': ['*.rst', 
+        'doc': ['*.css', 
+                '*.js',
                 '*.html', 
                 '*.png',
                 ],
