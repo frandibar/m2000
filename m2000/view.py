@@ -826,9 +826,9 @@ def recaudacion_potencial_total_x_barrio():
                                  rec_real,
                                  ],
                      whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) <= rec_real.c.semana,
-                                      rec_real.c.barrio_id == tbl_barrio.c.id,
                                       or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= rec_real.c.semana,
-                                          tbl_credito.c.fecha_finalizacion == None)),
+                                          tbl_credito.c.fecha_finalizacion == None),
+                                      rec_real.c.barrio_id == tbl_barrio.c.id),
                      group_by=[rec_real.c.semana,
                                rec_real.c.barrio_id,
                                rec_real.c.recaudacion,
@@ -877,10 +877,96 @@ def setup_views_cartera():
     for cl, v in mappings.items():
         mapper(cl, v, always_refresh=True)
 
+class CreditosACobrar(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Creditos a cobrar'
+        verbose_name_plural = u'Creditos a cobrar'
+        list_display = ['semana',
+                        'credito_id',
+                        'fecha_entrega',
+                        'fecha_finalizacion',
+                        'deuda_total',
+                        'cuotas',
+                        'cuota',
+                        ]
+
+class CreditosACobrarPorBarrio(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Creditos a cobrar por Barrio'
+        verbose_name_plural = u'Creditos a cobrar por Barrio'
+        list_display = ['semana',
+                        'barrio_id',
+                        'credito_id',
+                        'fecha_entrega',
+                        'fecha_finalizacion',
+                        'deuda_total',
+                        'cuotas',
+                        'cuota',
+                        ]
+
+def creditos_a_cobrar():
+    tbl_credito = Credito.mapper.mapped_table
+    tbl_parametro = Parametro.mapper.mapped_table
+
+    stmt = select([func.yearweek(tbl_parametro.c.fecha, 0).label('semana'),
+                   tbl_credito.c.id.label('credito_id'),
+                   tbl_credito.c.fecha_entrega,
+                   tbl_credito.c.fecha_finalizacion,
+                   tbl_credito.c.deuda_total,
+                   tbl_credito.c.cuotas,
+                   (tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('cuota')
+                   ],
+                  from_obj=[tbl_credito,
+                            tbl_parametro],
+                  whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) <= func.yearweek(tbl_parametro.c.fecha, 0),
+                                   or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= func.yearweek(tbl_parametro.c.fecha, 0),
+                                       tbl_credito.c.fecha_finalizacion == None)),
+                  )
+    return stmt.alias('creditos_a_cobrar')
+
+def creditos_a_cobrar_x_barrio():
+    tbl_parametro = Parametro.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_credito = Credito.mapper.mapped_table
+
+    stmt = select([func.yearweek(tbl_parametro.c.fecha, 0).label('semana'),
+                   tbl_benef.c.barrio_id,
+                   tbl_credito.c.id.label('credito_id'),
+                   tbl_credito.c.fecha_entrega,
+                   tbl_credito.c.fecha_finalizacion,
+                   tbl_credito.c.deuda_total,
+                   tbl_credito.c.cuotas,
+                   (tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('cuota')
+                   ],
+                  from_obj=[tbl_credito.join(tbl_benef).join(tbl_barrio),
+                            tbl_parametro],
+                  whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) <= func.yearweek(tbl_parametro.c.fecha, 0),
+                                   or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= func.yearweek(tbl_parametro.c.fecha, 0),
+                                       tbl_credito.c.fecha_finalizacion == None)),
+                  )
+    return stmt.alias('creditos_a_cobrar_x_barrio')
+    
+def setup_views_debug():
+    stmt = creditos_a_cobrar()
+    mapper(CreditosACobrar, stmt, always_refresh=True,
+           primary_key=[stmt.c.semana,
+                        stmt.c.credito_id,
+                        ])
+
+    stmt = creditos_a_cobrar_x_barrio()
+    mapper(CreditosACobrarPorBarrio, stmt, always_refresh=True,
+           primary_key=[stmt.c.semana,
+                        stmt.c.barrio_id,
+                        stmt.c.credito_id,
+                        ])
+
+
 def setup_views():
     setup_views_indicadores()
     setup_views_recaudacion()
     setup_views_cartera()
+    setup_views_debug()
     
 class DatesValidator(ObjectValidator):
     def objectValidity(self, entity_instance):

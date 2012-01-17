@@ -53,57 +53,65 @@ class MyApplicationAdmin(ApplicationAdmin):
         return PyQt4.QtGui.QPixmap('media/splashscreen.png')
         
     def get_sections(self):
-        return [
-                Section(u'Día a Día',
-                        self,
-                        Icon('tango/22x22/actions/appointment-new.png'),
-                        items = [
-                                 model.Beneficiaria,
-                                 model.Credito,
-                                 model.Pago,
-                            ]),
-                Section(u'Indicadores',
-                        self,
-                        Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
-                        items = [
-                                 view.FechaCorte('Indicadores', view.Indicadores),
-                            ]),
-                Section(u'Recaudación',
-                        self,
-                        Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
-                        items = [
-                                 view.IntervaloFechas(u'Por Cartera', view.RecaudacionPorCartera),
-                                 view.IntervaloFechas(u'Real Total', view.RecaudacionRealTotal),
-                                 view.IntervaloFechas(u'Potencial Total', view.RecaudacionPotencialTotal),
-                                 view.IntervaloFechas(u'Real Total por Barrio', view.RecaudacionRealTotalPorBarrio),
-                                 view.IntervaloFechas(u'Potencial Total por Barrio', view.RecaudacionPotencialTotalPorBarrio),
-                            ]),
-                Section(u'Cartera',
-                        self,
-                        Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
-                        items = [
-                                 view.ChequesEntregados,
-                                 view.CreditosActivos,
-                                 view.PerdidaPorIncobrable,
-                                 view.CreditosFinalizadosSinSaldar,
-                            ]),
-                Section(u'Configuración',
-                        self,
-                        Icon('tango/22x22/categories/preferences-system.png'),
-                        items = [
-                                 Memento,
-                                 model.Actividad,
-                                 model.Amortizacion,
-                                 model.Asistencia,
-                                 model.Barrio,
-                                 model.Cartera,
-                                 model.Ciudad,
-                                 model.DomicilioPago,
-                                 model.EstadoCredito,
-                                 model.Provincia,
-                                 model.Rubro,
-                            ]),
-                ]
+        sections = [Section(u'Día a Día',
+                            self,
+                            Icon('tango/22x22/actions/appointment-new.png'),
+                            items = [
+                                model.Beneficiaria,
+                                model.Credito,
+                                model.Pago,
+                                ]),
+                    Section(u'Indicadores',
+                            self,
+                            Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
+                            items = [
+                                view.FechaCorte('Indicadores', view.Indicadores),
+                                ]),
+                    Section(u'Recaudación',
+                            self,
+                            Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
+                            items = [
+                                view.IntervaloFechas(u'Por Cartera', view.RecaudacionPorCartera),
+                                view.IntervaloFechas(u'Real Total', view.RecaudacionRealTotal),
+                                view.IntervaloFechas(u'Potencial Total', view.RecaudacionPotencialTotal),
+                                view.IntervaloFechas(u'Real Total por Barrio', view.RecaudacionRealTotalPorBarrio),
+                                view.IntervaloFechas(u'Potencial Total por Barrio', view.RecaudacionPotencialTotalPorBarrio),
+                                ]),
+                    Section(u'Cartera',
+                            self,
+                            Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
+                            items = [
+                                view.ChequesEntregados,
+                                view.CreditosActivos,
+                                view.PerdidaPorIncobrable,
+                                view.CreditosFinalizadosSinSaldar,
+                                ]),
+                    Section(u'Configuración',
+                            self,
+                            Icon('tango/22x22/categories/preferences-system.png'),
+                            items = [
+                                Memento,
+                                model.Actividad,
+                                model.Amortizacion,
+                                model.Asistencia,
+                                model.Barrio,
+                                model.Cartera,
+                                model.Ciudad,
+                                model.DomicilioPago,
+                                model.EstadoCredito,
+                                model.Provincia,
+                                model.Rubro,
+                                ]),
+                    ]
+        if m2000.config.Config().get('debug') == 'yes':
+            sections.append(Section(u'Debug',
+                                    self,
+                                    Icon('tango/22x22/mimetypes/x-office-spreadsheet.png'),
+                                    items = [
+                                        view.FechaCorte('Creditos a Cobrar', view.CreditosACobrar),
+                                        view.FechaCorte('Creditos a Cobrar por Barrio', view.CreditosACobrarPorBarrio),
+                                        ]))
+        return sections
 
     def get_help_url(self):
         return PyQt4.QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), os.path.pardir, 'doc', '_build', 'html', 'index.html'))

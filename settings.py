@@ -63,6 +63,9 @@ def setup_model():
     if conf.get('create_db') == 'yes':
         db_setup.create_db()
         conf.set('create_db', 'no')
+
+    if not conf.safe_get('debug'):
+        conf.set('debug', 'no')
     
     # tables only get created in mysql if the db exists
     # 'create database m2000' sufices
