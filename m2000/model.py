@@ -718,5 +718,5 @@ class Amortizacion(Entity):
 
 class Parametro(Entity):
     using_options(tablename='parametro')
-    fecha = Field(Date, primary_key=True)
+    fecha = Field(Date)
 
