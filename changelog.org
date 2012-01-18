@@ -1,6 +1,6 @@
 Listado de cambios entre versiones
 
-* master
+* v12.1.17
 - Dialogos de fecha aparecen antes de lanzar reporte
 - Columna y filtro por barrio en creditos y pagos.
 - Columna y filtro por beneficiaria y nro credito en pagos.

@@ -37,6 +37,7 @@ from camelot.view.controls.delegates import DateDelegate, FloatDelegate, Currenc
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter
 from sqlalchemy.orm import mapper
 from sqlalchemy.sql import select, func, and_, or_
+from sqlalchemy import distinct
 
 from camelot.model import metadata
 __metadata__ = metadata
@@ -815,35 +816,18 @@ def recaudacion_potencial_total_x_barrio():
                                 tbl_benef.c.barrio_id,
                                 ],
                       ).alias('rec_real')
-    
-    rec_pot = select([rec_real.c.semana,
-                      rec_real.c.barrio_id,
-                      rec_real.c.barrio_nombre,
-                      rec_real.c.recaudacion,
-                      func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
-                      ],
-                     from_obj = [tbl_credito.join(tbl_benef).join(tbl_barrio),
-                                 rec_real,
-                                 ],
-                     whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) <= rec_real.c.semana,
-                                      or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= rec_real.c.semana,
-                                          tbl_credito.c.fecha_finalizacion == None),
-                                      rec_real.c.barrio_id == tbl_barrio.c.id),
-                     group_by=[rec_real.c.semana,
-                               rec_real.c.barrio_id,
-                               rec_real.c.recaudacion,
-                               ]
-                     ).alias('rec_pot')
-    
+
+    rec_pot = potencial_a_cobrar_x_barrio()
+
     stmt = select([func.concat(func.mid(rec_pot.c.semana, 1, 4), '.', func.mid(rec_pot.c.semana, 5, 2)).label('semana'),
                    rec_pot.c.barrio_nombre.label('barrio'),
-                   rec_pot.c.recaudacion,
+                   func.ifnull(rec_real.c.recaudacion, 0).label('recaudacion'),
                    rec_pot.c.recaudacion_potencial,
-                   (rec_pot.c.recaudacion / rec_pot.c.recaudacion_potencial).label('porcentaje'),
+                   (func.ifnull(rec_real.c.recaudacion, 0) / rec_pot.c.recaudacion_potencial).label('porcentaje'),
                    ],
-                  from_obj=rec_pot,
+                  from_obj=[rec_pot.outerjoin(rec_real, onclause=and_(rec_pot.c.semana == rec_real.c.semana,
+                                                                      rec_pot.c.barrio_id == rec_real.c.barrio_id))],
                   )
-
     return stmt.alias('recaudacion_potencial_total_x_barrio')
 
 def setup_recaudacion_potencial_total_x_barrio():
@@ -904,6 +888,15 @@ class CreditosACobrarPorBarrio(object):
                         'cuota',
                         ]
 
+class PotencialACobrarPorBarrio(object):
+    class Admin(EntityAdmin):
+        verbose_name = u'Potencial a cobrar por Barrio'
+        verbose_name_plural = u'Potencial a cobrar por Barrio'
+        list_display = ['semana',
+                        'barrio_id',
+                        'recaudacion_potencial',
+                        ]
+
 def creditos_a_cobrar():
     tbl_credito = Credito.mapper.mapped_table
     tbl_parametro = Parametro.mapper.mapped_table
@@ -946,7 +939,32 @@ def creditos_a_cobrar_x_barrio():
                                        tbl_credito.c.fecha_finalizacion == None)),
                   )
     return stmt.alias('creditos_a_cobrar_x_barrio')
-    
+
+def potencial_a_cobrar_x_barrio():
+    tbl_parametro = Parametro.mapper.mapped_table
+    tbl_barrio = Barrio.mapper.mapped_table
+    tbl_benef = Beneficiaria.mapper.mapped_table
+    tbl_credito = Credito.mapper.mapped_table
+
+    # si hay 2 fechas iguales en parametro.fecha, entonces se duplica la suma, por eso el distinct.
+    tparametro = select([distinct(func.yearweek(tbl_parametro.c.fecha, 0)).label('semana')],
+                        from_obj=tbl_parametro).alias('tparametro')
+
+    stmt = select([tparametro.c.semana,
+                   tbl_benef.c.barrio_id,
+                   tbl_barrio.c.nombre.label('barrio_nombre'),
+                   func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial')
+                   ],
+                  from_obj=[tbl_credito.join(tbl_benef).join(tbl_barrio),
+                            tparametro],
+                  whereclause=and_(func.yearweek(func.adddate(tbl_credito.c.fecha_entrega, 14), 0) <= tparametro.c.semana,
+                                   or_(func.yearweek(tbl_credito.c.fecha_finalizacion, 0) >= tparametro.c.semana,
+                                       tbl_credito.c.fecha_finalizacion == None)),
+                  group_by=[tparametro.c.semana,
+                            tbl_benef.c.barrio_id]
+                  )
+    return stmt.alias('potencial_a_cobrar_x_barrio')
+
 def setup_views_debug():
     stmt = creditos_a_cobrar()
     mapper(CreditosACobrar, stmt, always_refresh=True,
@@ -961,6 +979,11 @@ def setup_views_debug():
                         stmt.c.credito_id,
                         ])
 
+    stmt = potencial_a_cobrar_x_barrio()
+    mapper(PotencialACobrarPorBarrio, stmt, always_refresh=True,
+           primary_key=[stmt.c.semana,
+                        stmt.c.barrio_id,
+                        ])
 
 def setup_views():
     setup_views_indicadores()
@@ -1073,17 +1096,20 @@ class IntervaloFechas(Action):
             
         if hasta < desde:
             hasta = desde
-
+            
         # guardar valores para usar por default la proxima vez
         conf = config.Config()
         conf.set('fecha_desde', desde.strftime('%Y-%m-%d'))
         conf.set('fecha_hasta', hasta.strftime('%Y-%m-%d'))
         
         # add dates
-        p1 = Parametro()
-        p1.fecha = desde
-        p2 = Parametro()
-        p2.fecha = hasta
+        week = datetime.timedelta(weeks=1)
+        while desde <= hasta:
+            p = Parametro()
+            p.fecha = desde
+            desde += week
+            yield UpdateProgress()
+
         Parametro.query.session.flush()
 
         yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))

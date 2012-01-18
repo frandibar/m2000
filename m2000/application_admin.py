@@ -110,6 +110,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                                     items = [
                                         view.FechaCorte('Creditos a Cobrar', view.CreditosACobrar),
                                         view.FechaCorte('Creditos a Cobrar por Barrio', view.CreditosACobrarPorBarrio),
+                                        view.FechaCorte('Potencial a Cobrar por Barrio', view.PotencialACobrarPorBarrio),
                                         ]))
         return sections
 

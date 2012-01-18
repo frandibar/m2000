@@ -1,5 +1,4 @@
 * COMO SIGO:
-** TODO agregar documentacion sobre los reportes (ver instalador)
 ** validar creditos?
 
 
