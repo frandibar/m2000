@@ -188,6 +188,7 @@ class PagoAdminEmbedded(PagoAdminBase):
     list_display = ['fecha',
                     'monto',
                     'asistencia']
+    list_action = None
 
 class CreditoValidator(EntityValidator):
     def objectValidity(self, entity_instance):
