@@ -1,45 +1,46 @@
-Para instalar en Windows:
+* Para instalar en Windows:
 
-La primera vez, es necesario hacer lo siguiente:
+  La primera vez, es necesario hacer lo siguiente:
 
-* Instalar Python
-1. Doble clic en python-2.7.2.msi y clic en 'Siguiente' hasta el fin.
-2. Clic boton derecho en 'My Computer', elegir 'Properties', ir a pestaña 'Advanced', luego clic en 'Environment Variables'.
-   Seleccionar 'Path' en 'System variables' y clic en 'Edit'
-   Agregar al final de 'Variable value:' lo siguiente: ';C:\Python27;C:\Python27\Scripts'. Clic en 'OK' tres veces.
-3. python distribute_setup.py (requiere conexion a internet)
+** Copiar todos los archivos de instalación en la carpeta C:\arturito
 
-* Instalar MySQL
-1. Solo db: Doble clic en mysql-5.5.19-win32.msi, seleccionar 'Typical' y luego clic en 'Install'.
-   Cuando aparece el Wizard de configuracion, seleccionar 'Standard configuration', luego tildar 'Include Bin directory in windows path'.
-   En 'Modify Security Settings' colocar "root" como password y terminar.
-1. Completo: Doble clic en mysql-installer-5.5.19.0.msi y clic en 'Siguiente' hasta el fin.
+** Instalar Python
+   1. Doble clic en python-2.7.2.msi y clic en 'Siguiente' hasta el fin.
+   2. Clic boton derecho en 'My Computer', elegir 'Properties', ir a pestaña 'Advanced', luego clic en 'Environment Variables'.
+      Seleccionar 'Path' en 'System variables' y clic en 'Edit'
+      Agregar al final de 'Variable value:' lo siguiente: ';C:\Python27;C:\Python27\Scripts'. Clic en 'OK' tres veces.
+   3. Abrir una terminal de consola: Ir a menu Start -> run y tipear cmd y presionar Enter.
+   4. En la terminal escribir: python distribute_setup.py y presionar Enter. (requiere conexion a internet)
 
-* Instalar MySQL-python
-1. Doble clic en MySQL-python-1.2.3.win32-py2.7.exe y clic en 'Siguiente' hasta finalizar.
+** Instalar MySQL
+   Seguir alguna de las dos opciones, sugiero la primera:
+   1. Solo db: Doble clic en mysql-5.5.19-win32.msi, seleccionar 'Typical' y luego clic en 'Install'.
+      Cuando aparece el Wizard de configuracion, seleccionar 'Standard configuration', luego tildar 'Include Bin directory in windows path'.
+      En 'Modify Security Settings' colocar "root" como password y terminar.
+   1. Completo: Doble clic en mysql-installer-5.5.19.0.msi y clic en 'Siguiente' hasta el fin.
 
-* Instalar jinja
-1. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo.
-   easy_install path_to\Jinja-1.2-py2.5-win32.egg
+** Instalar MySQL-python
+   1. Doble clic en MySQL-python-1.2.3.win32-py2.7.exe y clic en 'Siguiente' hasta finalizar.
 
-* Instalar Camelot (incluye instalacion de SqlAlchemy y Elixir, requiere conexion a internet)
-1. Ir a menu Start -> run y tipear cmd y presionar Enter. Luego ejecutar reemplazando path_to con la ubicacion del archivo.
-   easy_install path_to\Camelot-11.11.16-py2.7.egg
+** Instalar Jinja
+   1. Abrir terminal de consola (ver instrucciones mas arriba). Luego ejecutar:
+      easy_install C:\arturito\Jinja-1.2-py2.5-win32.egg
 
-* Instalar PyQt
-  Doble clic en PyQt-Py2.7-x86-gpl-4.8.6-1.exe. Seleccionar 'Minimal' en 'Select the type of install:'
+** Instalar Camelot (incluye instalacion de SqlAlchemy y Elixir, requiere conexion a internet)
+   1. Abrir terminal de consola y ejecutar:
+      easy_install C:\arturito\Camelot-11.11.16-py2.7.egg
 
-* Instalar m2000
-1. Copiar XXMKLINK.EXE en C:\WINDOWS\system32. Se usa para crear el shortcut.
-2. Doble clic en update-win.bat
+** Instalar PyQt
+   Doble clic en PyQt-Py2.7-x86-gpl-4.8.6-1.exe. Seleccionar 'Minimal' en 'Select the type of install:'
 
-* Opcionalmente instalar una impresora pdf.
-1. Doble clic en BullzipPDFPrinter_7_2_0_1320.exe
+** Instalar m2000
+   1. Copiar XXMKLINK.EXE en C:\WINDOWS\system32. Este programa se usa para crear el acceso directo.
+   2. Doble clic en update-win.bat
 
+* Para actualizar en Windows:
+  Si estos componentes ya fueron instalados, pero se quiere hacer una actualizacion del programa:
 
-Para actualizar en Windows:
-
-1. Asegurarse que el programa no se encuentra en ejecución.
-2. Hacer copia de respaldo de los datos.
-3. Doble clic en update-win.bat
-4. Si hace falta, hacer una restauración de los datos.
+  1. Asegurarse que el programa no se encuentra en ejecución.
+  2. Hacer copia de respaldo de los datos.
+  3. Doble clic en update-win.bat
+  4. Si hace falta, hacer una restauración de los datos.
