@@ -43,7 +43,7 @@ import sqlalchemy
 
 import reports
 from constants import PKEY_UNDEFINED, ID_ACTIVIDAD_CONSTRUCCION
-    
+
 class RubroAdminEmbedded(EntityAdmin):
     verbose_name = 'Rubro'
     list_display = ['nombre']
@@ -55,7 +55,7 @@ class Actividad(Entity):
     nombre = Field(Unicode(200), unique=True, required=True)
     amortizacion = ManyToOne('Amortizacion', ondelete='cascade', onupdate='cascade', required=True)
     rubros = OneToMany('Rubro')
-    
+
     class Admin(EntityAdmin):
         verbose_name = 'Actividad'
         verbose_name_plural = 'Actividades'
@@ -143,7 +143,7 @@ class DomicilioPago(Entity):
         list_action = None
         delete_mode = 'on_confirm'
         form_size = (450,150)
-        
+
     def __unicode__(self):
         return self.nombre or UNDEFINED
 
@@ -236,13 +236,13 @@ class CreditoAdminBase(EntityAdmin):
                    ]
     search_all_fields = False
     # TODO no me toma los campos beneficiaria, rubro, cartera
-    expanded_list_search = ['beneficiaria_prop', 
-                            'nro_credito', 
-                            'rubro_prop', 
+    expanded_list_search = ['beneficiaria_prop',
+                            'nro_credito',
+                            'rubro_prop',
                             'fecha_entrega',
-                            'fecha_cobro', 
+                            'fecha_cobro',
                             'prestamo',
-                            'fecha_finalizacion', 
+                            'fecha_finalizacion',
                             'cartera.nombre']
     list_filter = [GroupBoxFilter('activo', default=True),
                    ComboBoxFilter('cartera.nombre'),
@@ -398,12 +398,12 @@ class Beneficiaria(Entity):
     @ColumnProperty
     def nombre_completo(self):
         return self.nombre + ' ' + self.apellido
-    
+
     def __unicode__(self):
         if self.nombre and self.apellido:
             return '%s %s' % (self.nombre, self.apellido)
         return UNDEFINED
-    
+
     class Admin(EntityAdmin):
         verbose_name = 'Beneficiaria'
         delete_mode = 'on_confirm'
@@ -425,17 +425,17 @@ class Beneficiaria(Entity):
                         'email',
                         'barrio',
                         ]
-        form_display = TabForm([('Beneficiaria', Form([HBoxForm([['nombre', 
-                                                                  'apellido', 
-                                                                  'barrio', 
-                                                                  'grupo', 
+        form_display = TabForm([('Beneficiaria', Form([HBoxForm([['nombre',
+                                                                  'apellido',
+                                                                  'barrio',
+                                                                  'grupo',
                                                                   '_activa',
                                                                   'fecha_alta',
                                                                   'fecha_baja',
                                                                   'comentarios',
                                                                   'dni',
                                                                   'fecha_nac',
-                                                                  ], 
+                                                                  ],
                                                                  [WidgetOnlyForm('foto'),
                                                                   'estado_civil',
                                                                   'domicilio',
@@ -498,7 +498,7 @@ class Cartera(Entity):
 
     def __unicode__(self):
         return self.nombre or UNDEFINED
-        
+
 class Credito(Entity):
     using_options(tablename='credito')
     beneficiaria = ManyToOne('Beneficiaria', ondelete='cascade', onupdate='cascade', required=True)
@@ -520,13 +520,13 @@ class Credito(Entity):
 
     def _get_fecha_entrega(self):
         return self.fecha_entrega
-    
+
     def _set_fecha_entrega(self, fecha):
         self.fecha_entrega = fecha
         self.fecha_cobro = fecha + datetime.timedelta(days=2)
 
     _fecha_entrega = property(_get_fecha_entrega, _set_fecha_entrega)
-    
+
     def _deuda_aleman(self):
         factor = self.tasa_interes / 24
         cuota = self.prestamo / self.cuotas
@@ -609,7 +609,7 @@ class Credito(Entity):
     def rubro_prop(self):
         return sql.select([Rubro.nombre],
                           Credito.rubro_id == Rubro.id)
-    
+
     @property
     def para_construccion(self):
         if self.rubro:
@@ -632,6 +632,7 @@ class Credito(Entity):
         pass
 
         # # # TODO: comentado porque rompe los filtros y pierdo los delegates
+        # # mostrar el campo gastos_arq editable o no en funcion de la actividad
         # def get_field_attributes(self, field_name):
         #     field_attributes = super(EntityAdmin, self).get_field_attributes(field_name)
         #     # if field_name == 'gastos_arq':
@@ -639,7 +640,7 @@ class Credito(Entity):
         #     # else:
         #     #     field_attributes['editable'] = True
         #     return field_attributes
-    
+
 class Pago(Entity):
     using_options(tablename='pago')
     credito = ManyToOne('Credito', primary_key=True, ondelete='cascade', onupdate='cascade')
@@ -683,7 +684,7 @@ class Pago(Entity):
                                         'monto',
                                         'asistencia',
                                         ]])])
-        
+
     def __unicode__(self):
         if self.credito:
             return '%s %s (cred. #%s)' % (self.credito.beneficiaria.nombre,
