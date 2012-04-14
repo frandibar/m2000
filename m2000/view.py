@@ -31,7 +31,7 @@ from camelot.admin.entity_admin import EntityAdmin
 # from camelot.admin.not_editable_admin import notEditableAdmin
 from camelot.admin.object_admin import ObjectAdmin
 from camelot.admin.validator.object_validator import ObjectValidator
-from camelot.view.action_steps import ChangeObject, FlushSession, UpdateProgress, Refresh
+from camelot.view.action_steps import ChangeObject, UpdateProgress
 from camelot.view.art import ColorScheme, Icon
 from camelot.view.controls.delegates import DateDelegate, FloatDelegate, CurrencyDelegate, IntegerDelegate
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter
@@ -129,7 +129,7 @@ def creditos_activos():
     tbl_credito = Credito.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
-    
+
     stmt = select([tbl_credito.c.id.label('credito_id'),
                    func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
                    tbl_benef.c.comentarios,
@@ -145,14 +145,14 @@ def creditos_activos():
                                    ),
                   )
     return stmt.alias('creditos_activos')
-        
+
 def credito_pagos():
     # Todos los pagos para cada credito.
     # Aquellos creditos que no tienen pago, muestran la fecha de entrega como fecha de pago y el monto en 0
 
     tbl_credito = Credito.mapper.mapped_table
     tbl_pago = Pago.mapper.mapped_table
-    
+
     stmt = select([tbl_credito.c.id.label('credito_id'),
                    func.ifnull(tbl_pago.c.fecha, tbl_credito.c.fecha_entrega).label('fecha_pago_o_entrega'),
                    func.ifnull(tbl_pago.c.monto, 0).label('monto'),
@@ -348,7 +348,7 @@ def indicadores():
                    pre.c.cuota_calculada,
                    pre.c.cuotas_pagadas,
                    pre.c.cuotas_pagadas_porcent,
-                   pre.c.cuotas_teorico,       
+                   pre.c.cuotas_teorico,
                    (pre.c.cuotas_teorico / pre.c.cuotas).label('cuotas_teorico_porcent'),
                    (pre.c.cuotas_teorico - pre.c.cuotas_pagadas).label('diferencia_cuotas'),
                    pre.c.saldo,
@@ -387,7 +387,7 @@ class CreditosFinalizadosSinSaldar(object):
                         'deuda_total',
                         'saldo',
                         ]
-        
+
         list_filter = [ComboBoxFilter('barrio'),
                        ]
         list_action = None
@@ -416,7 +416,7 @@ def creditos_finalizados_sin_saldar():
     tbl_barrio = Barrio.mapper.mapped_table
 
     tpc = total_pagos_x_credito()
-    
+
     stmt = select([tbl_credito.c.id.label('credito_id'),
                    func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
                    tbl_benef.c.comentarios,
@@ -493,7 +493,7 @@ def perdida_x_incobrable():
     tbl_credito = Credito.mapper.mapped_table
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
-    
+
     stmt = select([tbl_credito.c.id.label('credito_id'),
                    tbl_benef.c.comentarios,
                    func.concat(tbl_benef.c.nombre, ' ', tbl_benef.c.apellido).label('beneficiaria'),
@@ -547,7 +547,7 @@ def recaudacion_x_cartera():
     tbl_benef = Beneficiaria.mapper.mapped_table
     tbl_barrio = Barrio.mapper.mapped_table
     tbl_cartera = Cartera.mapper.mapped_table
-    
+
     stmt = select([tbl_cartera.c.nombre.label('cartera'),
                    tbl_credito.c.tasa_interes,
                    func.sum(tbl_pago.c.monto).label('recaudacion'),
@@ -645,7 +645,7 @@ class RecaudacionRealTotal(object):
 def recaudacion_real_total():
     rec = recaudacion()
     tbl_cartera = Cartera.mapper.mapped_table
-    
+
     stmt = select([func.concat(func.mid(rec.c.semana, 1, 4), '.', func.mid(rec.c.semana, 5, 2)).label('semana'),
                    tbl_cartera.c.nombre.label('cartera'),
                    rec.c.tasa_interes,
@@ -739,7 +739,7 @@ def recaudacion_potencial_total():
                             from_obj=rec_real,
                             group_by=rec_real.c.semana,
                             ).alias('rec_total_real')
-    
+
     rec_pot = select([rec_total_real.c.semana,
                       rec_total_real.c.recaudacion,
                       func.sum(tbl_credito.c.deuda_total / tbl_credito.c.cuotas).label('recaudacion_potencial'),
@@ -752,7 +752,7 @@ def recaudacion_potencial_total():
                                           tbl_credito.c.fecha_finalizacion == None)),
                      group_by=rec_total_real.c.semana,
                      ).alias('rec_pot')
-    
+
     stmt = select([func.concat(func.mid(rec_pot.c.semana, 1, 4), '.', func.mid(rec_pot.c.semana, 5, 2)).label('semana'),
                    rec_pot.c.recaudacion,
                    rec_pot.c.recaudacion_potencial,
@@ -990,7 +990,7 @@ def setup_views():
     setup_views_recaudacion()
     setup_views_cartera()
     setup_views_debug()
-    
+
 class DatesValidator(ObjectValidator):
     def objectValidity(self, entity_instance):
         messages = super(DatesValidator, self).objectValidity(entity_instance)
@@ -1017,14 +1017,14 @@ class FechaCorteDialog(object):
         field_attributes = dict(fecha = dict(name = 'Fecha de Corte',
                                              delegate = DateDelegate,
                                              editable = True))
-            
+
 class FechaCorte(Action):
     icon = Icon('tango/16x16/apps/office-calendar.png')
-    
+
     def __init__(self, name, cls):
         self.verbose_name = name
         self._cls = cls
-        
+
     def model_run(self, model_context):
         # ask for date intervals
         fecha = FechaCorteDialog()
@@ -1045,7 +1045,7 @@ class FechaCorte(Action):
         Parametro.query.session.flush()
 
         yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))
-    
+
 class IntervaloFechasDialog(object):
     def __init__(self):
         default = datetime.date.today()
@@ -1078,11 +1078,11 @@ class IntervaloFechasDialog(object):
 
 class IntervaloFechas(Action):
     icon = Icon('tango/16x16/apps/office-calendar.png')
-    
+
     def __init__(self, name, cls):
         self.verbose_name = name
         self._cls = cls
-        
+
     def model_run(self, model_context):
         # ask for date intervals
         fechas = IntervaloFechasDialog()
@@ -1093,15 +1093,15 @@ class IntervaloFechas(Action):
 
         desde = fechas.desde
         hasta = fechas.hasta
-            
+
         if hasta < desde:
             hasta = desde
-            
+
         # guardar valores para usar por default la proxima vez
         conf = config.Config()
         conf.set('fecha_desde', desde.strftime('%Y-%m-%d'))
         conf.set('fecha_hasta', hasta.strftime('%Y-%m-%d'))
-        
+
         # add dates
         week = datetime.timedelta(weeks=1)
         while desde <= hasta:
