@@ -184,6 +184,11 @@ class PagoAdminBase(EntityAdmin):
     list_actions = [reports.ReportePagos()]
     delete_mode = 'on_confirm'
 
+    # esto es para que se refresque el campo total_pagos de credito
+    def get_depending_objects(self, obj):
+        yield obj.credito
+
+
 class PagoAdminEmbedded(PagoAdminBase):
     list_display = ['fecha',
                     'monto',
@@ -585,10 +590,13 @@ class Credito(Entity):
     def activo(self):
         return sql.select([sql.column('fecha_finalizacion') == sql.null()])
 
-    @ColumnProperty
+    # No uso ColumnProperty para que se refresque automaticamente cuando se modifican los totales
+    @property
     def total_pagos(self):
-        return sql.select([sql.func.sum(Pago.monto)],
-                          and_(Pago.credito_id == self.id))
+        total = 0
+        for i in self.pagos:
+            total += i.monto
+        return total
 
     # agrego esta property para poder ordenar y filtrar por este campo
     @ColumnProperty
