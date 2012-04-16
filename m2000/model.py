@@ -173,12 +173,12 @@ class PagoAdminBase(EntityAdmin):
                             beneficiaria = dict(editable = False),
                             barrio = dict(editable = False),
                             )
-    search_all_fields = False
+    search_all_fields = True
     expanded_list_search = ['beneficiaria',
                             'nro_credito',
                             'fecha',
                             'monto',
-                            'asistencia', # TODO no lo toma
+                            'asistencia.codigo',
                             'barrio',
                             ]
     list_actions = [reports.ReportePagos()]
