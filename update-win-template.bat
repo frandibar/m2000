@@ -11,3 +11,7 @@ xxmklink "%HOMEPATH%\Desktop\m2000.lnk"    %HOMEDRIVE%\Python27\python.exe %HOME
 
 echo Aplicando parche a version 11.12.30 de camelot.
 copy base.py %HOMEDRIVE%\Python27\Lib\site-packages\Camelot-11.12.30-py2.7.egg\camelot\admin\action\
+
+echo Copiando archivos adicionales.
+copy firma-tesorero.png   %HOMEDRIVE%\Python27\Lib\site-packages\m2000-__VERSION__-py2.7.egg\m2000\media
+copy firma-presidente.png %HOMEDRIVE%\Python27\Lib\site-packages\m2000-__VERSION__-py2.7.egg\m2000\media
