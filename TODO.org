@@ -1,45 +1,45 @@
-* COMO SIGO:
-** validar creditos?
-
-
-* PREGUNTAS:
-** FUNCIONALES
-*** como hacer que un action en el pane izq de appadmin pueda abrirse en otro tab (el tooltip aparece por no anda el boton derecho)
+* TODO PREGUNTAS:
+** TODO FUNCIONALES
+*** TODO como hacer que un action en el pane izq de appadmin pueda abrirse en otro tab (el tooltip aparece por no anda el boton derecho)
 workaround: clic en tab principal y abrir desde ahi
-*** como obtengo el filtro para mostrar en un reporte?
-*** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
-*** como guardar preferencias de impresion, ej margenes (me parece que se setea con la impresora)
-*** como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
+*** TODO como obtengo el filtro para mostrar en un reporte?
+*** TODO porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
+*** TODO como guardar preferencias de impresion, ej margenes (me parece que se setea con la impresora)
+    Para poder ver el contrato mutuo en 1 hoja, alcanza con setear los margenes superior en 1cm e inferior en 3cm
+*** TODO como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
   http://dev.mysql.com/doc/refman/5.1/en/storage-engine-setting.html
   probe declarar en la clase del entity
     __table_args__ = {'mysql_engine':'InnoDB'}
   pero no funciono
-*** como hacer el table view read only y el form editable.
-** MISC
-*** como hacer andar las teclas de flecha en camelot_manage console
-** ESTETICAS
-*** como centrar campos en table view (especialmente booleans)
-*** como modificar la ubicacion de las actions
-*** como setear el ancho de los campos en table view
-*** como evito mostrar el id en el titulo del form?
-** PARA M2000
-*** el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
-se usa como id mnemotecnico, podria generarse automaticamente.
+*** TODO como hacer el table view read only y el form editable.
+** TODO MISC
+*** TODO como hacer andar las teclas de flecha en camelot_manage console
+** TODO ESTETICAS
+*** TODO como setear el ancho de los campos en form view
+*** TODO como centrar campos en table view (especialmente booleans)
+    I'd like to have boolean fields centered in the table view. Is there a way of doing this? I've grepped the code but only found alignment for labels.
+*** TODO como evito mostrar el id en el titulo del form?
+*** DONE como setear el ancho de los campos en table view
+    RTA: hay un nuevo parametro width pero no es recomendado.
+** DONE PARA M2000
+*** DONE el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
+    RTA: se usa como id mnemotecnico, podria generarse automaticamente.
 *** DONE las fechas de pago corresponden a viernes o sabado?
-se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
+    RTA: se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
 
 
-* BUGS
-** ordenamiento: beneficiarias.nombre no anda de forma descendente
-** busqueda en pagos y creditos esta rota, salvo busqueda expandida.
-** cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
+* TODO BUGS
+** TODO busqueda en pagos y creditos esta rota, salvo busqueda expandida.
+** TODO cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
 IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
-** error al eliminar una beneficiaria
+** TODO error al eliminar una beneficiaria
 IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`credito`, CONSTRAINT `credito_beneficiaria_id_fk` FOREIGN KEY (`beneficiaria_id`) REFERENCES `beneficiaria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE credito SET beneficiaria_id=%s WHERE credito.id = %s' (None, 83L)
-** error al eliminar un credito
+** TODO error al eliminar un credito
 AssertionError: Dependency rule tried to blank-out primary key column 'pago.credito_id' on instance '<Pago at 0x7fa5e51a47d0>'
-** error al eliminar actividad
+** TODO error al eliminar actividad
 IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`rubro`, CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE rubro SET actividad_id=%s WHERE rubro.id = %s' (None, 1L)
+
+** TODO si se produce un error al cargar la foto de una beneficiaria, se rompe el form (no andan los validadores)
 
 
 * FUTURE
@@ -53,9 +53,7 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 ** en carga de pagos agregar boton "nuevo pago"?
 ** reemplazar tabla parametro por una view dinamica?
 ** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
-** en fechas de reportes, guardar la ultima usada y usar como default
 ** probar sumas en reportes como querys sqlalchemy en vez de iterar, mmm no se, 1ro tengo que saber cual es el filtro aplicado, ver get_collection. Por ahora no.
-** en contrato mutuo colocar tasa de interes en letras
 ** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
 ** reemplazar header jpg por svg
 ** agregar diccionario (ayuda) con definiciones de formulas y comportamiento. (documentacion con sphinx?)
@@ -64,7 +62,7 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 ** poder inhabilitar boton de crear nuevo credito en pago
 
 
-* COSAS A MOSTRAR
+* DEMO
 ** como abrir en nueva pestaña
 ** como filtrar (incluyendo busqueda con lupa), aclarar que se pueden especificar por cuales campos buscar por defecto
 ** como ordenar por columna asc/desc
@@ -84,7 +82,7 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 
 * DEPLOYMENT
 python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
-mysql installer 
+mysql installer
 full http://linorg.usp.br/mysqlDownloads/MySQLInstaller/mysql-installer-5.5.19.0.msi
 en windows el mysql installer requiere .NET framework 4.0 http://go.microsoft.com/fwlink/?LinkId=181012
 only engine http://mysql.cce.usp.br/Downloads/MySQL-5.5/mysql-5.5.19-win32.msi
@@ -97,58 +95,7 @@ pdf printer para windows
 http://www.bullzip.com/products/pdf/info.php
 
 
-* TIPS
-** no se puede filtrar por @property
-http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
-** puedo usar @property en vez de @ColumnProperty, salvo que quiera incluir el campo en un filtro
-** para que el form sea no editable
-http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/api/admin/not_editable_admin.html
-** para setupear camelot_manage
-~/projects/m2000$ export PYTHONPATH=/home/fran/projects/m2000
-~/projects/m2000$ camelot_manage console
-** el default location para backups:
-  ./home/fran/.local/share/data/Conceptive Engineering/Mujeres 2000 - Gestión de Créditos/backups/-11_19_11_12_07_PM.db
-** agregar un form_display a la clase admin para definir el form
-  http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/object_admin.html
-** para validar un cambio, usar validators
-  http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/validators.html   
-** para agregar un launcher en ubuntu
-copiar el file m2000.desktop en /usr/share/applications
-** para impedir que se abra el form view, en la clase admin definir
-        list_action = None
-aunque esto resulta en una exception
-** para abrir un form maximizado, setear en admin:  form_state = 'maximized'
-** para ajustar mejor el ancho de las columnas
-modifique los fuentes en view/controls/tableview.py [[file://usr/local/lib/python2.7/dist-packages/Camelot-11.12.30-py2.7.egg/camelot/view/controls/tableview.py::631][here]]
-#+BEGIN_SRC python
-  @QtCore.pyqtSlot()
-  @gui_function
-  def tableLayoutChanged( self ):
-      logger.debug('tableLayoutChanged')
-      model = self.table.model()
-      if self.header:
-          self.header.setNumberOfRows( model.rowCount() )
-      item_delegate = model.getItemDelegate()
-      if item_delegate:
-          self.table.setItemDelegate( item_delegate )
-      #self.table.resizeColumnsToContents()
-      for i in range( model.columnCount() ):
-          self.table.setColumnWidth( i, model.headerData( i, Qt.Horizontal, Qt.SizeHintRole ).toSize().width() * 0.7)
-#+END_SRC
-** si se produce un error al cargar la foto de una beneficiaria, se rompe el form (no andan los validadores)
-** para preservar los formatos al exportar a excel, definir los delegates
-** para el archivo de configuracion pude haber usado camelot.core.conf
-** ordenamiento por properties en tableview no funciona. es asi por diseno
-https://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f/88b71699cd831a87?hl=es&ie=UTF-8&q=tableview+order+by+property+camelot&pli=1#88b71699cd831a87
-** en windows, al lanzar desde un shortcut se abre una ventana de dos, esta sirve para ver los mensajes de error asi que no quitarla.
-
-
-* NOTAS SOBRE LOS DATOS:
-mar dic 27, 2011
-elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)
-
-
-* CAMBIOS EN DB
+* CAMBIOS EN DB con respecto al access
 ** vistas renombradas
 100 qTotalPagos ant -> 100_credito_pagos
 100 qTotalPagos -> 100_credito_total_pagos
@@ -165,47 +112,29 @@ elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)
 402 Creditos activos -> 402_creditos_activos
 901 Perdida por Incobrable -> 901_perdida_x_incobrable
 ** CAMBIOS EN QUERIES
-[210 pagos] era una agrupacion, ahora toma directamente de tabla pagos. ver si esta bien 
+[210 pagos] era una agrupacion, ahora toma directamente de tabla pagos. ver si esta bien
 702 recaudacion potencial por barrio hace join con 803 asistencia. no tiene sentido si es potencial, no incluye pagos.
 402 creditos activos ya no depende de la fecha de corte
 
 
 * LINKS DE INTERES
-** gui refresh
-http://groups.google.com/group/project-camelot/browse_thread/thread/374566244b2aeb91
-http://groups.google.com/group/project-camelot/browse_thread/thread/31c3c42e133a1ad7
-** unicode
-http://groups.google.com/group/project-camelot/browse_thread/thread/6dfcd912b68c4c3c
-** eventos:
-http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/calculated_fields.html
-** custom forms
-http://groups.google.com/group/project-camelot/browse_thread/thread/d30f371612d29591
-** jinja
-http://jinja.pocoo.org/docs/tricks/
-** otros
-http://groups.google.com/group/project-camelot/browse_thread/thread/2ee97d27d03b4df7/a7cc11a016c8e705#a7cc11a016c8e705
-http://groups.google.com/group/project-camelot/browse_thread/thread/84e616d32b98f604/b2c48861ed346592?show_docid=b2c48861ed346592
 ** deploy
 setuptools  http://peak.telecommunity.com/DevCenter/setuptools
 http://pypi.python.org/pypi?%3Aaction=list_classifiers
-python mysql 
+python mysql
 http://stackoverflow.com/questions/645943/mysql-for-python-in-windows
 http://www.fuyun.org/2009/12/install-mysql-for-python-on-windows/
-** html
-http://matthewjamestaylor.com/blog/keeping-footers-at-the-bottom-of-the-page
 ** icono windows generador online
 http://www.digital-pic.com/icon/
 ** shortcut generator en windows
 http://www.xxcopy.com/xxcopy38.htm
-** git
-http://ariejan.net/2009/10/26/how-to-create-and-apply-a-patch-with-git
 
 
-* SNIPPETS
-    # set all fields as non editable
-    def get_field_attributes(self, field_name):
-        field_attributes = super(EntityAdmin, self).get_field_attributes(field_name)
-        field_attributes['editable'] = False
-        return field_attributes
 
-
+* COMO ARMAR UN ARCHIVO DE RELEASE
+  crear un archivo llamado v[version].zip que contenga
+  + base.py
+  + m2000-[version]-py2.7.egg
+  + update-win.bat
+  + firma-tesorero.png
+  + firma-presidente.png
