@@ -50,10 +50,8 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 
 * ENHANCEMENTS:
 ** permitir ir al credito/beneficiaria a partir de una fila de un reporte.
-** en carga de pagos agregar boton "nuevo pago"?
 ** reemplazar tabla parametro por una view dinamica?
 ** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
-** en fechas de reportes, guardar la ultima usada y usar como default
 ** probar sumas en reportes como querys sqlalchemy en vez de iterar, mmm no se, 1ro tengo que saber cual es el filtro aplicado, ver get_collection. Por ahora no.
 ** en contrato mutuo colocar tasa de interes en letras
 ** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
@@ -84,7 +82,7 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 
 * DEPLOYMENT
 python installer http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tar.bz2
-mysql installer 
+mysql installer
 full http://linorg.usp.br/mysqlDownloads/MySQLInstaller/mysql-installer-5.5.19.0.msi
 en windows el mysql installer requiere .NET framework 4.0 http://go.microsoft.com/fwlink/?LinkId=181012
 only engine http://mysql.cce.usp.br/Downloads/MySQL-5.5/mysql-5.5.19-win32.msi
@@ -98,54 +96,7 @@ http://www.bullzip.com/products/pdf/info.php
 
 
 * TIPS
-** no se puede filtrar por @property
-http://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f
-** puedo usar @property en vez de @ColumnProperty, salvo que quiera incluir el campo en un filtro
-** para que el form sea no editable
-http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/api/admin/not_editable_admin.html
-** para setupear camelot_manage
-~/projects/m2000$ export PYTHONPATH=/home/fran/projects/m2000
-~/projects/m2000$ camelot_manage console
-** el default location para backups:
-  ./home/fran/.local/share/data/Conceptive Engineering/Mujeres 2000 - Gestión de Créditos/backups/-11_19_11_12_07_PM.db
-** agregar un form_display a la clase admin para definir el form
-  http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/object_admin.html
-** para validar un cambio, usar validators
-  http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/validators.html   
-** para agregar un launcher en ubuntu
-copiar el file m2000.desktop en /usr/share/applications
-** para impedir que se abra el form view, en la clase admin definir
-        list_action = None
-aunque esto resulta en una exception
-** para abrir un form maximizado, setear en admin:  form_state = 'maximized'
-** para ajustar mejor el ancho de las columnas
-modifique los fuentes en view/controls/tableview.py [[file://usr/local/lib/python2.7/dist-packages/Camelot-11.12.30-py2.7.egg/camelot/view/controls/tableview.py::631][here]]
-#+BEGIN_SRC python
-  @QtCore.pyqtSlot()
-  @gui_function
-  def tableLayoutChanged( self ):
-      logger.debug('tableLayoutChanged')
-      model = self.table.model()
-      if self.header:
-          self.header.setNumberOfRows( model.rowCount() )
-      item_delegate = model.getItemDelegate()
-      if item_delegate:
-          self.table.setItemDelegate( item_delegate )
-      #self.table.resizeColumnsToContents()
-      for i in range( model.columnCount() ):
-          self.table.setColumnWidth( i, model.headerData( i, Qt.Horizontal, Qt.SizeHintRole ).toSize().width() * 0.7)
-#+END_SRC
 ** si se produce un error al cargar la foto de una beneficiaria, se rompe el form (no andan los validadores)
-** para preservar los formatos al exportar a excel, definir los delegates
-** para el archivo de configuracion pude haber usado camelot.core.conf
-** ordenamiento por properties en tableview no funciona. es asi por diseno
-https://groups.google.com/group/project-camelot/browse_thread/thread/4e86d969bb997c0f/88b71699cd831a87?hl=es&ie=UTF-8&q=tableview+order+by+property+camelot&pli=1#88b71699cd831a87
-** en windows, al lanzar desde un shortcut se abre una ventana de dos, esta sirve para ver los mensajes de error asi que no quitarla.
-
-
-* NOTAS SOBRE LOS DATOS:
-mar dic 27, 2011
-elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)
 
 
 * CAMBIOS EN DB
@@ -165,30 +116,16 @@ elimine el credito 469 porque era duplicado y no registraba pagos (soria #3)
 402 Creditos activos -> 402_creditos_activos
 901 Perdida por Incobrable -> 901_perdida_x_incobrable
 ** CAMBIOS EN QUERIES
-[210 pagos] era una agrupacion, ahora toma directamente de tabla pagos. ver si esta bien 
+[210 pagos] era una agrupacion, ahora toma directamente de tabla pagos. ver si esta bien
 702 recaudacion potencial por barrio hace join con 803 asistencia. no tiene sentido si es potencial, no incluye pagos.
 402 creditos activos ya no depende de la fecha de corte
 
 
 * LINKS DE INTERES
-** gui refresh
-http://groups.google.com/group/project-camelot/browse_thread/thread/374566244b2aeb91
-http://groups.google.com/group/project-camelot/browse_thread/thread/31c3c42e133a1ad7
-** unicode
-http://groups.google.com/group/project-camelot/browse_thread/thread/6dfcd912b68c4c3c
-** eventos:
-http://downloads.conceptive.be/downloads/camelot/doc/sphinx/build/doc/calculated_fields.html
-** custom forms
-http://groups.google.com/group/project-camelot/browse_thread/thread/d30f371612d29591
-** jinja
-http://jinja.pocoo.org/docs/tricks/
-** otros
-http://groups.google.com/group/project-camelot/browse_thread/thread/2ee97d27d03b4df7/a7cc11a016c8e705#a7cc11a016c8e705
-http://groups.google.com/group/project-camelot/browse_thread/thread/84e616d32b98f604/b2c48861ed346592?show_docid=b2c48861ed346592
 ** deploy
 setuptools  http://peak.telecommunity.com/DevCenter/setuptools
 http://pypi.python.org/pypi?%3Aaction=list_classifiers
-python mysql 
+python mysql
 http://stackoverflow.com/questions/645943/mysql-for-python-in-windows
 http://www.fuyun.org/2009/12/install-mysql-for-python-on-windows/
 ** html
@@ -197,15 +134,3 @@ http://matthewjamestaylor.com/blog/keeping-footers-at-the-bottom-of-the-page
 http://www.digital-pic.com/icon/
 ** shortcut generator en windows
 http://www.xxcopy.com/xxcopy38.htm
-** git
-http://ariejan.net/2009/10/26/how-to-create-and-apply-a-patch-with-git
-
-
-* SNIPPETS
-    # set all fields as non editable
-    def get_field_attributes(self, field_name):
-        field_attributes = super(EntityAdmin, self).get_field_attributes(field_name)
-        field_attributes['editable'] = False
-        return field_attributes
-
-
