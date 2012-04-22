@@ -51,7 +51,7 @@ class MyApplicationAdmin(ApplicationAdmin):
 
     def get_splashscreen(self):
         return PyQt4.QtGui.QPixmap('media/splashscreen.png')
-        
+
     def get_sections(self):
         sections = [Section(u'Día a Día',
                             self,
@@ -60,6 +60,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                                 model.Beneficiaria,
                                 model.Credito,
                                 model.Pago,
+                                model.PlanillaPagos,
                                 ]),
                     Section(u'Indicadores',
                             self,
@@ -75,7 +76,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                                 view.IntervaloFechas(u'Real Total', view.RecaudacionRealTotal),
                                 view.IntervaloFechas(u'Potencial Total', view.RecaudacionPotencialTotal),
                                 view.IntervaloFechas(u'Real Total por Barrio', view.RecaudacionRealTotalPorBarrio),
-                                view.IntervaloFechas(u'Potencial Total por Barrio', view.RecaudacionPotencialTotalPorBarrio),
+                                view.IntervaloFechasSemanales(u'Potencial Total por Barrio', view.RecaudacionPotencialTotalPorBarrio),
                                 ]),
                     Section(u'Cartera',
                             self,
@@ -121,9 +122,9 @@ class MyApplicationAdmin(ApplicationAdmin):
         new_pago_action = action.OpenNewView(self.get_related_admin(model.Pago))
         new_pago_action.icon = Icon('tango/32x32/actions/list-add.png')
         return [new_pago_action]
-    
+
     def get_translator(self):
-        camelot_translator = self._load_translator_from_file( 'camelot', 
+        camelot_translator = self._load_translator_from_file( 'camelot',
                                                               'camelot',
                                                               'art/translations/es_AR/LC_MESSAGES/')
         return [camelot_translator]
@@ -145,7 +146,7 @@ class MyApplicationAdmin(ApplicationAdmin):
                 action.application_action.ShowHelp(),
                 ]
             return actions
-    
+
     # def get_stylesheet(self):
     #     from camelot.view import art
     #     return art.read(os.path.join('stylesheet', 'office2007_blue.qss'))

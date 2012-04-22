@@ -1102,12 +1102,54 @@ class IntervaloFechas(Action):
         conf.set('fecha_desde', desde.strftime('%Y-%m-%d'))
         conf.set('fecha_hasta', hasta.strftime('%Y-%m-%d'))
 
+        pdesde = Parametro()
+        pdesde.fecha = desde
+        yield UpdateProgress()
+
+        phasta = Parametro()
+        phasta.fecha = hasta
+        yield UpdateProgress()
+
+        Parametro.query.session.flush()
+        yield application_action.OpenTableView(model_context.admin.get_application_admin().get_related_admin(self._cls))
+
+
+class IntervaloFechasSemanales(Action):
+    icon = Icon('tango/16x16/apps/office-calendar.png')
+
+    def __init__(self, name, cls):
+        self.verbose_name = name
+        self._cls = cls
+
+    def model_run(self, model_context):
+        # ask for date intervals
+        fechas = IntervaloFechasDialog()
+        yield ChangeObject(fechas)
+
+        # truncate table (after ChangeObject since user may cancel)
+        Parametro.query.delete()        # holds only start and end date
+
+        desde = fechas.desde
+        hasta = fechas.hasta
+
+        if hasta < desde:
+            hasta = desde
+
+        # guardar valores para usar por default la proxima vez
+        conf = config.Config()
+        conf.set('fecha_desde', desde.strftime('%Y-%m-%d'))
+        conf.set('fecha_hasta', hasta.strftime('%Y-%m-%d'))
+
         # add dates
         week = datetime.timedelta(weeks=1)
         while desde <= hasta:
             p = Parametro()
             p.fecha = desde
             desde += week
+            yield UpdateProgress()
+        if desde - hasta < week:
+            p = Parametro()
+            p.fecha = hasta
             yield UpdateProgress()
 
         Parametro.query.session.flush()

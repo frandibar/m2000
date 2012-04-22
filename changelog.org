@@ -1,5 +1,15 @@
 Listado de cambios entre versiones
 
+* master
+
+
+* planilla-pagos
+- [[https://github.com/frandibar/m2000/issues/1][issue #1]]: Campo 'Total pagos' no refresca automáticamente
+- [[https://github.com/frandibar/m2000/issues/5][issue #5]]: Firmas en contrato mutuo
+
+* intervalo-fechas
+- [[https://github.com/frandibar/m2000/issues/6][issue #6]]: Intervalos de fechas
+
 * v12.1.17
 - Dialogos de fecha aparecen antes de lanzar reporte
 - Columna y filtro por barrio en creditos y pagos.
