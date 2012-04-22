@@ -39,6 +39,12 @@ import settings
 def header_image_filename():
     return os.path.join(settings.CAMELOT_MEDIA_ROOT, 'header.jpg')
 
+def firma_tesorero_filename():
+    return os.path.join(settings.CAMELOT_MEDIA_ROOT, 'firma-tesorero.png')
+
+def firma_presidente_filename():
+    return os.path.join(settings.CAMELOT_MEDIA_ROOT, 'firma-presidente.png')
+
 def spacer(field, width=10):
     if not field:
         return '_' * width
@@ -96,7 +102,7 @@ class ReportePagos(Action):
             total_monto += row.monto
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'detalle': detalle,
             'total_monto': money_fmt(total_monto),
@@ -125,6 +131,8 @@ class ContratoMutuo(Action):
 
         context = {
             'header_image_filename': header_image_filename(),
+            'firma_presidente_filename': firma_presidente_filename(),
+            'firma_tesorero_filename': firma_tesorero_filename(),
             'beneficiaria': '%s %s' % (obj.beneficiaria.nombre, obj.beneficiaria.apellido),
             'dni': spacer(obj.beneficiaria.dni),
             'fecha_nac': spacer(obj.beneficiaria.fecha_nac),
@@ -270,11 +278,11 @@ class PlanillaPagos(Action):
         env = Environment(loader=fileloader)
         t = env.get_template(template)
         yield PrintHtml(t.render(context))
-        
+
 class ReporteIndicadores(Action):
     verbose_name = ''
     icon = Icon('tango/16x16/actions/document-print.png')
-    
+
     def _build_context(self, model_context):
         Linea = namedtuple('Linea', ['comentarios',
                                      'barrio',
@@ -331,7 +339,7 @@ class ReporteIndicadores(Action):
                           )
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'fecha_corte': fecha_corte(),
             'detalle': detalle,
@@ -367,7 +375,7 @@ class ReporteRecaudacionPorCartera(Action):
             total_recaudacion += row.recaudacion
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'fecha_desde': fecha_desde(),
             'fecha_hasta': fecha_hasta(),
@@ -405,7 +413,7 @@ class ReporteRecaudacionRealTotal(Action):
             total_recaudacion += row.recaudacion
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'fecha_desde': fecha_desde(),
             'fecha_hasta': fecha_hasta(),
@@ -445,7 +453,7 @@ class ReporteRecaudacionPotencialTotal(Action):
             total_recaudacion_potencial += row.recaudacion_potencial
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'fecha_desde': fecha_desde(),
             'fecha_hasta': fecha_hasta(),
@@ -484,7 +492,7 @@ class ReporteRecaudacionRealTotalPorBarrio(Action):
             total_recaudacion += row.recaudacion
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'fecha_desde': fecha_desde(),
             'fecha_hasta': fecha_hasta(),
@@ -527,7 +535,7 @@ class ReporteRecaudacionPotencialTotalPorBarrio(Action):
             total_recaudacion_potencial += row.recaudacion_potencial
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'fecha_desde': fecha_desde(),
             'fecha_hasta': fecha_hasta(),
@@ -576,7 +584,7 @@ class ReporteChequesEntregados(Action):
             total_cheque += row.monto_cheque
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),
@@ -622,7 +630,7 @@ class ReporteCreditosActivos(Action):
             total_saldo += row.saldo
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),
@@ -678,7 +686,7 @@ class ReportePerdidaPorIncobrable(Action):
             total_saldo += row.saldo
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),
@@ -731,7 +739,7 @@ class ReporteCreditosFinalizadosSinSaldar(Action):
             total_saldo += row.saldo
             detalle.append(linea)
 
-        context = { 
+        context = {
             'header_image_filename': header_image_filename(),
             'detalle': detalle,
             'total_prestamo': money_fmt(total_prestamo),

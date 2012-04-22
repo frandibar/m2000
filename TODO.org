@@ -1,45 +1,54 @@
-* COMO SIGO:
-** validar creditos?
+* COMO ARMAR UN ARCHIVO DE RELEASE
+  crear un archivo llamado v[version].zip que contenga
+  + base.py
+  + m2000-[version]-py2.7.egg
+  + update-win.bat
+  + firma-tesorero.png
+  + firma-presidente.png
 
 
-* PREGUNTAS:
-** FUNCIONALES
-*** como hacer que un action en el pane izq de appadmin pueda abrirse en otro tab (el tooltip aparece por no anda el boton derecho)
-workaround: clic en tab principal y abrir desde ahi
-*** como obtengo el filtro para mostrar en un reporte?
-*** porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
-*** como guardar preferencias de impresion, ej margenes (me parece que se setea con la impresora)
-*** como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
-  http://dev.mysql.com/doc/refman/5.1/en/storage-engine-setting.html
-  probe declarar en la clase del entity
+* TODO PREGUNTAS:
+** TODO FUNCIONALES
+*** TODO como hacer que un action en el pane izq de appadmin pueda abrirse en otro tab (el tooltip aparece por no anda el boton derecho)
+    workaround: clic en tab principal y abrir desde ahi
+*** TODO como obtengo el filtro para mostrar en un reporte?
+*** TODO porque debe ser editable el tableview para poder usar listactions, o al menos no funciona con el parametro actions=true en noteditableadmin
+*** TODO como guardar preferencias de impresion, ej margenes (me parece que se setea con la impresora)
+    Para poder ver el contrato mutuo en 1 hoja, alcanza con setear los margenes superior en 1cm e inferior en 3cm
+*** TODO como setear el ENGINE de mysql en InnoDB en vez de MyIsam (para soportar integridad referencial)
+    http://dev.mysql.com/doc/refman/5.1/en/storage-engine-setting.html
+    probe declarar en la clase del entity
     __table_args__ = {'mysql_engine':'InnoDB'}
-  pero no funciono
-*** como hacer el table view read only y el form editable.
-** MISC
-*** como hacer andar las teclas de flecha en camelot_manage console
-** ESTETICAS
-*** como centrar campos en table view (especialmente booleans)
-*** como modificar la ubicacion de las actions
-*** como setear el ancho de los campos en table view
-*** como evito mostrar el id en el titulo del form?
-** PARA M2000
-*** el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
-se usa como id mnemotecnico, podria generarse automaticamente.
+    pero no funciono
+*** TODO como hacer el table view read only y el form editable.
+** TODO MISC
+*** TODO como hacer andar las teclas de flecha en camelot_manage console
+** TODO ESTETICAS
+*** TODO como setear el ancho de los campos en form view
+*** TODO como centrar campos en table view (especialmente booleans)
+    I'd like to have boolean fields centered in the table view. Is there a way of doing this? I've grepped the code but only found alignment for labels.
+*** TODO como evito mostrar el id en el titulo del form?
+*** DONE como setear el ancho de los campos en table view
+    RTA: hay un nuevo parametro width pero no es recomendado.
+** DONE PARA M2000
+*** DONE el cdi se va a seguir usando? porque se guarda en el campo comentario, entonces asignarle un campo.
+    RTA: se usa como id mnemotecnico, podria generarse automaticamente.
 *** DONE las fechas de pago corresponden a viernes o sabado?
-se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
+    RTA: se estan tomando los viernes siguiente al sabado, aunque el dia de pago es sabado
 
 
-* BUGS
-** ordenamiento: beneficiarias.nombre no anda de forma descendente
-** busqueda en pagos y creditos esta rota, salvo busqueda expandida.
-** cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
-IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
-** error al eliminar una beneficiaria
-IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`credito`, CONSTRAINT `credito_beneficiaria_id_fk` FOREIGN KEY (`beneficiaria_id`) REFERENCES `beneficiaria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE credito SET beneficiaria_id=%s WHERE credito.id = %s' (None, 83L)
-** error al eliminar un credito
-AssertionError: Dependency rule tried to blank-out primary key column 'pago.credito_id' on instance '<Pago at 0x7fa5e51a47d0>'
-** error al eliminar actividad
-IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`rubro`, CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE rubro SET actividad_id=%s WHERE rubro.id = %s' (None, 1L)
+* TODO BUGS
+** TODO busqueda en pagos y creditos esta rota, salvo busqueda expandida.
+** TODO cuando se agrega un id repetido (ej amortizacion repetida), no muestra mensaje de error (solo x consola), la muestra en el table view como si se hubiera agregado pero no se agrega.
+   IntegrityError: (IntegrityError) (1062, "Duplicate entry 'Aleman' for key 'nombre'") 'INSERT INTO amortizacion (nombre) VALUES (%s)' ('Aleman',)
+** TODO error al eliminar una beneficiaria
+   IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`credito`, CONSTRAINT `credito_beneficiaria_id_fk` FOREIGN KEY (`beneficiaria_id`) REFERENCES `beneficiaria` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE credito SET beneficiaria_id=%s WHERE credito.id = %s' (None, 83L)
+** TODO error al eliminar un credito
+   AssertionError: Dependency rule tried to blank-out primary key column 'pago.credito_id' on instance '<Pago at 0x7fa5e51a47d0>'
+** TODO error al eliminar actividad
+   IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a foreign key constraint fails (`m2000`.`rubro`, CONSTRAINT `rubro_actividad_id_fk` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)') 'UPDATE rubro SET actividad_id=%s WHERE rubro.id = %s' (None, 1L)
+
+** TODO si se produce un error al cargar la foto de una beneficiaria, se rompe el form (no andan los validadores)
 
 
 * FUTURE
@@ -53,7 +62,6 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 ** reemplazar tabla parametro por una view dinamica?
 ** crear form validators personalizados. Ahora aparece un mensaje de error en ingles si falta un campo requerido, por ejemplo.
 ** probar sumas en reportes como querys sqlalchemy en vez de iterar, mmm no se, 1ro tengo que saber cual es el filtro aplicado, ver get_collection. Por ahora no.
-** en contrato mutuo colocar tasa de interes en letras
 ** reportes con opcion de agrupamientos. ej. por cartera o barrio en mensual.
 ** reemplazar header jpg por svg
 ** agregar diccionario (ayuda) con definiciones de formulas y comportamiento. (documentacion con sphinx?)
@@ -62,7 +70,7 @@ IntegrityError: (IntegrityError) (1452, 'Cannot add or update a child row: a for
 ** poder inhabilitar boton de crear nuevo credito en pago
 
 
-* COSAS A MOSTRAR
+* DEMO
 ** como abrir en nueva pestaña
 ** como filtrar (incluyendo busqueda con lupa), aclarar que se pueden especificar por cuales campos buscar por defecto
 ** como ordenar por columna asc/desc
@@ -99,38 +107,14 @@ http://www.bullzip.com/products/pdf/info.php
 ** si se produce un error al cargar la foto de una beneficiaria, se rompe el form (no andan los validadores)
 
 
-* CAMBIOS EN DB
-** vistas renombradas
-100 qTotalPagos ant -> 100_credito_pagos
-100 qTotalPagos -> 100_credito_total_pagos
-101 qIndicadores -> 101_indicadores
-700 Recaudacion por cartera -> 700_recaudacion_x_cartera
-403 Creditos entregados-> 403_creditos_entregados AS
-210 pagos -> 210_pagos
-700 Recaudacion por barrio F -> 700_recaudacion_x_barrio
-701 Recaudacion Potencial por barrio -> 701_recaudacion_potencial_x_barrio
-702 Recaudacion Potencial por barrio F -> 702_recaudacion_potencial_x_barrio
-702 Recaudacion Potencial F -> 702_recaudacion_potencial
-701 Recaudacion Potencial -> 701_recaudacion_potencial
-700 Recaudacion F -> 700_recaudacion
-402 Creditos activos -> 402_creditos_activos
-901 Perdida por Incobrable -> 901_perdida_x_incobrable
-** CAMBIOS EN QUERIES
-[210 pagos] era una agrupacion, ahora toma directamente de tabla pagos. ver si esta bien
-702 recaudacion potencial por barrio hace join con 803 asistencia. no tiene sentido si es potencial, no incluye pagos.
-402 creditos activos ya no depende de la fecha de corte
-
-
 * LINKS DE INTERES
 ** deploy
-setuptools  http://peak.telecommunity.com/DevCenter/setuptools
-http://pypi.python.org/pypi?%3Aaction=list_classifiers
-python mysql
-http://stackoverflow.com/questions/645943/mysql-for-python-in-windows
-http://www.fuyun.org/2009/12/install-mysql-for-python-on-windows/
-** html
-http://matthewjamestaylor.com/blog/keeping-footers-at-the-bottom-of-the-page
+   setuptools  http://peak.telecommunity.com/DevCenter/setuptools
+   http://pypi.python.org/pypi?%3Aaction=list_classifiers
+   python mysql
+   http://stackoverflow.com/questions/645943/mysql-for-python-in-windows
+   http://www.fuyun.org/2009/12/install-mysql-for-python-on-windows/
 ** icono windows generador online
-http://www.digital-pic.com/icon/
+   http://www.digital-pic.com/icon/
 ** shortcut generator en windows
-http://www.xxcopy.com/xxcopy38.htm
+   http://www.xxcopy.com/xxcopy38.htm
