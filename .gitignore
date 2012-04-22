@@ -1,6 +1,7 @@
 .svn
 *.pyc
 *.pyo
+TAGS
 migrate/t*.txt
 migrate/*.sql
 migrate/*.dat
