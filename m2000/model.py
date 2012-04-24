@@ -28,16 +28,19 @@ __metadata__ = metadata
 
 import datetime
 
+from camelot.admin.action import Action
 from camelot.admin.entity_admin import EntityAdmin
 from camelot.admin.validator.entity_validator import EntityValidator
 from camelot.core.files.storage import Storage, StoredImage
+from camelot.view.action_steps import FlushSession, UpdateProgress, MessageBox, UpdateObject
 from camelot.view.controls.delegates import DateDelegate, FloatDelegate, BoolDelegate, NoteDelegate, CurrencyDelegate, IntegerDelegate
 from camelot.view.filters import ComboBoxFilter, ValidDateFilter, GroupBoxFilter
 from camelot.view.forms import Form, TabForm, WidgetOnlyForm, HBoxForm
 from elixir import Entity, Field, using_options, ManyToOne, OneToMany
 from elixir.properties import ColumnProperty
 from sqlalchemy import Unicode, Date, Boolean, Integer, Float
-from sqlalchemy import sql, and_
+from sqlalchemy import sql, and_, desc
+from PyQt4.QtGui import QMessageBox
 import camelot
 import sqlalchemy
 
@@ -165,7 +168,6 @@ class Barrio(Entity):
 
 class PagoAdminBase(EntityAdmin):
     verbose_name = 'Pago'
-    list_search = ['id']
     field_attributes = dict(credito = dict(name = u'Crédito'),
                             monto = dict(prefix = '$'),
                             nro_credito = dict(name = u'Nro. crédito',
@@ -188,6 +190,9 @@ class PagoAdminBase(EntityAdmin):
     def get_depending_objects(self, obj):
         yield obj.credito
 
+    def get_query(self):
+        """Redefino para devolver ordenado por fecha desc"""
+        return EntityAdmin.get_query(self).order_by(desc('fecha'))
 
 class PagoAdminEmbedded(PagoAdminBase):
     list_display = ['fecha',
@@ -227,15 +232,7 @@ class CreditoAdminBase(EntityAdmin):
                     # 'gastos_arq',
                     ]
     delete_mode = 'on_confirm'
-    # TODO no funciona
-    list_search = ['id',
-                   'beneficiaria',
-                   'beneficiaria.barrio.nombre',
-                   'rubro_prop',
-                   'cartera.nombre',
-                   ]
-    search_all_fields = False
-    # TODO no me toma los campos beneficiaria, rubro, cartera
+    search_all_fields = True
     expanded_list_search = ['beneficiaria_prop',
                             'nro_credito',
                             'rubro_prop',
@@ -260,7 +257,8 @@ class CreditoAdminBase(EntityAdmin):
     field_attributes = dict(beneficiaria_prop = dict(name = 'Beneficiaria',
                                                      minimal_column_width = 25,
                                                      editable = False),
-                            nro_credito = dict(name = u'Nro. Crédito'),
+                            nro_credito = dict(name = u'Nro. Crédito',
+                                               calculator = False),
                             rubro_prop = dict(name = 'Rubro',
                                               minimal_column_width = 20,
                                               editable = False),
@@ -310,7 +308,9 @@ class CreditoAdminBase(EntityAdmin):
                                          prefix = '$'),
                             activo = dict(delegate = BoolDelegate,
                                           to_string = lambda x:{1:'Si', 0:'No'}[x]),
-                            pagos = dict(admin = PagoAdminEmbedded),
+                            pagos = dict(admin = PagoAdminEmbedded,
+                                         #create_inline = True,  # no funciona como se espera
+                                         ),
                             # TODO por el momento el name es estatico, no se puede cambiar en funcion de otros valores
                             # monto_cheque = dict(name = lambda o: 'Monto Presupuesto' if o.rubro.actividad.id == ID_ACTIVIDAD_CONSTRUCCION else 'Monto Cheque'),
                             )
@@ -729,4 +729,131 @@ class Amortizacion(Entity):
 class Parametro(Entity):
     using_options(tablename='parametro')
     fecha = Field(Date)
+
+class BuscarCreditos(Action):
+    verbose_name = u"Buscar créditos"
+
+    def get_state(self, model_context):
+        """Habilitar la accion solamente si se ingresaron los datos necesarios"""
+        state = super(BuscarCreditos, self).get_state(model_context)
+        obj = model_context.get_object()
+        state.enabled = True if obj and obj.fecha and obj.barrio else False
+        return state
+
+    def model_run(self, model_context):
+        # Buscar todos aquellos creditos que estan activos y corresponden al barrio
+        obj = model_context.get_object()
+        from sqlalchemy.sql import select
+        tbl_credito = Credito.mapper.mapped_table
+        tbl_benef = Beneficiaria.mapper.mapped_table
+        tbl_barrio = Barrio.mapper.mapped_table
+
+        stmt = select([tbl_credito.c.id.label('credito_id'),
+                       ],
+                      from_obj=tbl_credito.join(tbl_benef).join(tbl_barrio),
+                      whereclause=and_(tbl_credito.c.fecha_finalizacion == None,
+                                       obj.barrio_id == tbl_barrio.c.id),
+                      )
+        res = model_context.session.execute(stmt)
+        for row in res:
+            pc = PagoCredito()
+            pc.planilla_pagos = obj
+            pc.credito = Credito.query.filter_by(id=row["credito_id"]).one()
+            yield UpdateProgress()
+        yield FlushSession(PagoCredito.query.session)
+        yield FlushSession(model_context.session)
+
+class AplicarPlanilla(Action):
+    verbose_name = u"Aplicar pagos"
+
+    def model_run(self, model_context):
+        # Volcar todos los pagos en la tabla de pagos.
+        obj = model_context.get_object()
+        Pago.query.session.begin()
+        try:
+            for pago in obj.creditos:
+                row = Pago()
+                row.credito = pago.credito
+                row.monto = pago.monto
+                row.fecha = obj.fecha
+                row.asistencia = pago.asistencia
+                yield FlushSession(Pago.query.session)
+        except Exception, e:
+            Pago.query.session.rollback()
+            yield MessageBox("Se ha producido un error:\n\n%s" % e,
+                             icon=QMessageBox.Critical,
+                             title="Imputar carrito",
+                             standard_buttons=QMessageBox.Ok)
+            yield UpdateObject(model_context.session)
+            return
+        Pago.query.session.commit()
+        obj.aplicada = True
+        yield FlushSession(model_context.session)
+
+
+    def get_state(self, model_context):
+        """Habilitar la accion solamente si nunca fueron aplicados"""
+        state = super(AplicarPlanilla, self).get_state(model_context)
+        obj = model_context.get_object()
+        state.enabled = True if obj and not obj.aplicada else False
+        return state
+
+class PagoCredito(Entity):
+    using_options(tablename='pago_credito')
+    planilla_pagos = ManyToOne('PlanillaPagos', ondelete='cascade', onupdate='cascade', primary_key=True)
+    credito = ManyToOne('Credito', ondelete='cascade', onupdate='cascade', primary_key=True)
+    monto = Field(Float)
+    asistencia = ManyToOne('Asistencia', ondelete='cascade', onupdate='cascade')
+
+    class Admin(EntityAdmin):
+        list_display = ['credito', 'monto', 'asistencia']
+        field_attributes = dict(credito = dict(name = u'Crédito'))
+
+        # esto es para que se refresque el campo total_pagos
+        def get_depending_objects(self, obj):
+            yield obj.planilla_pagos
+
+class PlanillaPagos(Entity):
+    using_options(tablename='planilla_pagos')
+    fecha = Field(Date, primary_key=True)
+    barrio = ManyToOne('Barrio', ondelete='cascade', onupdate='cascade', primary_key=True)
+    creditos = OneToMany('PagoCredito')
+    aplicada = Field(Boolean, default=False)
+
+    def __unicode__(self):
+        return "%s %s" % (self.fecha, self.barrio.nombre)
+
+    # No uso ColumnProperty para que se refresque automaticamente cuando se modifican los totales
+    @property
+    def total_pagos(self):
+        total = 0
+        for i in self.creditos:
+            if i.monto:
+                total += i.monto
+        return total
+
+    class Admin(EntityAdmin):
+        verbose_name = u'Planilla de Pagos'
+        verbose_name_plural = u'Planillas de Pagos'
+        form_display = ['fecha',
+                        'barrio',
+                        'creditos',
+                        'total_pagos',
+                        ]
+        list_display = ['fecha', 'barrio', 'aplicada']
+        form_actions = [BuscarCreditos(),
+                        AplicarPlanilla(),
+                        ]
+        list_filter = [ValidDateFilter('fecha', 'fecha', 'Fecha', default=lambda:''),
+                       ComboBoxFilter('barrio.nombre'),
+                       ]
+        field_attributes = dict(aplicada = dict(editable = False),
+                                creditos = dict(name = u'Créditos'),
+                                total_pagos = dict(delegate = CurrencyDelegate,
+                                                   prefix = '$',
+                                                   editable = False),)
+
+        def get_query(self):
+            """Redefino para devolver ordenado por fecha desc"""
+            return EntityAdmin.get_query(self).order_by(desc('fecha'))
 
