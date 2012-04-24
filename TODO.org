@@ -1,11 +1,22 @@
-* COMO ARMAR UN ARCHIVO DE RELEASE
-  crear un archivo llamado v[version].zip que contenga
-  + base.py
-  + m2000-[version]-py2.7.egg
-  + update-win.bat
-  + firma-tesorero.png
-  + firma-presidente.png
 
+* COMO SACAR UN RELEASE
+  + actualizar changelog.org
+  + ejecutar ./update-version.sh [version]
+  + ejecutar ./build-egg.sh
+  + armar archivo de release
+    ~/projects/m2000$ zip v12.4.23.zip -j dist/m2000-12.4.23-py2.7.egg base.py update-win.bat m2000/media/firma-tesorero.png m2000/media/firma-presidente.png
+    crear un archivo llamado v[version].zip que contenga
+    + base.py
+    + m2000-[version]-py2.7.egg
+    + update-win.bat
+    + firma-tesorero.png
+    + firma-presidente.png
+  + comitear
+  + git tag -a v[version] -m"release v[version]"
+  + git push --tags v[version]
+  + actualizar changelog.org con "* master"
+  + ./update-version.sh master
+  + comitear
 
 * TODO PREGUNTAS:
 ** TODO FUNCIONALES
