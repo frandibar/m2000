@@ -772,12 +772,13 @@ class AplicarPlanilla(Action):
         Pago.query.session.begin()
         try:
             for pago in obj.creditos:
-                row = Pago()
-                row.credito = pago.credito
-                row.monto = pago.monto
-                row.fecha = obj.fecha
-                row.asistencia = pago.asistencia
-                yield FlushSession(Pago.query.session)
+                if pago.monto > 0:
+                    row = Pago()
+                    row.credito = pago.credito
+                    row.monto = pago.monto
+                    row.fecha = obj.fecha
+                    row.asistencia = pago.asistencia
+                    yield FlushSession(Pago.query.session)
         except Exception, e:
             Pago.query.session.rollback()
             yield MessageBox("Se ha producido un error:\n\n%s" % e,
@@ -856,4 +857,3 @@ class PlanillaPagos(Entity):
         def get_query(self):
             """Redefino para devolver ordenado por fecha desc"""
             return EntityAdmin.get_query(self).order_by(desc('fecha'))
-
