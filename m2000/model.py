@@ -790,6 +790,7 @@ class AplicarPlanilla(Action):
         Pago.query.session.commit()
         obj.aplicada = True
         yield FlushSession(model_context.session)
+        yield camelot.view.action_steps.CloseView()
 
 
     def get_state(self, model_context):
