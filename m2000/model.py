@@ -679,6 +679,8 @@ class Pago(Entity):
                        ComboBoxFilter('barrio'),
                        ]
         form_size = (600,200)
+        field_attributes = dict(beneficiaria = dict(minimal_column_width = 25),
+                                nro_credito = dict(name = u'Nro. Crédito'))
         form_display = Form([HBoxForm([['credito',
                                         'fecha',
                                         'monto',
@@ -807,13 +809,29 @@ class PagoCredito(Entity):
     monto = Field(Float)
     asistencia = ManyToOne('Asistencia', ondelete='cascade', onupdate='cascade')
 
-    class Admin(EntityAdmin):
-        list_display = ['credito', 'monto', 'asistencia']
-        field_attributes = dict(credito = dict(name = u'Crédito'))
+    @property
+    def cdi(self):
+        return self.credito.beneficiaria.comentarios
 
-        # esto es para que se refresque el campo total_pagos
-        def get_depending_objects(self, obj):
-            yield obj.planilla_pagos
+    @property
+    def beneficiaria(self):
+        return self.credito.beneficiaria
+
+    @property
+    def nro_credito(self):
+        return self.credito.nro_credito
+
+    class Admin(EntityAdmin):
+        list_display = ['cdi', 'beneficiaria', 'nro_credito', 'monto', 'asistencia']
+        field_attributes = dict(cdi = dict(name = 'CDI'),
+                                beneficiaria = dict(minimal_column_width = 25),
+                                nro_credito = dict(name =  u'Nro. Crédito',
+                                                   delegate = IntegerDelegate), # for align=right
+                                )
+
+        # # esto es para que se refresque el campo total_pagos (comentado por defect #8)
+        # def get_depending_objects(self, obj):
+        #     yield obj.planilla_pagos
 
 class PlanillaPagos(Entity):
     using_options(tablename='planilla_pagos')
@@ -853,7 +871,9 @@ class PlanillaPagos(Entity):
                                 creditos = dict(name = u'Créditos'),
                                 total_pagos = dict(delegate = CurrencyDelegate,
                                                    prefix = '$',
-                                                   editable = False),)
+                                                   editable = False,
+                                                   name = 'Total Pagos (f9 para actualizar)',),)
+        form_size = (1000,700)
 
         def get_query(self):
             """Redefino para devolver ordenado por fecha desc"""
