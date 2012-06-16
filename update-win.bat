@@ -2,7 +2,7 @@ echo Actualizacion de m2000
 echo Borrando archivo de configuracion para recrear DB...
 del "%HOMEPATH%\.m2000.cfg"
 
-set version=12.6.16.6
+set version=master
 
 echo Instalando m2000...
 easy_install m2000-%version%-py2.7.egg

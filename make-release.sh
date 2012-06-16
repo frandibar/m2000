@@ -7,6 +7,7 @@ if [ $# -ne 1 ]; then
 fi
 
 version=$1
+
 ./update-version.sh $version
 ./build-egg.sh
 
@@ -20,9 +21,9 @@ echo Making zip file...
 zip v$version.zip -j dist/m2000-$version-py2.7.egg update-win.bat m2000/media/firma-tesorero.png m2000/media/firma-presidente.png base.py
 mv v$version.zip ~/Dropbox/m2000
 
-git ci -m"release"
-git tag -a v$version -m"release"
-git push --tags v$version
+git ci update-win.bat m2000/__init__.py changelog.org -m"new release"
+git tag -a v$version -m"new release"
+git push --tags
 
 ./update-version.sh master
-echo git ci -m"post release"
+git ci update-win.bat m2000/__init__.py -m"post release"
