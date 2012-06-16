@@ -1,14 +1,16 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]
-    then echo "usage: ./update-version.sh [version]"
+if [ $# -ne 1 ]; then
+    echo "usage: `basename $0` [version]"
+    echo "example: `basename $0` 12.6.16.6"
     exit
 fi
 
-echo Updating update-win.bat
-sed -e s/__VERSION__/"$1"/g update-win-template.bat > update-win.bat
+version=$1
 
-echo Updating m2000/__init__.py
+echo Updating update-win.bat...
+sed -i "s/^set version=.*/set version=$version/" update-win.bat
+
+echo Updating m2000/__init__.py...
 sed -i 23d m2000/__init__.py
-echo "__version__ = '""$1""'" >> m2000/__init__.py
-
+echo __version__ = \'$version\' >> m2000/__init__.py

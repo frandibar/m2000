@@ -1,4 +1,12 @@
 Listado de cambios entre versiones
+El número de version se corresponde al año.mes.dia.nro siendo nro un valor incremental para cada versión
+
+* v12.6.16.6
+- [[https://github.com/frandibar/m2000/issues/7][issue #7]]: CDI en planilla de pagos
+- [[https://github.com/frandibar/m2000/issues/8][issue #8]]: Modificación de campos en planilla de pagos
+- [[https://github.com/frandibar/m2000/issues/9][issue #9]]: Pagos con monto nulo
+- [[https://github.com/frandibar/m2000/issues/10][issue #10]]: Cerrar formulario al aplicar pagos
+
 
 * v12.4.23
 - [[https://github.com/frandibar/m2000/issues/1][issue #1]]: Campo 'Total pagos' no refresca automáticamente
